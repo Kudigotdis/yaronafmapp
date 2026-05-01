@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Yarona FM Beat Matcher</title>
+<style>
+:root {
+  --brand-red: #C41E3A;
+  --brand-black: #000000;
+  --brand-white: #FFFFFF;
+  --gold: #e6a800;
+  --gold-dim: #b8960c;
+  --border: rgba(196,30,58,0.12);
+  --cell: min(calc((100vw - 32px) / 6.2), calc((100vh - 230px) / 8.5), 65px);
+  --gap: 3px;
+}
+*{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--brand-white);
+  color: #222;
+  min-height: 100vh;
+  overflow-x:hidden;
+}
+.match-screen { display:none; flex-direction:column; align-items:center; min-height:100vh; background:var(--brand-white); }
+.match-screen.match-active { display:flex; }
+#startScreen { justify-content:center; padding:24px 16px 32px; gap:0; }
+.match-start-logo { max-width:200px; width:100%; height:auto; margin-bottom:20px; }
+.match-mode-panel, .match-colors-panel { width:100%; max-width:420px; background:var(--brand-white); border:1px solid var(--border); border-radius:14px; padding:18px 20px; margin-bottom:12px; }
+.match-colors-panel { display: flex; flex-direction: column; align-items: center; }
+.match-panel-label { font-weight: 700; font-size: 0.75rem; letter-spacing: 1px; color: var(--brand-red); text-transform: uppercase; margin-bottom: 10px; text-align: center; }
+.match-mode-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; }
+.match-mode-btn { border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 4px; cursor: pointer; text-align: center; color: #555; font-weight: 700; font-size: 0.75rem; background: var(--brand-white); transition: all 0.18s; }
+.match-mode-btn small { display: block; font-size: 0.55rem; opacity: 0.6; margin-top: 2px; font-weight: 400; }
+.match-mode-btn:hover, .match-mode-btn.match-active { border-color: var(--brand-red); background: rgba(196,30,58,0.06); color: var(--brand-red); }
+.match-color-note { background: #f8f8f8; border-radius: 12px; padding: 12px; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--brand-red); }
+.match-btn-primary { font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; padding: 14px 40px; border: none; border-radius: 12px; cursor: pointer; background: var(--brand-red); color: var(--brand-white); transition: all 0.18s; margin-top: 4px; width: 100%; max-width: 420px; }
+.match-btn-primary:hover { background: #a01830; }
+.match-btn-secondary { font-size: 0.7rem; letter-spacing: 1px; padding: 9px 18px; border: 1.5px solid var(--border); border-radius: 9px; cursor: pointer; background: var(--brand-white); color: var(--brand-red); transition: all 0.18s; margin: 3px; }
+.match-btn-secondary:hover { border-color: var(--brand-red); background: rgba(196,30,58,0.04); }
+.match-btn-home { background: var(--brand-red); color: var(--brand-white); border-color: var(--brand-red); }
+.match-btn-home:hover { background: #a01830; color: var(--brand-white); }
+.match-game-header { width: 100%; max-width: 440px; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px 6px; background: var(--brand-white); border-bottom: 1px solid var(--border); gap: 10px; }
+.match-header-logo { height: 32px; width: auto; flex-shrink: 0; object-fit: contain; }
+.match-header-logo-right { height: 32px; width: auto; flex-shrink: 0; object-fit: contain; }
+.match-header-stats { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+.match-stat-chip { display: flex; flex-direction: column; align-items: center; background: rgba(196,30,58,0.05); border: 1px solid var(--border); border-radius: 9px; padding: 4px 10px; min-width: 54px; }
+.match-chip-lbl { font-size: 7px; letter-spacing: 1.5px; color: #999; text-transform: uppercase; }
+.match-chip-val { font-size: 1.1rem; font-weight: 700; color: var(--brand-red); line-height: 1.1; }
+.match-chip-val.match-gold { color: var(--gold); }
+.match-chip-val.match-urgent { color: var(--brand-red); animation: match-pulse 0.5s infinite; }
+@keyframes match-pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+.match-challenge-bar { width: 100%; max-width: 440px; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 6px 10px; background: var(--brand-white); border-bottom: 1px solid var(--border); }
+.match-score-area { width: 100%; max-width: 440px; height: 40px; display: flex; align-items: center; justify-content: center; position: relative; }
+.match-gem-pill { display: flex; align-items: center; gap: clamp(2px,1vw,4px); padding: clamp(2px,1vw,4px) clamp(4px,2vw,8px); border-radius: 2px; border: 1px solid rgba(196,30,58,0.13); background: rgba(196,30,58,0.03); transition: all 0.3s; cursor: default; }
+.match-gem-pill.match-hot { background-color: rgba(230,168,0,0.25); border-color: var(--gold); }
+.match-gem-pip { width: clamp(6px,2.5vw,12px); height: clamp(6px,2.5vw,12px); border-radius: 2px; flex-shrink: 0; background-size: contain; background-repeat: no-repeat; background-position: center; }
+.match-pill-pts { font-size: clamp(10px,4vw,18px); font-weight: 700; color: #445; }
+.match-shuffle-flash { animation: match-shuffleFlash 0.6s ease; }
+@keyframes match-shuffleFlash { 0%,100%{ opacity: 1 } 25%{ opacity: 0 } 50%{ opacity: 1 } 75%{ opacity: 0 } }
+.match-game-area { width: 100%; max-width: 440px; padding: 8px 10px 10px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.match-board-group { display: flex; flex-direction: column; align-items: center; gap: 5px; width: fit-content; }
+.match-upcoming-row { display: grid; grid-template-columns: repeat(6, var(--cell)); gap: var(--gap); margin-bottom: 5px; padding: 5px 4px; background: rgba(210,215,220,0.50); border-radius: 10px 10px 4px 4px; }
+.match-upcoming-gem { width: var(--cell); height: var(--cell)); border-radius: 7px; opacity: 0.60; transition: opacity 0.2s; position: relative; background-size: contain; background-repeat: no-repeat; background-position: center; }
+.match-upcoming-gem::after { content: ''; position: absolute; top: 3px; left: 6px; right: 6px; height: 32%; border-radius: 50%; background: rgba(255,255,255,0.25); }
+.match-grid-outer { background: transparent; border-radius: 4px 4px 12px 12px; padding: 4px; position: relative; width: 100%; z-index: 1; isolation: isolate; }
+#grid { display: grid; grid-template-columns: repeat(6, var(--cell)); grid-template-rows: repeat(7, var(--cell)); gap: var(--gap); user-select: none; touch-action: none; }
+.match-cell { width: var(--cell); height: var(--cell); border-radius: 8px; position: relative; cursor: grab; overflow: hidden; transition: transform 0.08s; transform: scale(0.9); background-color: transparent !important; }
+.match-gem { width: 100%; height: 100%; border-radius: 8px; position: absolute; top: 0; left: 0; will-change: transform; background-size: contain; background-repeat: no-repeat; background-position: center; background-color: transparent !important; }
+.match-gem.match-selected { transform: scale(0.82); }
+.match-gem.match-swap-target { transform: scale(0.82); }
+.match-gem::before { content: ''; position: absolute; top: 4px; left: 7px; right: 7px; height: 33%; border-radius: 50%; background: rgba(255,255,255,0.15); pointer-events: none; }
+.match-g0 { --gem-color: #2196F3; background-image: url('assets/sprites/Droplet Match Icons 1 - Blue.svg'); }
+.match-g1 { --gem-color: #00BCD4; background-image: url('assets/sprites/Droplet Match Icons 6 - Blue 2.svg'); }
+.match-g2 { --gem-color: #F44336; background-image: url('assets/sprites/Droplet Match Icons 12 - Red.svg'); }
+.match-g3 { --gem-color: #FFEB3B; background-image: url('assets/sprites/Droplet Match Icons 4 - Yellow.svg'); }
+.match-g4 { --gem-color: #4CAF50; background-image: url('assets/sprites/Droplet Match Icons 7 - Green.svg'); }
+.match-gem.match-dragging { cursor: grabbing; z-index: 20; }
+.match-gem.match-reject { animation: match-reject-shake 0.28s ease-out; }
+@keyframes match-reject-shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(4px)} }
+.match-gem.match-matched { animation: match-pop 0.38s ease-out forwards; filter: drop-shadow(0 0 14px var(--gem-color)) brightness(1.4); }
+@keyframes match-pop { 0%{transform:scale(1); opacity: 1; filter: drop-shadow(0 0 14px var(--gem-color)) brightness(1.4);} 40%{transform:scale(1.25); opacity: 1; filter: drop-shadow(0 0 20px var(--gem-color)) brightness(2);} 100%{transform:scale(0); opacity: 0;} }
+.match-gem.match-falling { transition: transform 0.22s cubic-bezier(0.34,1.3,0.64,1); }
+.match-reshuffle-banner { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.88); border-radius: 12px; font-weight: 700; font-size: 1rem; color: var(--brand-red); letter-spacing: 1px; z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+.match-reshuffle-banner.match-show { opacity: 1; }
+.match-combo-flash { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); font-weight: 900; font-size: 1.8rem; color: var(--gold); pointer-events: none; z-index: 300; text-shadow: 0 2px 12px rgba(230,168,0,0.5); transition: transform 0.12s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s; opacity: 0; }
+.match-combo-flash.match-show { transform: translate(-50%,-60%) scale(1); opacity: 1; }
+.match-combo-flash.match-hide { transform: translate(-50%,-70%) scale(0.7); opacity: 0; }
+.match-float-score { position: absolute; font-weight: 900; font-size: 1rem; color: var(--brand-red); pointer-events: none; z-index: 200; animation: match-float-up 0.85s ease-out forwards; white-space: nowrap; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+@keyframes match-float-up { 0%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(-52px)} }
+.match-particle { position: fixed; width: 7px; height: 7px; border-radius: 2px; pointer-events: none; z-index: 1000; }
+@keyframes particle-fly { 0%{opacity:1; transform:scale(1) translate(0,0);} 100%{opacity:0; transform:scale(0.2) translate(var(--tx), var(--ty));} }
+@keyframes gem-bounce { 0%,100%{transform:scale(1);} 50%{transform:scale(1.15);} }
+.match-gem.match-bounce { animation: gem-bounce 0.15s ease-out; }
+@keyframes gem-swap-bounce { 0%,100%{transform:translate(0,0);} 25%{transform:translate(-3px,-2px);} 50%{transform:translate(2px,1px);} 75%{transform:translate(-1px,-1px);} }
+.match-gem.match-swap { animation: gem-swap-bounce 0.2s ease-out; }
+.match-gem.match-teleporting { opacity: 0.5; }
+.match-grid-outer.shake { animation: grid-shake 0.28s ease-out; }
+@keyframes grid-shake { 0%,100%{transform:translate(0,0);} 20%{transform:translate(-5px,2px);} 40%{transform:translate(5px,-2px);} 60%{transform:translate(-3px,1px);} 80%{transform:translate(2px,-1px);} }
+.match-game-footer { width: 100%; max-width: 440px; display: flex; justify-content: space-around; align-items: center; padding: 7px 10px; background: var(--brand-white); border-top: 1px solid var(--border); margin-top: auto; }
+.match-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 400; padding: 16px; }
+.match-modal-overlay.match-active { display: flex; }
+.match-modal { background: var(--brand-white); border: 1px solid var(--border); border-radius: 20px; padding: 28px 22px; max-width: 380px; width: 100%; text-align: center; animation: match-modal-in 0.25s cubic-bezier(0.34,1.5,0.64,1); max-height: 90vh; overflow-y: auto; }
+@keyframes match-modal-in { from{transform:scale(0.82);opacity:0} to{transform:scale(1);opacity:1} }
+.match-modal h2 { font-size: 1.2rem; font-weight: 900; color: var(--brand-red); margin-bottom: 10px; }
+.match-modal p { font-size: 0.88rem; color: #555; margin-bottom: 10px; line-height: 1.5; }
+.match-big-score { font-size: 2.6rem; font-weight: 900; color: var(--brand-red); margin: 10px 0; }
+.match-name-input { width: 100%; background: #f5f7fb; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px; color: #222; font-size: 1rem; text-align: center; margin-bottom: 10px; outline: none; }
+.match-name-input:focus { border-color: var(--brand-red); }
+.match-prize-selector { width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border); font-size: 0.88rem; margin: 8px 0; background: var(--brand-white); color: #222; }
+.match-tooltip-warn { font-size: 0.75rem; color: var(--brand-red); background: rgba(192,39,45,0.07); padding: 6px 10px; border-radius: 7px; margin-top: 4px; display: none; }
+.match-modal-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+.match-lb-header { width: 100%; max-width: 440px; padding: 14px 16px 10px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--brand-white); }
+.match-lb-header img { max-width: 160px; }
+.match-lb-title { font-size: 0.85rem; color: var(--gold-dim); font-weight: 700; letter-spacing: 1px; margin-top: 2px; }
+.match-lb-subtitle { font-size: 0.72rem; color: #999; }
+#lbList, #midLBList { width: 100%; max-width: 440px; overflow-y: auto; flex: 1; padding: 8px 12px 20px; }
+.match-lb-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px; margin-bottom: 4px; background: rgba(196,30,58,0.03); border: 1px solid rgba(196,30,58,0.07); }
+.match-lb-rank { font-weight: 900; min-width: 28px; font-size: 0.88rem; color: var(--brand-red); }
+.match-lb-name { flex: 1; font-weight: 600; font-size: 0.9rem; }
+.match-lb-score { font-weight: 700; font-size: 0.82rem; color: var(--brand-red); }
+.match-prize-badge { font-size: 0.6rem; background: rgba(196,30,58,0.1); color: var(--brand-red); border-radius: 6px; padding: 2px 5px; font-weight: 700; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+
+<div id="startScreen" class="match-screen match-active">
+  <img src="Assets/logo/yarona-logo.svg" class="match-start-logo" alt="Yarona FM">
+  <div class="match-mode-panel">
+    <div class="match-panel-label">Game Mode</div>
+    <div class="match-mode-grid">
+      <button class="match-mode-btn" data-mode="off">OFF<small>Practice</small></button>
+      <button class="match-mode-btn match-active" data-mode="60">1 MIN</button>
+      <button class="match-mode-btn" data-mode="180">3 MIN</button>
+      <button class="match-mode-btn" data-mode="300">5 MIN</button>
+    </div>
+  </div>
+  <div class="match-colors-panel">
+    <div class="match-panel-label">Diamond Colours (Fixed 5)</div>
+    <div class="match-color-note">🔵 Blue &nbsp; 💧 Cyan &nbsp; 🔴 Red &nbsp; 🟡 Yellow &nbsp; 🟢 Green</div>
+  </div>
+  <button class="match-btn-primary" id="startBtn">PLAY NOW</button>
+  <div style="margin-top:10px;display:flex;flex-wrap:wrap;justify-content:center;">
+    <button class="match-btn-secondary match-btn-home" onclick="window.location.href='../index.html'">Home</button>
+    <button class="match-btn-secondary" id="showLBBtn">Leaderboard</button>
+  </div>
+</div>
+
+<div id="gameScreen" class="match-screen">
+  <div class="match-game-header">
+    <img src="Assets/logo/yarona-logo.svg" class="match-header-logo" alt="Yarona FM">
+    <div class="match-header-stats">
+      <div class="match-stat-chip"><span class="match-chip-val match-gold" id="scoreDisplay">0</span></div>
+      <span class="match-header-divider">|</span>
+      <div class="match-stat-chip" id="timerChip"><span class="match-chip-val" id="timerDisplay">–</span></div>
+    </div>
+  </div>
+  <div class="match-challenge-bar" id="challengeBar"></div>
+  <div class="match-score-area" id="scoreArea"></div>
+  <div class="match-game-area">
+    <div class="match-board-group">
+      <div class="match-grid-outer"><div id="grid"></div></div>
+    </div>
+  </div>
+  <div class="match-game-footer">
+    <button class="match-btn-secondary" id="pauseBtn">Pause</button>
+    <button class="match-btn-secondary" id="midLBBtn">Leaderboard</button>
+    <button class="match-btn-secondary" id="quitBtn">Quit</button>
+  </div>
+</div>
+
+<div id="lbScreen" class="match-screen">
+  <div class="match-lb-header"><img src="Assets/logo/yarona-logo.svg" alt="Yarona FM"><div class="match-lb-title">🏆 Prize Leaderboard 🏆</div><div class="match-lb-subtitle">Top 20 earn daily rewards!</div>
+  </div>
+  <div id="lbList"></div>
+  <div style="padding:12px 16px 24px;width:100%;max-width:440px;"><button class="match-btn-secondary" id="lbBackBtn" style="width:100%;">Back</button></div>
+</div>
+
+<div class="match-modal-overlay" id="pauseModal"><div class="match-modal"><h2>Paused</h2><p>Take a breather. Resume when ready.</p><div class="match-modal-actions"><button class="match-btn-primary" id="resumeBtn" style="padding:12px 30px;">Resume</button><button class="match-btn-secondary" id="pauseQuitBtn">Quit Game</button></div></div></div>
+<div class="match-modal-overlay" id="midLBModal"><div class="match-modal" style="max-height:80vh;"><h2>Prize Leaderboard</h2><div id="midLBList" style="text-align:left;margin:12px 0;max-height:50vh;overflow-y:auto;"></div><button class="match-btn-secondary" id="closeMidLBBtn">Close</button></div></div>
+<div class="match-modal-overlay" id="gameOverModal"><div class="match-modal"><h2 id="goTitle">Time's Up!</h2><p id="goMsg">Here's how you did:</p><div class="match-big-score" id="goScore">0</div><div id="nameSection"><p style="font-size:0.78rem;color:var(--brand-red);margin-bottom:6px;">Enter your name to save your score:</p><input type="text" class="match-name-input" id="playerNameInput" placeholder="Your name or alias" maxlength="20"><p style="font-size:0.78rem;color:#555;margin-bottom:4px;">Select a prize draw (optional):</p><select id="prizeSelector" class="match-prize-selector"><option value="" disabled selected>— Choose prize —</option><optgroup label="Grand Prizes"><option value="car">Car (3-Month Accumulator)</option><option value="fuel_month">Fuel for a Month</option></optgroup><optgroup label="Vouchers"><option value="fuel_500">Fuel Voucher P500</option><option value="shop_200">Quickstop P200</option></optgroup></select><div class="match-tooltip-warn" id="prizeTooltip">You must play daily to remain eligible for grand prizes!</div><button class="match-btn-primary" id="saveScoreBtn" style="margin-top:10px;" disabled>Submit Score</button></div><div class="match-modal-actions"><button class="match-btn-secondary" id="playAgainBtn">Play Again</button><button class="match-btn-secondary" id="goLBBtn">Leaderboard</button></div></div></div>
+<div class="match-combo-flash" id="comboFlash"></div>
+
+<script>
+// Beat Matcher – Yarona FM Edition
+const COLS = 6, ROWS = 7;
+const GEM_POINT_POOL = [150,120,80,50,30];
+let pointsPerGem = [];
+let board = [];
+let upcomingQueue = [];
+let score = 0, combo = 1, swapCounter = 0;
+let gameMode = 60;
+let numColors = 5;
+let timeLeft = 60;
+let timerInterval = null;
+let isAnimating = false;
+let paused = false;
+let gameSaved = false;
+let dragSrc = null;
+let selectedCell = null;
+
+const startScreen = document.getElementById('startScreen');
+const gameScreen = document.getElementById('gameScreen');
+const lbScreen = document.getElementById('lbScreen');
+const gridEl = document.getElementById('grid');
+const scoreAreaEl = document.getElementById('scoreArea');
+const scoreEl = document.getElementById('scoreDisplay');
+const timerEl = document.getElementById('timerDisplay');
+const challengeBar = document.getElementById('challengeBar');
+const comboFlash = document.getElementById('comboFlash');
+const gameOverModal = document.getElementById('gameOverModal');
+const pauseModal = document.getElementById('pauseModal');
+const midLBModal = document.getElementById('midLBModal');
+const prizeSelector = document.getElementById('prizeSelector');
+const saveScoreBtn = document.getElementById('saveScoreBtn');
+const prizeTooltip = document.getElementById('prizeTooltip');
+
+const LB_STORAGE_KEY = 'yarona_beatmatcher_scores';
+function loadMasterScores() {
+  const stored = localStorage.getItem(LB_STORAGE_KEY);
+  if (stored) return JSON.parse(stored);
+  return [
+    { name: "Demo Player", score: 251000, prize: "car", ts: Date.now() - 86400000 },
+    { name: "Music Fan", score: 248088, prize: "fuel_month", ts: Date.now() - 86400000 },
+    { name: "Radio Lover", score: 245884, prize: "fuel_500", ts: Date.now() - 86400000 },
+    { name: "Yarona Fan", score: 241631, prize: "shop_200", ts: Date.now() - 86400000 }
+  ];
+}
+function saveMasterScores(scores) { localStorage.setItem(LB_STORAGE_KEY, JSON.stringify(scores)); }
+function addScoreToLeaderboard(entry) {
+  const scores = loadMasterScores();
+  scores.push(entry);
+  scores.sort((a,b) => b.score - a.score);
+  saveMasterScores(scores);
+}
+function renderLeaderboard(container) {
+  if (!container) return;
+  const scores = loadMasterScores();
+  container.innerHTML = '';
+  scores.slice(0, 50).forEach((entry, idx) => {
+    const row = document.createElement('div');
+    row.className = 'match-lb-row';
+    const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '';
+    const prizeTag = idx < 20 ? '<span class="match-prize-badge">🏆 ELIGIBLE</span>' : '';
+    row.innerHTML = `<div class="match-lb-rank">${medal || (idx+1)}</div>
+                     <div class="match-lb-name">${escapeHtml(entry.name)}</div>
+                     <div style="display:flex;flex-direction:column;align-items:flex-end;"><div class="match-lb-score">${entry.score.toLocaleString()}</div>${prizeTag}</div>`;
+    container.appendChild(row);
+  });
+}
+function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+function randGem() { return Math.floor(Math.random() * numColors); }
+function initQueues() {
+  upcomingQueue = [];
+  for (let c = 0; c < COLS; c++) {
+    upcomingQueue[c] = [];
+    for (let k = 0; k < 20; k++) upcomingQueue[c].push(randGem());
+  }
+}
+function pullFromQueue(c) {
+  if (upcomingQueue[c].length < 5) upcomingQueue[c].push(randGem());
+  return upcomingQueue[c].shift();
+}
+function assignPoints() {
+  const pool = [...GEM_POINT_POOL];
+  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  pointsPerGem = new Array(numColors).fill(30);
+  for (let g = 0; g < numColors; g++) pointsPerGem[g] = pool[g];
+}
+function buildBoard() {
+  board = [];
+  for (let r = 0; r < ROWS; r++) {
+    board[r] = [];
+    for (let c = 0; c < COLS; c++) board[r][c] = randGem();
+  }
+  for (let iter = 0; iter < 4; iter++) {
+    let changed = false;
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      if (matchAt(r,c).length >= 3) { board[r][c] = randGem(); changed = true; }
+    }
+    if (!changed) break;
+  }
+}
+function matchAt(r,c) {
+  const t = board[r][c]; if (t < 0) return [];
+  const cells = [{r,c}];
+  let l = c-1; while(l>=0 && board[r][l]===t){ cells.push({r,c:l}); l--; }
+  let ri = c+1; while(ri<COLS && board[r][ri]===t){ cells.push({r,c:ri}); ri++; }
+  let u = r-1; while(u >= 0 && board[u][c]===t){ cells.push({r:u,c}); u--; }
+  let d = r+1; while(d<ROWS && board[d][c]===t){ cells.push({r:d,c}); d++; }
+  return cells.length >= 3 ? cells : [];
+}
+function findAllMatches() {
+  const found = new Set();
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c <= COLS-3; c++) {
+    const t = board[r][c]; if (t < 0) continue;
+    let len = 1; while(c+len < COLS && board[r][c+len] === t) len++;
+    if (len >= 3) for (let k = 0; k < len; k++) found.add(r + ',' + (c+k));
+  }
+  for (let c = 0; c < COLS; c++) for (let r = 0; r <= ROWS-3; r++) {
+    const t = board[r][c]; if (t < 0) continue;
+    let len = 1; while(r+len < ROWS && board[r+len][c] === t) len++;
+    if (len >= 3) for (let k = 0; k < len; k++) found.add((r+k) + ',' + c);
+  }
+  return [...found].map(k => { const [rr,cc] = k.split(',').map(Number); return {r:rr,c:cc}; });
+}
+function calcScore(matches) {
+  const keys = new Set(matches.map(m => m.r + ',' + m.c));
+  let pts = 0;
+  keys.forEach(k => { const [rr,cc] = k.split(',').map(Number); pts += pointsPerGem[board[rr][cc]] || 30; });
+  const sz = keys.size;
+  const sizeMult = sz >= 6 ? 4 : sz >= 5 ? 3 : sz >= 4 ? 2 : 1;
+  const comboMult = Math.min(combo, 8);
+  return pts * sizeMult * comboMult;
+}
+async function processMatches(matches) {
+  const pts = calcScore(matches);
+  score += pts;
+  updateUI();
+  showFloatScore('+' + pts.toLocaleString(), matches);
+  if (combo >= 2) showComboFlash(combo);
+  const keys = new Set(matches.map(m => m.r + ',' + m.c));
+  const gemEls = [];
+  keys.forEach(k => { const [rr,cc] = k.split(',').map(Number); const g = getGemEl(rr,cc); if(g){ g.classList.add('match-matched'); gemEls.push(g); createMatchParticles(g); } });
+  if (keys.size >= 4 || combo >= 3) shakeGrid();
+  await delay(400);
+  keys.forEach(k => { const [rr,cc] = k.split(',').map(Number); board[rr][cc] = -1; });
+  await applyGravity();
+  refillBoard();
+  renderGrid();
+  const next = findAllMatches();
+  if (next.length) { combo++; await delay(80); await processMatches(next); }
+  else { combo = 1; if (!hasMoves()) await reshuffleBoard(); }
+}
+async function applyGravity() {
+  for (let c = 0; c < COLS; c++) {
+    for (let r = ROWS-1; r >= 0; r--) {
+      if (board[r][c] === -1) {
+        for (let above = r-1; above >= 0; above--) {
+          if (board[above][c] !== -1) { board[r][c] = board[above][c]; board[above][c] = -1; break; }
+        }
+      }
+    }
+  }
+  renderGrid(); await delay(120);
+}
+function refillBoard() {
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (board[r][c] === -1) board[r][c] = pullFromQueue(c);
+}
+function swap(r1,c1,r2,c2) { const t=board[r1][c1]; board[r1][c1]=board[r2][c2]; board[r2][c2]=t; }
+function hasMoves() {
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    if (c+1 < COLS) { swap(r,c,r,c+1); if(findAllMatches().length) { swap(r,c,r,c+1); return true; } swap(r,c,r,c+1); }
+    if (r+1 < ROWS) { swap(r,c,r+1,c); if(findAllMatches().length) { swap(r,c,r+1,c); return true; } swap(r,c,r+1,c); }
+  }
+  return false;
+}
+async function reshuffleBoard() {
+  await delay(100);
+  const all = []; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) all.push(board[r][c]);
+  shuffle(all); let idx=0; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) board[r][c]=all[idx++];
+  let tries=0; while(!hasMoves() && tries<20) { shuffle(all); idx=0; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) board[r][c]=all[idx++]; tries++; }
+  renderGrid();
+}
+function shuffle(arr) { for (let i=arr.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+function getCellEl(r,c) { return gridEl.querySelector('[data-r="'+r+'"][data-c="'+c+'"]'); }
+function getGemEl(r,c) { const cell = getCellEl(r,c); return cell ? cell.querySelector('.match-gem') : null; }
+function renderGrid() {
+  selectedCell = null;
+  gridEl.innerHTML = '';
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const cell = document.createElement('div'); cell.className = 'match-cell'; cell.dataset.r = r; cell.dataset.c = c;
+    const gem = document.createElement('div'); gem.className = 'match-gem match-g'+board[r][c];
+    gem.addEventListener('pointerdown', onPointerDown); cell.appendChild(gem); gridEl.appendChild(cell);
+  }
+}
+function renderChallengeBar() {
+  challengeBar.innerHTML = '';
+  const maxPts = Math.max(...pointsPerGem.slice(0,numColors));
+  for (let g = 0; g < numColors; g++) {
+    const pts = pointsPerGem[g]; const isHot = pts === maxPts;
+    const pill = document.createElement('div'); pill.className = 'match-gem-pill' + (isHot ? ' match-hot' : '');
+    const pip = document.createElement('div'); pip.className = 'match-gem-pip match-g'+g'; pill.appendChild(pip);
+    const ptsSpan = document.createElement('span'); ptsSpan.className = 'match-pill-pts'; ptsSpan.textContent = pts; pill.appendChild(ptsSpan);
+    challengeBar.appendChild(pill);
+  }
+}
+function updateUI() { scoreEl.textContent = score.toLocaleString(); }
+function updateTimerDisplay() { const m = Math.floor(timeLeft/60), s = timeLeft%60; timerEl.textContent = m > 0 ? m+':'+String(s).padStart(2,'0') : String(s); timerEl.className = 'match-chip-val' + (timeLeft <= 10 && gameMode !== 'off' ? ' match-urgent' : ''); }
+function startTimer() { if (timerInterval) clearInterval(timerInterval); timerInterval = setInterval(() => { if (paused) return; timeLeft--; updateTimerDisplay(); if (timeLeft <= 0) { clearInterval(timerInterval); endGame(); } }, 1000); }
+function endGame() {
+  clearInterval(timerInterval);
+  document.getElementById('goScore').textContent = score.toLocaleString();
+  document.getElementById('goTitle').textContent = gameMode === 'off' ? 'Practice Mode' : "Time's Up!";
+  document.getElementById('goMsg').textContent = gameMode === 'off' ? 'Scores not saved in practice.' : "Enter your name & claim prize chance!";
+  document.getElementById('nameSection').style.display = gameMode === 'off' ? 'none' : 'block';
+  if (gameMode !== 'off') { prizeSelector.value = ''; saveScoreBtn.disabled = true; prizeTooltip.style.display = 'none'; gameSaved = false; }
+  gameOverModal.classList.add('match-active');
+}
+function saveScore() {
+  if (gameSaved) return;
+  const name = document.getElementById('playerNameInput').value.trim();
+  if (!name) { alert("Please enter a name"); return; }
+  const prizeVal = prizeSelector.value;
+  const entry = { name, score, prize: prizeVal || "none", ts: Date.now(), mode: gameMode };
+  addScoreToLeaderboard(entry);
+  gameSaved = true;
+  document.getElementById('nameSection').style.display = 'none';
+  alert('Score '+score+' saved! You\'re on the leaderboard.');
+}
+function showFloatScore(text, matches) { const el = document.createElement('div'); el.className = 'match-float-score'; el.textContent = text; scoreAreaEl.appendChild(el); setTimeout(() => el.remove(), 900); }
+function showComboFlash(text) { comboFlash.textContent = 'x'+text+' COMBO!'; comboFlash.classList.remove('match-show','match-hide'); void comboFlash.offsetWidth; comboFlash.classList.add('match-show'); setTimeout(() => { comboFlash.classList.remove('match-show'); comboFlash.classList.add('match-hide'); }, 800); }
+const GEM_COLORS = ['#2196F3','#00BCD4','#F44336','#FFEB3B','#4CAF50'];
+function createMatchParticles(gemEl) {
+  if (!gemEl) return;
+  const rect = gemEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const colorIdx = parseInt(gemEl.className.match(/match-g(\d)/)?.[1] || '0');
+  const color = GEM_COLORS[colorIdx] || '#fff';
+  for (let i = 0; i < 8; i++) {
+    const p = document.createElement('div');
+    p.className = 'match-particle';
+    const angle = (Math.PI * 2 * i) / 8 + (Math.random() - 0.5) * 0.5;
+    const dist = 30 + Math.random() * 40;
+    const tx = Math.cos(angle) * dist, ty = Math.sin(angle) * dist;
+    p.style.cssText = 'left:'+(cx - 3.5)+'px;top:'+(cy - 3.5)+'px;background:'+color+';--tx:'+tx+'px;--ty:'+ty+'px;animation:particle-fly 0.5s ease-out forwards;';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 520);
+  }
+}
+function createTeleportParticles(gemEl, direction) {
+  if (!gemEl) return;
+  const rect = gemEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const colorIdx = parseInt(gemEl.className.match(/match-g(\d)/)?.[1] || '0');
+  const color = GEM_COLORS[colorIdx] || '#fff';
+  const dx = direction === 'left' ? 40 : direction === 'right' ? -40 : 0;
+  const dy = direction === 'up' ? 40 : direction === 'down' ? -40 : 0;
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement('div');
+    p.className = 'match-particle';
+    const spread = (Math.random() - 0.5) * 30;
+    const tx = dx + spread, ty = dy + spread;
+    p.style.cssText = 'left:'+(cx - 4)+'px;top:'+(cy - 4)+'px;width:8px;height:8px;background:'+color+';--tx:'+tx+'px;--ty:'+ty+'px;animation:particle-fly 0.35s ease-out forwards;';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 370);
+  }
+}
+function shakeGrid() {
+  const outer = document.querySelector('.match-grid-outer');
+  if (outer) { outer.classList.remove('shake'); void outer.offsetWidth; outer.classList.add('shake'); setTimeout(() => outer.classList.remove('shake'), 300); }
+}
+function clearSelection() {
+  if (selectedCell) { selectedCell.gem.classList.remove('match-selected'); selectedCell.gem.style.transform = ''; selectedCell = null; }
+}
+async function trySwap(r1, c1, r2, c2) {
+  if (isAnimating || paused) return;
+  isAnimating = true;
+  if (gameMode !== 'off') {
+    score = Math.max(0, score - 20);
+    updateUI();
+    showFloatScore('-20', null);
+    swapCounter++;
+    if (swapCounter >= 10) { swapCounter = 0; assignPoints(); renderChallengeBar(); challengeBar.classList.add('match-shuffle-flash'); setTimeout(() => challengeBar.classList.remove('match-shuffle-flash'), 600); showComboFlash('VALUE SHUFFLE'); }
+  }
+  const cell1 = getCellEl(r1, c1), cell2 = getCellEl(r2, c2);
+  const g1 = cell1?.querySelector('.match-gem'), g2 = cell2?.querySelector('.match-gem');
+  if (g1) { g1.classList.add('match-swap'); setTimeout(() => g1.classList.remove('match-swap'), 200); }
+  if (g2) { g2.classList.add('match-swap'); setTimeout(() => g2.classList.remove('match-swap'), 200); }
+  const tmp = board[r1][c1];
+  board[r1][c1] = board[r2][c2];
+  board[r2][c2] = tmp;
+  renderGrid();
+  const matches = findAllMatches();
+  if (matches.length === 0) { isAnimating = false; return; }
+  combo = 1;
+  await processMatches(matches);
+  isAnimating = false;
+}
+function onPointerDown(e) {
+  if (isAnimating || paused) return;
+  e.preventDefault();
+  const gem = e.currentTarget;
+  const cell = gem.parentElement;
+  const r = parseInt(cell.dataset.r), c = parseInt(cell.dataset.c);
+  dragSrc = { r, c, gem, cell, startX: e.clientX, startY: e.clientY, nudgeDir: null, bounced: false };
+  gem.setPointerCapture(e.pointerId);
+  gem.addEventListener('pointermove', onPointerMove);
+  gem.addEventListener('pointerup', onPointerUp);
+  gem.addEventListener('pointercancel', onPointerCancel);
+}
+function onPointerMove(e) {
+  if (!dragSrc || dragSrc.nudgeDir) return;
+  const dx = e.clientX - dragSrc.startX;
+  const dy = e.clientY - dragSrc.startY;
+  const adx = Math.abs(dx), ady = Math.abs(dy);
+  if (adx > 10 || ady > 10) {
+    let dr = 0, dc = 0, dir = '';
+    if (adx > ady) { dc = dx > 0 ? 1 : -1; dir = dc > 0 ? 'right' : 'left'; }
+    else { dr = dy > 0 ? 1 : -1; dir = dr > 0 ? 'down' : 'up'; }
+    const r2 = dragSrc.r + dr, c2 = dragSrc.c + dc;
+    if (r2 >= 0 && r2 < ROWS && c2 >= 0 && c2 < COLS) {
+      dragSrc.nudgeDir = dir;
+      dragSrc.targetR = r2;
+      dragSrc.targetC = c2;
+      const targetCell = getCellEl(r2, c2);
+      const targetGem = targetCell?.querySelector('.match-gem');
+      if (targetGem) { targetGem.classList.add('match-bounce'); dragSrc.targetGem = targetGem; setTimeout(() => targetGem.classList.remove('match-bounce'), 150); }
+    }
+  }
+}
+function onPointerUp(e) {
+  if (!dragSrc) return;
+  const gem = dragSrc.gem;
+  gem.removeEventListener('pointermove', onPointerMove);
+  gem.removeEventListener('pointerup', onPointerUp);
+  gem.removeEventListener('pointercancel', onPointerCancel);
+  if (dragSrc.nudgeDir && dragSrc.targetR !== undefined) {
+    const dir = dragSrc.nudgeDir;
+    const r2 = dragSrc.targetR, c2 = dragSrc.targetC;
+    const srcR = dragSrc.r, srcC = dragSrc.c;
+    const srcGem = gem, targetGem = dragSrc.targetGem;
+    dragSrc = null;
+    if (targetGem) { createTeleportParticles(srcGem, dir); createTeleportParticles(targetGem, dir === 'left' ? 'right' : dir === 'right' ? 'left' : dir === 'up' ? 'down' : 'up'); }
+    trySwap(srcR, srcC, r2, c2);
+    return;
+  }
+  dragSrc = null;
+}
+function onPointerCancel() {
+  if (dragSrc) {
+    const gem = dragSrc.gem;
+    gem.removeEventListener('pointermove', onPointerMove);
+    gem.removeEventListener('pointerup', onPointerUp);
+    gem.removeEventListener('pointercancel', onPointerCancel);
+    dragSrc = null;
+  }
+}
+function startGame() {
+  numColors = 5;
+  score = 0; combo = 1; swapCounter = 0; isAnimating = false; paused = false; gameSaved = false; dragSrc = null;
+  assignPoints();
+  initQueues();
+  buildBoard();
+  renderChallengeBar();
+  renderGrid();
+  updateUI();
+  timeLeft = (typeof gameMode === 'number') ? gameMode : 0;
+  clearInterval(timerInterval);
+  if (gameMode === 'off') { timerEl.textContent = '∞'; timerEl.className = 'match-chip-val'; }
+  else { updateTimerDisplay(); startTimer(); }
+  showScreen('game');
+}
+function showScreen(which) { [startScreen, gameScreen, lbScreen].forEach(s => s.classList.remove('match-active')); if (which === 'start') startScreen.classList.add('match-active'); else if (which === 'game') gameScreen.classList.add('match-active'); else if (which === 'lb') { lbScreen.classList.add('match-active'); renderLeaderboard(document.getElementById('lbList')); } }
+function quitGame() { clearInterval(timerInterval); pauseModal.classList.remove('match-active'); gameOverModal.classList.remove('match-active'); showScreen('start'); }
+
+document.querySelectorAll('.match-mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.match-mode-btn').forEach(b => b.classList.remove('match-active'));
+    btn.classList.add('match-active');
+    gameMode = btn.dataset.mode === 'off' ? 'off' : parseInt(btn.dataset.mode);
+  });
+});
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('showLBBtn').addEventListener('click', () => { renderLeaderboard(document.getElementById('lbList')); showScreen('lb'); });
+document.getElementById('lbBackBtn').addEventListener('click', () => showScreen('start'));
+document.getElementById('pauseBtn').addEventListener('click', () => { if (gameMode !== 'off') { paused = true; clearInterval(timerInterval); pauseModal.classList.add('match-active'); } });
+document.getElementById('resumeBtn').addEventListener('click', () => { paused = false; pauseModal.classList.remove('match-active'); if (gameMode !== 'off') startTimer(); });
+document.getElementById('pauseQuitBtn').addEventListener('click', quitGame);
+document.getElementById('quitBtn').addEventListener('click', quitGame);
+document.getElementById('midLBBtn').addEventListener('click', () => { renderLeaderboard(document.getElementById('midLBList')); midLBModal.classList.add('match-active'); });
+document.getElementById('closeMidLBBtn').addEventListener('click', () => midLBModal.classList.remove('match-active'));
+prizeSelector.addEventListener('change', e => { saveScoreBtn.disabled = false; prizeTooltip.style.display = (e.target.value === 'car' || e.target.value === 'fuel_month') ? 'block' : 'none'; });
+document.getElementById('saveScoreBtn').addEventListener('click', saveScore);
+document.getElementById('playAgainBtn').addEventListener('click', () => { gameOverModal.classList.remove('match-active'); startGame(); });
+document.getElementById('goLBBtn').addEventListener('click', () => { gameOverModal.classList.remove('match-active'); renderLeaderboard(document.getElementById('lbList')); showScreen('lb'); });
+</script>
+</body>
+</html>

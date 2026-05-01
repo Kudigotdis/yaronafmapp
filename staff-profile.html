@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yarona FM - Create Staff Profile</title>
+  <style>
+    :root {
+      --brand-red: #C41E3A;
+      --brand-black: #000000;
+      --brand-white: #FFFFFF;
+      --grey-light: #E5E5E5;
+      --grey-dark: #666666;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--brand-white);
+      color: var(--brand-black);
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .header {
+      background: var(--brand-white);
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--grey-light);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .header img {
+      height: 30px;
+    }
+    
+    .header-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    /* Form */
+    .form {
+      padding: 20px;
+    }
+    
+    .page {
+      display: none;
+    }
+    
+    .page.active {
+      display: block;
+    }
+    
+    /* Accordion */
+    .accordion {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      background: var(--brand-white);
+      border: 1px solid var(--grey-light);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .accordion:after {
+      content: '+';
+      font-size: 20px;
+      color: var(--grey-dark);
+    }
+    
+    .accordion.active:after {
+      content: '-';
+    }
+    
+    .panel {
+      display: none;
+      padding: 15px;
+      background: var(--brand-white);
+      border: 1px solid var(--grey-light);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      margin-bottom: 15px;
+    }
+    
+    .panel.open {
+      display: block;
+    }
+    
+    /* Form Input */
+    .form-input, .form-select {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      border: 1px solid var(--grey-light);
+      border-radius: 8px;
+      background: var(--brand-white);
+      margin-bottom: 12px;
+      color: var(--grey-dark);
+    }
+    
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--brand-red);
+      color: var(--brand-black);
+    }
+    
+    .form-input::placeholder {
+      color: var(--grey-dark);
+      text-align: center;
+    }
+    
+    /* Profile Picture */
+    .profile-pic-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--grey-light);
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .profile-pic img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .profile-pic-placeholder {
+      font-size: 40px;
+      color: var(--grey-dark);
+    }
+    
+    .upload-btn {
+      font-size: 14px;
+      color: var(--brand-red);
+      cursor: pointer;
+    }
+    
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--grey-light);
+      margin: 15px 0;
+    }
+    
+    /* Age Display */
+    .age-display {
+      font-size: 14px;
+      color: var(--brand-red);
+      text-align: center;
+      margin-top: -5px;
+      margin-bottom: 10px;
+    }
+    
+    /* Role-specific fields */
+    .role-fields {
+      display: none;
+    }
+    
+    .role-fields.active {
+      display: block;
+    }
+    
+    /* Pills */
+    .pills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .pill {
+      padding: 8px 14px;
+      font-size: 13px;
+      background: var(--grey-light);
+      border-radius: 20px;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .pill.selected {
+      background: var(--brand-red);
+      color: var(--brand-white);
+    }
+    
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 10px;
+    }
+    
+    .btn-primary {
+      background: var(--brand-red);
+      color: var(--brand-white);
+    }
+    
+    .btn-secondary {
+      background: var(--brand-white);
+      color: var(--brand-black);
+      border: 2px solid var(--brand-black);
+    }
+    
+    .page-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <img src="Assets/logo/yarona-logo.svg" alt="Yarona FM">
+    <div class="header-title">Create Staff Profile</div>
+  </div>
+  
+  <!-- Form -->
+  <form id="staff-form" class="form" onsubmit="handleSubmit(event)">
+    <!-- Page 1: Identity -->
+    <div class="page active" id="page1">
+      <button type="button" class="accordion active" onclick="toggleAccordion(this)">Identity</button>
+      <div class="panel open">
+        <div class="profile-pic-container">
+          <div class="profile-pic" id="profile-pic-display">
+            <span class="profile-pic-placeholder">📷</span>
+          </div>
+          <label class="upload-btn">
+            Add Photo
+            <input type="file" id="profile-pic" accept="image/*" style="display:none" onchange="handlePicUpload(this)">
+          </label>
+        </div>
+        
+        <input type="text" class="form-input" id="firstname" placeholder="Firstname" required>
+        <input type="text" class="form-input" id="secondname" placeholder="Second Name">
+        <input type="text" class="form-input" id="surname" placeholder="Surname" required>
+        <input type="date" class="form-input" id="dob" placeholder="Date of Birth" onchange="calculateAge()" required>
+        <div class="age-display" id="age-display"></div>
+        <select class="form-select" id="gender" required>
+          <option value="">Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+        <input type="text" class="form-input" id="race" placeholder="Race">
+        
+        <button type="button" class="btn btn-secondary" onclick="nextPage()">Next</button>
+      </div>
+    </div>
+    
+    <!-- Page 2: Contact & Location -->
+    <div class="page" id="page2">
+      <button type="button" class="accordion active" onclick="toggleAccordion(this)">Contact & Location</button>
+      <div class="panel open">
+        <input type="tel" class="form-input" id="mobile" placeholder="Mobile Number" required>
+        <input type="tel" class="form-input" id="mobile-banking" placeholder="Mobile Banking Number">
+        <input type="tel" class="form-input" id="whatsapp" placeholder="WhatsApp Number">
+        
+        <div class="divider"></div>
+        
+        <select class="form-select" id="city" required onchange="loadAreas()">
+          <option value="">Village / Town / City</option>
+          <option value="Gaborone">Gaborone</option>
+          <option value="Francistown">Francistown</option>
+          <option value="Lobatse">Lobatse</option>
+          <option value="Maun">Maun</option>
+          <option value="Serowe">Serowe</option>
+          <option value="Selibe Phikwe">Selibe Phikwe</option>
+          <option value="Palapye">Palapye</option>
+          <option value="Molepolole">Molepolole</option>
+          <option value="Kanye">Kanye</option>
+          <option value="Mogoditshane">Mogoditshane</option>
+        </select>
+        
+        <select class="form-select" id="area">
+          <option value="">Area / Neighbourhood</option>
+        </select>
+        
+        <button type="button" class="btn btn-secondary" onclick="nextPage()">Next</button>
+        <button type="button" class="btn btn-secondary" onclick="prevPage()">Back</button>
+      </div>
+    </div>
+    
+    <!-- Page 3: Staff Role -->
+    <div class="page" id="page3">
+      <button type="button" class="accordion active" onclick="toggleAccordion(this)">Staff Role</button>
+      <div class="panel open">
+        <select class="form-select" id="role" required onchange="showRoleFields()">
+          <option value="">Select Role</option>
+          <option value="presenter">Presenter</option>
+          <option value="producer">Producer</option>
+          <option value="sales">Sales</option>
+          <option value="accounts">Accounts</option>
+          <option value="news-anchor">News Anchor</option>
+          <option value="news-reporter">News Reporter</option>
+          <option value="sportscaster">Sportscaster</option>
+          <option value="dj">DJ</option>
+          <option value="music-manager">Music Manager</option>
+          <option value="program-director">Program Director</option>
+          <option value="station-manager">Station Manager</option>
+          <option value="marketing-manager">Marketing Manager</option>
+          <option value="promotions-manager">Promotions Manager</option>
+          <option value="events-coordinator">Events Coordinator</option>
+          <option value="social-media-manager">Social Media Manager</option>
+          <option value="content-creator">Content Creator</option>
+          <option value="audio-engineer">Audio Engineer</option>
+          <option value="receptionist">Receptionist/Admin</option>
+        </select>
+        
+        <!-- Presenter Fields -->
+        <div class="role-fields" id="presenter-fields">
+          <input type="text" class="form-input" id="on-air-name" placeholder="On-air name / Alias">
+          <input type="text" class="form-input" id="show-name" placeholder="Show Name">
+          <input type="text" class="form-input" id="show-desc" placeholder="Show Description">
+          <input type="text" class="form-input" id="show-tagline" placeholder="Show Tagline">
+          <input type="text" class="form-input" id="show-times" placeholder="Show Times (e.g., Mon-Fri 06:00-09:00)">
+          <input type="text" class="form-input" id="show-format" placeholder="Show Format">
+          <input type="text" class="form-input" id="staff-email" placeholder="Staff Email" required>
+          
+          <div class="form-label">Primary Genres</div>
+          <div class="pills-container" id="primary-genres">
+            <button type="button" class="pill" data="Amapiano">Amapiano</button>
+            <button type="button" class="pill" data="Hip Hop">Hip Hop</button>
+            <button type="button" class="pill" data="Motswako">Motswako</button>
+            <button type="button" class="pill" data="House">House</button>
+            <button type="button" class="pill" data="Gospel">Gospel</button>
+            <button type="button" class="pill" data="R&B">R&B</button>
+          </div>
+          
+          <div class="form-label">Social Handles</div>
+          <input type="text" class="form-input" id="fb-handle" placeholder="Facebook">
+          <input type="text" class="form-input" id="ig-handle" placeholder="Instagram">
+          <input type="text" class="form-input" id="tiktok-handle" placeholder="TikTok">
+          
+          <textarea class="form-input" id="presenter-bio" placeholder="Presenter Bio (50 words)" rows="3"></textarea>
+        </div>
+        
+        <!-- Other role fields can be added as needed -->
+        
+        <button type="submit" class="btn btn-primary">Create Profile</button>
+        <button type="button" class="btn btn-secondary" onclick="prevPage()">Back</button>
+      </div>
+    </div>
+  </form>
+  
+  <script>
+    let profilePic = '';
+    let selectedPrimaryGenres = [];
+    let currentPage = 1;
+    
+    const areasByCity = {
+      'Gaborone': ['Broadhurst', 'Extension 10', 'Gopane', 'Mogoditshane', 'Naledi', 'Phakalane', 'Segoditshane', 'Serala', 'Taung', 'The Mall', 'Tlokweng'],
+      ' Francistown': ['Boronyana', 'Mogoditshane', 'Tati Town'],
+      'Maun': ['Maun East', 'Maun West', 'Sangwali'],
+      'Serowe': ['Central', 'Mogapi', 'Perepare'],
+      'Lobatse': ['B老ly', 'Mogoditshane'],
+      'Selibe Phikwe': ['Central', 'Tswere'],
+      'Palapye': ['Central', 'Mogoditshane'],
+      'Molepolole': ['Central', 'Mogoditshane'],
+      'Kanye': ['Central', 'Mogoditshane'],
+      'Mogoditshane': ['Central', 'Phase 1', 'Phase 2']
+    };
+    
+    function toggleAccordion(btn) {
+      btn.classList.toggle('active');
+      const panel = btn.nextElementSibling;
+      panel.classList.toggle('open');
+    }
+    
+    function handlePicUpload(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          profilePic = e.target.result;
+          document.getElementById('profile-pic-display').innerHTML = '<img src="' + profilePic + '">';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    
+    function calculateAge() {
+      const dob = document.getElementById('dob').value;
+      if (dob) {
+        const birthDate = new Date(dob);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        document.getElementById('age-display').textContent = 'Age: ' + age;
+      }
+    }
+    
+    function loadAreas() {
+      const city = document.getElementById('city').value;
+      const areaSelect = document.getElementById('area');
+      areaSelect.innerHTML = '<option value="">Area / Neighbourhood</option>';
+      
+      if (areasByCity[city]) {
+        areasByCity[city].forEach(area => {
+          areaSelect.innerHTML += '<option value="' + area + '">' + area + '</option>';
+        });
+      }
+    }
+    
+    function showRoleFields() {
+      const role = document.getElementById('role').value;
+      document.querySelectorAll('.role-fields').forEach(el => el.classList.remove('active'));
+      if (document.getElementById(role + '-fields')) {
+        document.getElementById(role + '-fields').classList.add('active');
+      }
+    }
+    
+    // Genre pills
+    document.querySelectorAll('.pill').forEach(pill => {
+      pill.addEventListener('click', function() {
+        this.classList.toggle('selected');
+        const genre = this.getAttribute('data');
+        if (this.classList.contains('selected')) {
+          selectedPrimaryGenres.push(genre);
+        } else {
+          selectedPrimaryGenres = selectedPrimaryGenres.filter(g => g !== genre);
+        }
+      });
+    });
+    
+    function nextPage() {
+      if (currentPage === 1) {
+        const firstname = document.getElementById('firstname').value;
+        const surname = document.getElementById('surname').value;
+        const dob = document.getElementById('dob').value;
+        const gender = document.getElementById('gender').value;
+        
+        if (!firstname || !surname || !dob || !gender) {
+          alert('Please fill in required fields');
+          return;
+        }
+        
+        document.getElementById('page1').classList.remove('active');
+        document.getElementById('page2').classList.add('active');
+        currentPage = 2;
+      } else if (currentPage === 2) {
+        const mobile = document.getElementById('mobile').value;
+        const city = document.getElementById('city').value;
+        
+        if (!mobile || !city) {
+          alert('Please fill in required fields');
+          return;
+        }
+        
+        document.getElementById('page2').classList.remove('active');
+        document.getElementById('page3').classList.add('active');
+        currentPage = 3;
+      }
+    }
+    
+    function prevPage() {
+      if (currentPage === 3) {
+        document.getElementById('page3').classList.remove('active');
+        document.getElementById('page2').classList.add('active');
+        currentPage = 2;
+      } else if (currentPage === 2) {
+        document.getElementById('page2').classList.remove('active');
+        document.getElementById('page1').classList.add('active');
+        currentPage = 1;
+      }
+    }
+    
+    function handleSubmit(e) {
+      e.preventDefault();
+      
+      const role = document.getElementById('role').value;
+      if (!role) {
+        alert('Please select a role');
+        return;
+      }
+      
+      // Create profile
+      const profile = {
+        id: 'staff-' + Date.now(),
+        type: 'staff',
+        role: role,
+        firstname: document.getElementById('firstname').value,
+        secondname: document.getElementById('secondname').value,
+        surname: document.getElementById('surname').value,
+        dob: document.getElementById('dob').value,
+        gender: document.getElementById('gender').value,
+        race: document.getElementById('race').value,
+        mobile: document.getElementById('mobile').value,
+        mobileBanking: document.getElementById('mobile-banking').value,
+        whatsapp: document.getElementById('whatsapp').value,
+        city: document.getElementById('city').value,
+        area: document.getElementById('area').value,
+        profilePic: profilePic,
+        email: document.getElementById('staff-email')?.value || '',
+        password: '',
+        
+        // Role-specific
+        onAirName: document.getElementById('on-air-name')?.value,
+        showName: document.getElementById('show-name')?.value,
+        showDesc: document.getElementById('show-desc')?.value,
+        showTagline: document.getElementById('show-tagline')?.value,
+        showTimes: document.getElementById('show-times')?.value,
+        showFormat: document.getElementById('show-format')?.value,
+        primaryGenres: selectedPrimaryGenres,
+        fbHandle: document.getElementById('fb-handle')?.value,
+        igHandle: document.getElementById('ig-handle')?.value,
+        tiktokHandle: document.getElementById('tiktok-handle')?.value,
+        presenterBio: document.getElementById('presenter-bio')?.value
+      };
+      
+      // Save to localStorage
+      localStorage.setItem('yarona_profile', JSON.stringify(profile));
+      localStorage.setItem('yarona_user', JSON.stringify({
+        id: profile.id,
+        type: profile.type,
+        role: profile.role,
+        name: profile.firstname + ' ' + profile.surname
+      }));
+      
+      // Redirect to app
+      location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

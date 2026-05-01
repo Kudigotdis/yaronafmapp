@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Music Quiz - Yarona FM</title>
+    <style>
+        :root {
+            --brand-red: #ff0000;
+            --brand-black: #000000;
+            --brand-white: #ffffff;
+            --grey-dark: #1a1a1a;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--brand-black);
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('../Assets/Games/music_quiz_bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: var(--brand-white);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-back {
+            background: var(--brand-red);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .game-container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .quiz-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-meta {
+            color: var(--brand-red);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            font-weight: 700;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .option-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .option-btn.correct {
+            background: #4CAF50 !important;
+            border-color: #4CAF50;
+        }
+
+        .option-btn.wrong {
+            background: #f44336 !important;
+            border-color: #f44336;
+        }
+
+        .timer-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background: var(--brand-red);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Leaderboard Modal */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            display: none;
+            padding: 40px 20px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .leaderboard-list {
+            margin-top: 20px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: var(--grey-dark);
+            margin-bottom: 8px;
+            border-radius: 10px;
+        }
+
+        .rank { color: var(--brand-red); font-weight: bold; margin-right: 10px; }
+
+        .hidden { display: none !important; }
+
+        .results-view h2 { font-size: 2rem; margin-bottom: 10px; color: var(--brand-red); }
+        .results-view p { margin-bottom: 20px; color: #ccc; }
+
+        .action-btn {
+            background: var(--brand-red);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="../index.html#view-act" class="btn-back">← EXIT</a>
+        <div style="font-weight: 800; letter-spacing: 1px;">MUSIC QUIZ</div>
+        <button onclick="showLeaderboard()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">🏆</button>
+    </div>
+
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="quiz-card">
+            <h1 style="margin-bottom: 15px;">Local Music Master?</h1>
+            <p style="margin-bottom: 30px; color: #ccc;">Prove your knowledge of BW Music and win big!</p>
+            <button class="action-btn" onclick="startGame()">PLAY NOW</button>
+            <p style="font-size: 0.8rem; margin-top: 15px;">50 Points per correct answer</p>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="quiz-card hidden">
+            <div class="question-meta" id="q-type">LYRIC MASTER</div>
+            <div class="question-text" id="q-text">Loading question...</div>
+            
+            <div class="options-grid" id="options-container">
+                <!-- Options injected here -->
+            </div>
+
+            <div class="timer-container">
+                <div id="timer-bar" class="timer-bar"></div>
+            </div>
+
+            <div class="hud">
+                <div>Question <span id="q-count">1/5</span></div>
+                <div>Score: <span id="score">0</span></div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="quiz-card hidden results-view">
+            <div id="result-emoji" style="font-size: 4rem; margin-bottom: 10px;">🎵</div>
+            <h2 id="result-title">WELL DONE!</h2>
+            <p id="result-msg">You scored 250 points</p>
+            <button class="action-btn" onclick="location.reload()">PLAY AGAIN</button>
+            <button class="secondary-btn" onclick="window.location.href='../index.html#view-act'">BACK TO HUB</button>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboard-modal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+                <h1 style="color:var(--brand-red)">TOP SCORERS</h1>
+                <button onclick="closeLeaderboard()" style="background:none; border:none; color:white; font-size:1.5rem;">✕</button>
+            </div>
+            
+            <div class="leaderboard-list" id="leaderboard-list">
+                <!-- Mock Leaderboard -->
+                <div class="leaderboard-item"><div class="rank">1</div><div>Thato M.</div><div>1,250</div></div>
+                <div class="leaderboard-item"><div class="rank">2</div><div>Lerato K.</div><div>1,100</div></div>
+                <div class="leaderboard-item"><div class="rank">3</div><div>Kabelo S.</div><div>950</div></div>
+                <div class="leaderboard-item"><div class="rank">4</div><div>Mogomotsi</div><div>800</div></div>
+                <div class="leaderboard-item"><div class="rank">5</div><div>Neo B.</div><div>750</div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const QUESTIONS = [
+            {
+                type: 'LYRIC',
+                text: '“I am a [....], I am a star, I am a giant” - Complete the lyric:',
+                options: ['King', 'Legend', 'Ghetto', 'Vibes'],
+                answer: 2
+            },
+            {
+                type: 'ARTIST',
+                text: 'Which BW legend is known for the hit "Banyana Ke Bafana"?',
+                options: ['Vee Mampeezy', 'Charma Gal', 'Franco', 'Dj Fresh'],
+                answer: 0
+            },
+            {
+                type: 'GENRE',
+                text: 'Which genre originated in South Africa and is dominated by log drums?',
+                options: ['Kwaito', 'Amapiano', 'Afrobeats', 'Gqom'],
+                answer: 1
+            },
+            {
+                type: 'HISTORY',
+                text: 'Who won the first ever YAMAs Best Female Artist award?',
+                options: ['Slizer', 'Charma Gal', 'Samantha Mogwe', 'Amantle Brown'],
+                answer: 2
+            },
+            {
+                type: 'SONG',
+                text: 'Which artist sang the viral hit "Dumelang"?',
+                options: ['Vee Mampeezy', 'MMP Family', 'Han C', 'Kabelo'],
+                answer: 2
+            }
+        ];
+
+        let state = {
+            currentIdx: 0,
+            score: 0,
+            timeLeft: 15,
+            timer: null,
+            locked: false
+        };
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = QUESTIONS[state.currentIdx];
+            document.getElementById('q-type').innerText = q.type;
+            document.getElementById('q-text').innerText = q.text;
+            document.getElementById('q-count').innerText = `${state.currentIdx + 1}/${QUESTIONS.length}`;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(i, q.answer);
+                container.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            state.timeLeft = 15;
+            state.locked = false;
+            updateTimerBar();
+            
+            clearInterval(state.timer);
+            state.timer = setInterval(() => {
+                state.timeLeft--;
+                updateTimerBar();
+                if (state.timeLeft <= 0) {
+                    clearInterval(state.timer);
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
+        function updateTimerBar() {
+            const bar = document.getElementById('timer-bar');
+            bar.style.width = (state.timeLeft / 15 * 100) + '%';
+        }
+
+        function checkAnswer(selected, correct) {
+            if (state.locked) return;
+            state.locked = true;
+            clearInterval(state.timer);
+
+            const btns = document.querySelectorAll('.option-btn');
+            if (selected === correct) {
+                btns[selected].classList.add('correct');
+                state.score += 50;
+                document.getElementById('score').innerText = state.score;
+            } else {
+                btns[selected].classList.add('wrong');
+                btns[correct].classList.add('correct');
+            }
+
+            setTimeout(nextQuestion, 1500);
+        }
+
+        function nextQuestion() {
+            state.currentIdx++;
+            if (state.currentIdx < QUESTIONS.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('result-msg').innerText = `You scored ${state.score} points`;
+            
+            if (state.score >= 200) {
+                document.getElementById('result-title').innerText = 'LEGENDARY!';
+                document.getElementById('result-emoji').innerText = '🏆';
+            } else if (state.score >= 100) {
+                document.getElementById('result-title').innerText = 'GREAT JOB!';
+                document.getElementById('result-emoji').innerText = '🎵';
+            } else {
+                document.getElementById('result-title').innerText = 'KEEP LISTENING!';
+                document.getElementById('result-emoji').innerText = '📻';
+            }
+
+            // Save to local storage for "my score" in leaderboard later
+            localStorage.setItem('last_score_music', state.score);
+        }
+
+        function showLeaderboard() {
+            document.getElementById('leaderboard-modal').style.display = 'block';
+        }
+
+        function closeLeaderboard() {
+            document.getElementById('leaderboard-modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

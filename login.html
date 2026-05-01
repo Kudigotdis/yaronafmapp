@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yarona FM - Login</title>
+  <style>
+    :root {
+      --brand-red: #C41E3A;
+      --brand-black: #000000;
+      --brand-white: #FFFFFF;
+      --grey-light: #E5E5E5;
+      --grey-dark: #666666;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--brand-white);
+      color: var(--brand-black);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    .header {
+      background: var(--brand-white);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--grey-light);
+    }
+    
+    .header img {
+      height: 40px;
+      max-width: 150px;
+    }
+    
+    /* Content */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      border: 1px solid var(--grey-light);
+      border-radius: 8px;
+      background: var(--brand-white);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brand-red);
+    }
+    
+    /* Buttons */
+    .btn {
+      width: 100%;
+      max-width: 300px;
+      margin: 20px auto;
+      display: block;
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+    }
+    
+    .btn-primary {
+      background: var(--brand-red);
+      color: var(--brand-white);
+    }
+    
+    .btn-primary:active {
+      opacity: 0.8;
+    }
+    
+    /* Links */
+    .links {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .links a {
+      color: var(--brand-red);
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <img src="Assets/logo/yarona-logo.svg" alt="Yarona FM">
+  </div>
+  
+  <!-- Content -->
+  <div class="content">
+    <div class="title">Login to Yarona FM</div>
+    
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <input type="email" class="form-input" id="email" placeholder="Email" required>
+      </div>
+      
+      <div class="form-group">
+        <input type="password" class="form-input" id="password" placeholder="Password" required>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    
+    <div class="links">
+      <a href="onboarding.html">Create New Profile</a>
+    </div>
+  </div>
+  
+  <script>
+    function handleLogin(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      // Get stored profile
+      const storedProfile = localStorage.getItem('yarona_profile');
+      
+      if (storedProfile) {
+        const profile = JSON.parse(storedProfile);
+        
+        if (profile.email === email && profile.password === password) {
+          // Save user session
+          localStorage.setItem('yarona_user', JSON.stringify({
+            id: profile.id,
+            type: profile.type,
+            name: profile.firstname + ' ' + profile.surname
+          }));
+          
+          // Redirect to app
+          location.href = 'index.html';
+        } else {
+          alert('Invalid email or password');
+        }
+      } else {
+        alert('No profile found. Create a profile first.');
+        location.href = 'onboarding.html';
+      }
+    }
+  </script>
+</body>
+</html>

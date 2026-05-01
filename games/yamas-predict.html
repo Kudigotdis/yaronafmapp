@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YAMAs Predict & Win - Yarona FM</title>
+    <style>
+        :root {
+            --brand-red: #ff0000;
+            --brand-black: #000000;
+            --brand-white: #ffffff;
+            --yama-gold: #D4AF37;
+            --grey-dark: #1a1a1a;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--brand-black);
+            background-image: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('../Assets/Games/yamas_predict_bg.jpg');
+            background-size: cover;
+            color: var(--brand-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--brand-black);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #333;
+        }
+
+        .btn-back {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            color: var(--yama-gold);
+            font-size: 2rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .category-card {
+            background: var(--glass);
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .category-name {
+            color: var(--yama-gold);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .nominee-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .nominee-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nominee-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .nominee-item.selected {
+            border-color: var(--yama-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .nominee-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .selected .nominee-radio {
+            border-color: var(--yama-gold);
+        }
+
+        .selected .nominee-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--yama-gold);
+            border-radius: 50%;
+        }
+
+        .nominee-name {
+            font-weight: 600;
+        }
+
+        .submit-bar {
+            position: sticky;
+            bottom: 0;
+            padding: 20px;
+            background: var(--brand-black);
+            border-top: 1px solid #333;
+        }
+
+        .btn-submit {
+            background: var(--yama-gold);
+            color: black;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        .btn-submit:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* Success Overlay */
+        #success-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--brand-black);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: var(--yama-gold);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="../index.html#view-act" class="btn-back">✕ CLOSE</a>
+        <div style="font-weight: 900; letter-spacing: 1px;">PREDICT & WIN</div>
+        <div style="width: 50px;"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="hero">
+            <h1>YAMAs 2027</h1>
+            <p>Predict the winners and stand a chance to win VIP tickets and P5,000 cash!</p>
+        </div>
+
+        <div id="categories-container">
+            <!-- Categories injected here -->
+        </div>
+    </div>
+
+    <div class="submit-bar">
+        <button id="submit-btn" class="btn-submit" disabled onclick="submitPredictions()">SUBMIT PREDICTIONS</button>
+    </div>
+
+    <div id="success-overlay">
+        <div class="success-icon">✨</div>
+        <h1 style="color: var(--yama-gold); margin-bottom: 10px;">PREDICTIONS SAVED!</h1>
+        <p style="margin-bottom: 30px; color: #aaa;">Good luck! We'll notify you if your predictions match the official results.</p>
+        <button class="btn-submit" onclick="window.location.href='../index.html#view-act'">BACK TO HUB</button>
+    </div>
+
+    <script>
+        const DATA = [
+            {
+                id: 'cat1',
+                name: 'Best Male Artist',
+                nominees: ['Vee Mampeezy', 'Han C', 'Kabelo Seakanyeng', 'A.T.I']
+            },
+            {
+                id: 'cat2',
+                name: 'Song of the Year',
+                nominees: ['Dumelang', 'Banyana Ke Bafana', 'Monalisa', 'Wena']
+            },
+            {
+                id: 'cat3',
+                name: 'Best Female Artist',
+                nominees: ['Charma Gal', 'Samantha Mogwe', 'Slizer', 'Amantle Brown']
+            }
+        ];
+
+        let predictions = {};
+
+        function init() {
+            const container = document.getElementById('categories-container');
+            DATA.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.innerHTML = `
+                    <div class="category-name">${cat.name}</div>
+                    <div class="nominee-list">
+                        ${cat.nominees.map((nom, i) => `
+                            <div class="nominee-item" onclick="selectNominee('${cat.id}', '${nom}', this)">
+                                <div class="nominee-radio"></div>
+                                <div class="nominee-name">${nom}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectNominee(catId, nominee, el) {
+            // Unselect others in same category
+            const items = el.parentElement.querySelectorAll('.nominee-item');
+            items.forEach(item => item.classList.remove('selected'));
+            
+            // Select this one
+            el.classList.add('selected');
+            predictions[catId] = nominee;
+
+            // Check if all categories are predicted
+            const btn = document.getElementById('submit-btn');
+            if (Object.keys(predictions).length === DATA.length) {
+                btn.disabled = false;
+            }
+        }
+
+        function submitPredictions() {
+            console.log('Submitted:', predictions);
+            document.getElementById('success-overlay').style.display = 'flex';
+            // In real app, send to API here
+        }
+
+        init();
+    </script>
+</body>
+</html>

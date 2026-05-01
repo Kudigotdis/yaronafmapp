@@ -40,9 +40,10 @@
     /* --- GLOBAL HEADER & LIVE CARD --- */
     .top-header {
       position: fixed; top: 0; left: 0; width: 100%; height: 60px;
-      background: var(--brand-black); color: var(--brand-white);
+      background: var(--brand-white); color: var(--brand-black);
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 15px; z-index: 1000;
+      border-bottom: 1px solid var(--grey-light);
     }
     
     .header-logo {
@@ -78,6 +79,7 @@
       border-bottom: 1px solid var(--grey-light);
       display: flex; align-items: center; padding: 10px 15px;
       z-index: 999;
+      transition: transform 0.3s ease;
     }
     
     .live-artwork {
@@ -136,7 +138,7 @@
       background: var(--brand-red);
       display: flex; justify-content: space-around; align-items: center;
       z-index: 1000;
-      pointer-events: auto;
+      transition: transform 0.3s ease;
     }
     
     .nav-item {
@@ -683,7 +685,7 @@
   <header class="top-header">
     <img src="Assets/logo/yarona-logo.svg" alt="Yarona FM" style="height: 35px; max-width: 120px;">
     <div class="top-header-right">
-      <span style="font-size: 22px; font-weight: 600; color: var(--brand-white);">Live The Music</span>
+      <span style="font-size: 22px; font-weight: 600; color: var(--brand-red);">Live The Music</span>
     </div>
   </header>
 
@@ -1006,9 +1008,9 @@
       <p style="margin-bottom: 15px; color: #666;">Test your music knowledge and win prizes!</p>
     </div>
     <div class="horizontal-scroller">
-      <a href="yamas-trivia.html" class="act-game-card">YAMAs Trivia</a>
-      <a href="music-quiz.html" class="act-game-card">Music Quiz</a>
-      <a href="music-matcher.html" class="act-game-card">Music Matcher</a>
+      <a href="games/yamas-trivia.html" class="act-game-card">YAMAs Trivia</a>
+      <a href="games/music-quiz.html" class="act-game-card">Music Quiz</a>
+      <a href="games/yamas-predict.html" class="act-game-card">Predict & Win</a>
     </div>
     
     <div class="padded-content" style="margin-top: 20px;">
@@ -1519,16 +1521,58 @@
       }
     }
     
+    // --- AUDIO STREAM ---
+    const streamUrl = 'https://stream.zeno.fm/rg5k9x6t61zuv';
+    let audioPlayer = null;
+    
+    function initAudio() {
+      if (!audioPlayer) {
+        audioPlayer = new Audio();
+        audioPlayer.src = streamUrl;
+        audioPlayer.preload = 'none';
+        
+        // Set up buffer for stability
+        audioPlayer.addEventListener('loadstart', function() {
+          document.getElementById('play-pause').innerText = '⏳';
+        });
+        
+        audioPlayer.addEventListener('playing', function() {
+          document.getElementById('play-pause').innerText = '⏸';
+          document.getElementById('live-status').innerText = 'ON AIR';
+        });
+        
+        audioPlayer.addEventListener('pause', function() {
+          document.getElementById('play-pause').innerText = '▶';
+          document.getElementById('live-status').innerText = 'LIVE';
+        });
+        
+        audioPlayer.addEventListener('error', function(e) {
+          console.log('Stream error:', e);
+          document.getElementById('play-pause').innerText = '⚠️';
+          alert('Unable to connect to stream. Please try again.');
+        });
+      }
+      return audioPlayer;
+    }
+    
     // --- PLAY / PAUSE LOGIC ---
     function togglePlay() {
+      const player = initAudio();
       playing = !playing;
       const playBtn = document.getElementById('play-pause');
       const liveStatus = document.getElementById('live-status');
       
       if (playing) {
-        playBtn.innerText = '⏸';
-        liveStatus.innerText = 'ON AIR';
+        player.play().then(function() {
+          playBtn.innerText = '⏸';
+          liveStatus.innerText = 'ON AIR';
+        }).catch(function(e) {
+          console.log('Play error:', e);
+          playing = false;
+          playBtn.innerText = '⚠️';
+        });
       } else {
+        player.pause();
         playBtn.innerText = '▶';
         liveStatus.innerText = 'LIVE';
       }
@@ -1920,10 +1964,56 @@
         });
       });
     }
-
+    
+    // === SCROLL DETECTION FOR BOTTOM NAV & LIVE CARD ===
+    let lastScrollY = 0;
+    let ticking = false;
+    
+    function updateNavVisibility() {
+      const nav = document.getElementById('bottom-nav');
+      const liveCard = document.getElementById('live-card');
+      
+      const currentScrollY = window.scrollY;
+      const diff = currentScrollY - lastScrollY;
+      
+      // Only hide/show after scrolling 100px to avoid jitter
+      if (Math.abs(diff) > 10) {
+        if (diff > 0 && currentScrollY > 100) {
+          // Scrolling down - hide nav and Live Card
+          if (nav) nav.style.transform = 'translateY(100%)';
+          if (liveCard) liveCard.style.transform = 'translateY(-100%)';
+        } else {
+          // Scrolling up - show nav and Live Card
+          if (nav) nav.style.transform = 'translateY(0)';
+          if (liveCard) liveCard.style.transform = 'translateY(0)';
+        }
+        lastScrollY = currentScrollY;
+      }
+      ticking = false;
+    }
+    
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(updateNavVisibility);
+        ticking = true;
+      }
+    }, { passive: true });
+    
+    // === AUTH CHECK ===
+    function checkAuth() {
+      const user = localStorage.getItem('yarona_user');
+      if (!user) {
+        // Not logged in - could redirect to onboarding
+        // For now, allow preview
+      }
+    }
+    
+    checkAuth();
+    
     document.addEventListener('DOMContentLoaded', function() {
       initPromoFeed();
       initBottomNav();
+      checkAuth();
     });
   </script>
 </body>
