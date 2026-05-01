@@ -1,0 +1,169 @@
+I'm working on a radio app. 
+
+App utilises Facebook Links because Botswana utilises Social Media Bundles.
+
+Request Zero Rating for Mobile Network or Bundle for users to use the app to listen to radio because the app redirect ls users to Facebook promotion Social Media Bundle use. 
+
+--------------
+
+**1. Live Card (Top)** (live card design is square picture (show photo) aligned to the left with soft rounded corners and 2 lines stacked above one another to the right (Line 1 - Show Name / Line 2 (below) - Show Hosts • Show Times. 
+- Currently live show/host
+- Play/pause button in top right corner of card to allow Listeners to pause or listen to a song. 
+- when user scrolls down the card dissapears and when the scroll up it reappears. 
+
+-------------------------------
+
+** News **
+- infinite timline
+
+-------------------------------
+
+** Live ** (infinite scroll)
+- Square or Rectangular artworks/videos (width stretched across the screen - 2px space away from edges). Tapping pictures redirects users to Facebook and tapping videos plays them (videos appear paused and when played have volume).
+
+-------------------------------
+
+** Act **
+- 3 horizontal linked artworks with width that stretches across the screen. / tapping on them open up the games which are seperate HTML's I wil provide later.
+
+-------------------------------
+
+** Station **
+- infinite scroll down of 7 day accordions (Monday, Tuesday etc). / when the accordion opens it shows "Live Cards" for presenters on that day. Tapping on a live card will take you to a Show Page.
+-- Show Page - 
+--- Artwork (large image at the top with show artwork)
+--- Horizontal Swipe Menu - About / Content / 
+---- About
+----- Show Name 
+----- Show Host (tap to view Presenter Profile)
+----- Show Description 
+----- Sponsor Card - a square artwork that stretches across the width of the screen (leave 2px space from edges) - tapping directs user to Facebook/Website of Sponsor.
+
+*** Presenter Profile ***
+- Profile Picture
+- Presenter Bio 
+Let's add these details to the Presenter Profile:
+ *** Presenter Profile *** (horizontal menu 'About / Content' 
+- About
+- Profile Picture - aligned to right are 2 lines one above thr other (Line 1 - Presenter name. / Line 2 - Real Name)
+- Presenter Bio
+- Show Name(s) they host
+- Show Schedule (days/times) [closed accordion] Monday to Sunday
+- Social Media Links (Facebook, Twitter, Instagram, TikTok, SnapChat)
+- Content
+-- Videos (if available)
+-- Upcoming Events/Guests
+
+-------------------------------
+
+** Bottom Navigation ** (Backround is red and Icons are white. / when the user scrolls down the bottom nav dissapears.)
+- 'News' (far left)
+-- Icon idea: Megaphone
+- 'Live' (infinite timeline for ads/promos) 
+-- Icon idea: Broadcasting waves 
+- 'Act' (games) 
+-- Icon idea: Trophy
+- 'Station' (shows/presenters) 
+-- Icon idea: Microphone
+- 'Menu' (user profile/preferences) 
+-- Icon idea: Hamburger menu (3 horizontal stripes)
+
+-------------------------------
+
+**Brand Colours**
+- Brand colours are red, black and white
+- App Backround is White
+- Bottom Nav is Red
+- Text Buttons and Icons are white. / Other buttons are white with black text. / Accordions are white with black text and always appear closed.
+
+**User Profiles**
+(The Profile Card is aligned to the left
+- Listeners: 
+  - Profile pic ( 
+  - Name
+  - Points/scores
+  - Preferences (favorite shows/hosts)
+----
+- Staff (Hosts, Sales, Marketing): 
+- - Profile pic
+- - Name
+- - Role
+- - Contact info (email/phone)
+----
+- Admin: 
+- - Profile pic
+- - Name
+- - Role
+- - All staff info
+- - App analytics
+
+------------------------------------------------
+
+-------------------
+
+Plan today:
+
+- Make the app background white and the top header white. Make sure "Live The Music" is in red. 
+
+- Create Seperate HTMLs
+-- Bottom Nav - 
+-- News / Promo Publisher -
+-- Presenter Profiles & Publisher - to update the app. "Publisher" button available in menu of the users (if Presenter then can use Publisher to edit information about their show)
+
+**********************************
+
+View-Station
+-- Yarona FM Shows (closed accordion - collapses days - days open floating scrollable modal to view shows and times and show topics etc - tap to view show)
+-- YAMAs (artwork that stretches width across the screen (2px gap so it does not touch the edges) with full height. I will provide artwork use colour and 'YAMAs 2027' placeholder text.  - Information about YAMAs from 2014. Who designed the award (Kudzanai Kudi Chitate), presenters, venues, etc. / This section needs to be used to showcase past and upcoming YAMAs so this needs to be appwerful tool to convince potential sponsors to invest in YAMAs especially because the budgets of late have been so tight. 
+
+-- Top 40 (artwork that stretches width across the screen (2px gap so it does not touch the edges) with full height. I will provide artwork use colour and 'Top 40' placeholder text.  users can vote for 10 songs a day and when they vote they see the poll of how many votes othe song got then if they are over 18 they stand the chance to win a prize.
+
+- Merch (Yarona FM Merch Store)(artwork that stretches width across the screen (2px gap so it does not touch the edges) with full height. I will provide artwork use colour and 'Merch Store' placeholder text.   - for yarona fm branded merchandise and youth businesses. (I use colour placeholder and letter - I will provide images of branded items later) 
+
+- Community (artwork that stretches width across the screen (2px gap so it does not touch the edges) with full height. I will provide artwork use colour and 'Community' placeholder text.  
+
+**********************************
+
+View-Live (make sure there are 
+
+Play (accordion - when collapsed it reveal thumbnails (no label text) with artwork of game (for now use colour and first 2 letters of the game. The artwork picture is in the hmtl of the game.). / Games include:
+-- YAMAs Trivia (game) - Timed questions based on YAMAs information. 
+
+-- YAMAs Predict & Win - 
+
+-- Music Quiz (game) - About local and international Botswana Music.
+
+-- Beat Matcher (game) - Match 3 
+
+---------------------------
+
+Yarona FM Play - only Fans (users with profiles) can play games can be played for free to win merchandise, vouchers, trips (tourism), money OR require an SMS (18 and above only) to submit your score and stand a chance to win.
+
+---------------------------
+
+Here are the 5 core revenue-generating ideas fleshed out:
+1. **Sponsored Trivia Games**
+   - **Package 1: Single Question** - P200 (one quiz question featuring brand/product)
+   - **Package 2: Quiz Round** - P1,000 (five quiz questions featuring brand/product)
+   - **Package 3: Exclusive Game** - P5,000 (entire trivia game sponsored by one brand)
+   - Brands provide questions, answers, and logos for integration
+2. **Offline Promos Timeline Ads** (ads are packaged as weekly downloads so the user can see promos without internet since most people either can't afford or have to be VERY particular about the ad they put up. This package is saved on users mobile devices (this does not include News which is updated everyday)
+   - **Basic Listing** - P250week P800month - (link to Facebook page, promo details, and image artwork)
+   - **Event Promotion** - P500/event (dedicated promo timeline event post with reminders)
+3. **YAMAs Sponsorship Packages**
+   - **Bronze** - P5,000 (app promo timeline ads, event program mention)
+   - **Silver** - P20,000 (bronze + on-air mentions, event booth space)
+   - **Gold** - P50,000 (silver + sponsored trivia game, prominent event program ad)
+   - **Platinum** - P100,000 (gold + exclusive event sponsor, extensive on-air promotion)
+4. **Yarona FM Merch Store**
+   - **Yarona FM Merch**: 
+     - T-shirts - P150
+     - Hoodies - P300
+     - Hats - P100
+     - Stickers - P20
+   - **Youth Business Partnerships**: 
+     - Commission-based sales for youth-designed merchandise
+5. **(Added a related idea to the above)**
+   - **Exclusive Content Partnerships** - P1,000/month (youth content creators partner with Yarona FM to offer exclusive content to app users)
+
+-----------

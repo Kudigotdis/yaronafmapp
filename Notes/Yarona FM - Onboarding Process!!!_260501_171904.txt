@@ -1,0 +1,277 @@
+Provide information for 
+- Village/Town/City 
+-- Area/Neighbourhood (associated to Village/town/city)
+- 
+
+*Accordions are always closed. 
+* Do not include chevrons or arrows or +/- or any kinds of dropdown indicators for Accordions.
+* No profile progress bar or guides AT ALL!!!
+
+Until the app is finished onboarding is the first page users see and allows users to either create a new profile to view the onboarding process) or select a Preview Profile (this allows users to view the app from the perspective of another user)
+
+----------------------------------------------------
+
+-- Onboarding Landing Page
+--- Welcome to Yarona FM (Black text)
+--- Create Listener Profile
+--- Create Staff Profile
+----  
+
+----------------------------------------------------
+
+-- User Profile On Boarding (page) - 
+[PAGE LAYOUT - there are NO labels above input sections because the placeholder text works as the label and placeholder text is light grey and centered.] 
+
+--- Identity (accordion)
+---- Profile Picture (centered square with rounded corners)
+---- Firstname (Line 1)
+---- Second Name (Line 2)
+---- Surname (Line 3) 
+---- Date Of Birth - Age (shows age after adding info) (Line 4)
+---- Gender (male/female/other) (Line 5)
+---- Race (Line 6)
+
+--- Contact & Location (accordion)
+--- Mobile Network - Mobile Number (Line 1)
+--- Mobile Banking - Mobile Number (Line 2)
+--- WhatsApp Number (Line 3)
+--------------------- (Line 4 - light grey line seperator)
+--- Village / Town / City (Line 5 - dropdown select)
+--- Area / Neighbourhood (Line 6 - dropdown select) 
+
+-------------------------------------------------
+
+-- Staff Profile On Boarding (page) - 
+[PAGE LAYOUT - there are NO labels above input sections because the placeholder text works as the label and placeholder text is light grey and centered.] 
+
+--- Identity (accordion)
+---- Profile Picture (centered square with rounded corners)
+---- Firstname (Line 1)
+---- Second Name (Line 2)
+---- Surname (Line 3) 
+---- Date Of Birth - Age (shows age after adding info) (Line 4)
+---- Gender (male/female only) (Line 5)
+---- Race (Line 6)
+
+--- Contact & Location (accordion)
+--- Mobile Network - Mobile Number (Line 1)
+--- Mobile Banking - Mobile Number (Line 2)
+--- WhatsApp Number (Line 3)
+--------------------- (Line 4 - light grey line seperator)
+--- Village / Town / City (Line 5 - dropdown select)
+--- Area / Neighbourhood (Line 6 - dropdown select) 
+
+--- Staff Role (accordion) (If Role = X, then collect these fields.)
+---- Role (dropdown determines what fields appear)
+### *If-Then Inputs for Each Role at Yarona FM*
+
+*1. If Presenter*  
+- Headshot – 1080x1080px  
+- On-air name / Alias  
+- Show artwork / Logo – 3000x3000px  
+- Show name  
+- Show description 
+- Show Tagline  
+- Show times (calender select then choose the time) – Days + Start/End  
+- Show format (select dropdown) – Talk, Music, Mix, Interview  
+- Primary music genres  (pills)
+- Secondary music genres  (pills)
+- Language(s) used on air – Setswana, English, etc  (pills - select multiple) 
+- Social handles – Facebook, IG, TikTok, X, SnapChat (dropdown input sections on seperate lines (stacked above one another so Facebook is above Instagram etc)
+- Presenter Bio – 50 words  
+- Staff Email -
+
+Here's an expanded list of show formats for the pills (format name only - format description appears when tapped) :
+
+**Show Formats:** (select 1 or more (on/off toggle - selecting one shows info thn asks if user wants to assign tag)
+1. **Talk**: In-depth discussions, debates, or interviews on various topics.
+2. **Music**: Primarily music-focused shows with minimal talk content.
+3. **Mix**: Blend of talk and music, often featuring interviews or live performances.
+4. **Interview**: In-depth conversations with guests, often featuring Q&A sessions.
+5. **News**: Hard news, current events, and news analysis programs.
+6. **Sports**: Sports news, analysis, and live broadcasts of sports events.
+7. **Entertainment**: Pop culture, celebrity news, and entertainment-focused programs.
+8. **Comedy**: Humorous shows featuring comedians, comedic sketches, or funny stories.
+9. **Drama**: Theatrical performances, radio plays, or dramatic readings.
+10. **Education**: Informative programs focused on learning, personal development, or academic topics.
+11. **Religion/Spirituality**: Programs exploring faith, spirituality, or religious topics.
+12. **Politics**: In-depth analysis and discussion of political news, issues, and events.
+13. **Business**: Programs focused on business news, entrepreneurship, and finance.
+14. **Health/Wellness**: Shows exploring health, wellness, fitness, and self-improvement topics.
+15. **Travel**: Programs featuring travel stories, destinations, and cultural experiences.
+16. **Food/Cooking**: Shows focused on food, cooking techniques, and culinary culture.
+17. **Arts/Culture**: Programs exploring art, music, theater, and cultural events.
+
+****************
+
+*2. If Producer*  
+- Headshot – 1080x1080px
+- Assigned show(s)  (dropdown list of shows.)
+- Shift times (calender select then choose the time) – Days + Start/End  
+- Key responsibilities (dropdown check box list) – Clock, Guest booking, Scripting, etc  
+- Staff Email
+
+*3. If Sales*  
+- Headshot – 1080x1080px
+- Territory / Client categories – SME, Government, Alcohol, etc  
+- Commission structure – %  
+- Target accounts list  - (+/- type inputs of business names (add business category)
+- staff email  
+
+*4. If Accounts*  
+- Headshot – 1080x1080px
+- Legal name  
+- Role focus – Invoicing, Collections, Payroll  
+- Approved sign-off limit – BWP  
+- Accounting software access – QuickBooks, Sage  
+- Bank liaison contact  
+- Staff Email
+
+*5. If News Anchor*  
+- Headshot – 1080x1080px
+- On-air name  
+- Headshot – 1080x1080px  
+- Bulletin times (calender select then choose the time) – Days + Start/End and – 7am, 1pm, 6pm, etc  
+- News beat specialties (pills) – Politics, Business, Local  
+- Language(s) for delivery  (pills)
+- Staff Email
+
+*6. If News Reporter* 
+- Headshot – 1080x1080px
+- Beat – Court, Parliament, Lifestyle, Gabs City Council  
+- Press card # + Expiry  
+- Transport access – Company car Y/N  
+- Recording kit issued – Zoom H5, Mic, etc  
+- Staff Email
+ 
+*7. If Sportscaster*  
+- Headshot – 1080x1080px
+- On-air name  
+- Sports covered (input +/- to add or remove) – Zebras, Premier League, Athletics  
+- Bulletin times  (calender select then choose the time) – Days + Start/End  
+- Access – Press box, OB unit trained Y/N  
+- Staff Email 
+
+*8. If DJ*   
+- Headshot – 1080x1080px  
+- DJ name / Alias 
+- Mix show name 
+- - Show artwork / Logo – 3000x3000px  
+- Times (calender select then choose the time) – Days + Start/End  
+- Genres (pills) – Amapiano, Hip Hop, Motswako, House (also type input as +/-)
+- Staff Email
+
+*9. If Music Manager*  
+- Headshot – 1080x1080px  
+- Genre responsibility (pills) – Local, International, Gospel   (also type input as +/-)
+- Playout system access – Zetta, GSelector 
+- Label contact database access Y/N  
+- Local content quota target – %  
+- New music submission email  
+- Staff Email
+
+*10. If Program Director*  
+- Headshot – 1080x1080px  
+- Programming philosophy – 3 line summary  
+- Clock format approval rights Y/N  
+- Presenter roster oversight – List of shows  
+- BOCRA compliance training date  
+- Direct report(s) – List of roles  
+
+*11. If Station Manager*  
+- Headshot – 1080x1080px
+- Staff Email
+
+*12. If Marketing Manager*  
+- Headshot – 1080x1080px
+- Staff Email
+- Agency contacts  
+- Staff Email
+
+*13. If Promotions Manager*  
+- Headshot – 1080x1080px
+- Staff email  
+
+*14. If Events Coordinator*  
+- Headshot – 1080x1080px 
+- Radio booth inventory  
+
+*15. If Social Media Manager*  
+- Headshot – 1080x1080px
+- Platform logins – IG, FB, TikTok, X, YouTube   
+- Staff Email
+
+*16. If Content Creator*  
+Collect:  
+- Legal name  
+- Content types – Reels, Carousels, Long-form  
+- Editing software – CapCut, Premiere, Canva Pro  
+- Show assignments  
+- Equipment issued – Camera, Mic, Lights  
+
+*17. If Audio Engineer*  
+- Headshot – 1080x1080px
+- DAW proficiency – Pro Tools, Audition  
+- OB kit checklist Y/N  
+- Staff email
+
+*18. If Receptionist/Administrative Assistant*  
+- Headshot – 1080x1080px
+- Front desk hours (calender select then choose the time) – Days + Start/End  
+
+---
+
+*How to use this:*  
+1. *For onboarding forms*: Show/hide fields based on “Role” dropdown.  
+2. *For CMS*: These become the metadata tags for each staff profile on http://yarona.fm.  
+3. *For compliance*: BOCRA + HR will want most of these on file.  
+
+** Genres **
+*Botswana + South Africa Genre Pills – Labels Only*
+1. Amapiano  
+2. Gqom  
+3. Kwaito  
+4. Afro-House  
+5. Afrotech  
+6. 3Step  
+7. Bacardi House  
+8. SGija  
+9. Motswako  
+10. Borankana  
+11. Phathisi  
+12. Kwasa Kwasa  
+13. Hosana  
+14. Hip Hop  
+15. House  
+16. Afrobeats  
+17. R&B  
+18. Gospel  
+19. Dancehall  
+20. Jazz  
+21. Private School Piano  
+22. Techno Piano  
+23. Sgubhu  
+24. Quantum Sound  
+25. Trap  
+26. SA Drill  
+27. Spaza Rap  
+28. Motswakolista  
+29. Deep House  
+30. Soulful House  
+31. Tech House  
+32. Ancestral House  
+33. Lekompo  
+34. Barcadi  
+35. Maskandi  
+36. Mbhaqanga  
+37. Bolobedu House  
+38. Tswana Rap  
+39. Pop  
+40. Electronic  
+41. EDM  
+42. Lofi  
+43. Chill  
+44. Old School  
+45. Classics
+
+-------------------------------------------------
