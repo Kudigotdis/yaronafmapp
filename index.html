@@ -469,6 +469,7 @@
       width: 100%;
       height: auto;
       display: block;
+      object-fit: contain;
     }
     
     /* Accordions */
@@ -1238,7 +1239,7 @@
       overflow: hidden;
       cursor: pointer;
       border: 1px solid var(--st-border);
-      height: 120px;
+      aspect-ratio: 1 / 1;
       background: var(--st-black);
     }
     .img-btn-full {
@@ -1806,7 +1807,7 @@
       <div class="station-panel">
         <div class="show-thumbnails">
           <div class="show-thumbnail" onclick="openShow('The Rush')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','rush',this)"><img src="Assets/Shows/The_Rush.jpg" alt="The Rush"></div>
-          <div class="show-thumbnail" onclick="openShow('Yired')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','yired',this)"><img src="Assets/Shows/Yired_Baby_Talk.jpg" alt="Yired"></div>
+          <div class="show-thumbnail" onclick="openShow('Yired')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','yired',this)"><img src="Assets/Shows/Yired_Baby_Talk.png" alt="Yired"></div>
           <div class="show-thumbnail" onclick="openShow('The Climax')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','climax',this)"><img src="Assets/Shows/The_Climax.jpg" alt="The Climax"></div>
           <div class="show-thumbnail" onclick="openShow('Galaxy Sports')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','galaxy',this)"><img src="Assets/Shows/Galaxy_Sports_Show.jpg" alt="Galaxy Sports"></div>
           <div class="show-thumbnail" onclick="openShow('Unkaged')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','unkaged',this)"><img src="Assets/Shows/Unkaged.jpg" alt="Unkaged"></div>
@@ -1815,18 +1816,18 @@
           <div class="show-thumbnail" onclick="openShow('Flow & Glow')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','flowglow',this)"><img src="Assets/Shows/Flow_and_Grow.jpg" alt="Flow & Glow"></div>
           <div class="show-thumbnail" onclick="openShow('Y 20')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','y20',this)"><img src="Assets/Shows/Y_20.jpg" alt="Y 20"></div>
           <div class="show-thumbnail" onclick="openShow('Phantsha Hoo')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','phantsha',this)"><img src="Assets/Shows/Phantsha_Hoo.jpg" alt="Phantsha Hoo"></div>
-          <div class="show-thumbnail" onclick="openShow('The Revolution')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','revolution',this)"><img src="Assets/Shows/The Revolution.jpg" alt="The Revolution"></div>
-          <div class="show-thumbnail" onclick="openShow('The Red Room')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','redroom',this)"><img src="Assets/Shows/The Red Room.jpg" alt="The Red Room"></div>
-          <div class="show-thumbnail" onclick="openShow('The Hangover Mix')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','hangover',this)"><img src="Assets/Shows/The Hangover Mix.jpg" alt="The Hangover Mix"></div>
-          <div class="show-thumbnail" onclick="openShow('The Good Life')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','goodlife',this)"><img src="Assets/Shows/The Good Life.jpg" alt="The Good Life"></div>
-          <div class="show-thumbnail" onclick="openShow('Sunday Soccer Show')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','soccer',this)"><img src="Assets/Shows/Sunday Soccer Show.jpg" alt="Sunday Soccer Show"></div>
-          <div class="show-thumbnail" onclick="openShow('Reloaded')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','reloaded',this)"><img src="Assets/Shows/Reloaded.jpg" alt="Reloaded"></div>
-          <div class="show-thumbnail" onclick="openShow('No Cap')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','nocap',this)"><img src="Assets/Shows/No Cap.jpg" alt="No Cap"></div>
-          <div class="show-thumbnail" onclick="openShow('My Kinda Vibe')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','vibes',this)"><img src="Assets/Shows/My Kinda Vibe.jpg" alt="My Kinda Vibe"></div>
-          <div class="show-thumbnail" onclick="openShow('Late Night Mix')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','latenight',this)"><img src="Assets/Shows/Late Night Mix.jpg" alt="Late Night Mix"></div>
-          <div class="show-thumbnail" onclick="openShow('Hot 30')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','hot30',this)"><img src="Assets/Shows/Hot 30.jpg" alt="Hot 30"></div>
-          <div class="show-thumbnail" onclick="openShow('Hidden Gems')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','gems',this)"><img src="Assets/Shows/Hidden Gems.jpg" alt="Hidden Gems"></div>
-          <div class="show-thumbnail" onclick="openShow('Beats From Heaven')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','gospel',this)"><img src="Assets/Shows/Beats From Heaven.jpg" alt="Beats From Heaven"></div>
+          <div class="show-thumbnail" onclick="openShow('The Revolution')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','revolution',this)"><img src="Assets/Shows/the_revolution.jpg" alt="The Revolution"></div>
+          <div class="show-thumbnail" onclick="openShow('The Red Room')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','redroom',this)"><img src="Assets/Shows/the_red_room.png" alt="The Red Room"></div>
+          <div class="show-thumbnail" onclick="openShow('The Hangover Mix')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','hangover',this)"><img src="Assets/Shows/the_hangover_mix.jpg" alt="The Hangover Mix"></div>
+          <div class="show-thumbnail" onclick="openShow('The Good Life')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','goodlife',this)"><img src="Assets/Shows/the_good_life.jpg" alt="The Good Life"></div>
+          <div class="show-thumbnail" onclick="openShow('Sunday Soccer Show')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','soccer',this)"><img src="Assets/Shows/Sunday_Soccer_Show.jpg" alt="Sunday Soccer Show"></div>
+          <div class="show-thumbnail" onclick="openShow('Reloaded')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','reloaded',this)"><img src="Assets/Shows/reloaded.png" alt="Reloaded"></div>
+          <div class="show-thumbnail" onclick="openShow('No Cap')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','nocap',this)"><img src="Assets/Shows/no_cap.jpg" alt="No Cap"></div>
+          <div class="show-thumbnail" onclick="openShow('My Kinda Vibe')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','vibes',this)"><img src="Assets/Shows/my_kinda_vibe.jpg" alt="My Kinda Vibe"></div>
+          <div class="show-thumbnail" onclick="openShow('Late Night Mix')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','latenight',this)"><img src="Assets/Shows/late_night_mix.png" alt="Late Night Mix"></div>
+          <div class="show-thumbnail" onclick="openShow('Hot 30')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','hot30',this)"><img src="Assets/Shows/hot_30.png" alt="Hot 30"></div>
+          <div class="show-thumbnail" onclick="openShow('Hidden Gems')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','gems',this)"><img src="Assets/Shows/Hidden_Gems.jpg" alt="Hidden Gems"></div>
+          <div class="show-thumbnail" onclick="openShow('Beats From Heaven')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','gospel',this)"><img src="Assets/Shows/Beats_From_Heaven.jpg" alt="Beats From Heaven"></div>
           <div class="show-thumbnail" onclick="openShow('Point of Order')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','pointoforder',this)"><img src="Assets/Shows/Point_of_Order.jpg" alt="Point of Order"></div>
           <div class="show-thumbnail" onclick="openShow('Yired')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','yired-alt',this)"><img src="Assets/Shows/Yired_Baby_Talk.png" alt="Yired (Alt)"></div>
         </div>
@@ -1959,19 +1960,19 @@
       <!-- 6. Picture Thumbnail Buttons Grid -->
       <div class="img-btn-grid">
         <div class="img-btn" onclick="window.location.href='yamas.html'">
-          <img src="Assets/YAMAs/yamas_artwork.jpg" alt="YAMAs">
+          <img src="Assets/station-view-thumbnails/yamas.png" alt="YAMAs">
         </div>
         <div class="img-btn" onclick="window.location.href='merchandise.html'">
-          <img src="Assets/Merchandise/merchandise_thumbnail.jpg" alt="Merchandise">
+          <img src="Assets/station-view-thumbnails/merchandise.png" alt="Merchandise">
         </div>
         <div class="img-btn" onclick="showComingSoon('creatives')">
-          <img src="Assets/Creatives/creatives_thumbnails.jpg" alt="Creatives">
+          <img src="Assets/station-view-thumbnails/creatives.png" alt="Creatives">
         </div>
         <div class="img-btn" onclick="showComingSoon('musicians')">
-          <img src="Assets/Musicians/musicians_thumbnails.jpg" alt="Musicians">
+          <img src="Assets/station-view-thumbnails/musicians.png" alt="Musicians">
         </div>
         <div class="img-btn img-btn-full" onclick="window.location.href='submit-music.html'">
-          <img src="Assets/Submit Your Music/submit_your_music.jpg" alt="Submit your music">
+          <img src="Assets/station-view-thumbnails/submit_your_music.png" alt="Submit your music">
         </div>
       </div>
 
@@ -2359,63 +2360,63 @@
     const weekSchedule = {
       1: [
         { title: 'The Rush', time: '06:00 – 09:00', start: 360, end: 540, img: 'The_Rush.jpg', presenters: 'Fox, MOG & Thato' },
-        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.jpg', presenters: 'Lerato Modiega' },
-        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'The Good Life.jpg', presenters: 'Luhle (Ngwanamai)' },
+        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.png', presenters: 'Lerato Modiega' },
+        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'the_good_life.jpg', presenters: 'Luhle (Ngwanamai)' },
         { title: 'The Climax', time: '15:00 – 18:00', start: 900, end: 1080, img: 'The_Climax.jpg', presenters: 'DJ Sway & LB' },
         { title: 'Galaxy Sports', time: '18:00 – 19:00', start: 1080, end: 1140, img: 'Galaxy_Sports_Show.jpg', presenters: 'Thabang Matlale' },
-        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'No Cap.jpg', presenters: 'Katalina "Kat" Podi' },
-        { title: 'The Red Room', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'The Red Room.jpg', presenters: 'Paphani Masalila (Paps)' }
+        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'no_cap.jpg', presenters: 'Katalina "Kat" Podi' },
+        { title: 'The Red Room', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'the_red_room.png', presenters: 'Paphani Masalila (Paps)' }
       ],
       2: [
         { title: 'The Rush', time: '06:00 – 09:00', start: 360, end: 540, img: 'The_Rush.jpg', presenters: 'Fox, MOG & Thato' },
-        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.jpg', presenters: 'Lerato Modiega' },
-        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'The Good Life.jpg', presenters: 'Luhle (Ngwanamai)' },
+        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.png', presenters: 'Lerato Modiega' },
+        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'the_good_life.jpg', presenters: 'Luhle (Ngwanamai)' },
         { title: 'The Climax', time: '15:00 – 18:00', start: 900, end: 1080, img: 'The_Climax.jpg', presenters: 'DJ Sway & LB' },
-        { title: 'Hidden Gems', time: '18:00 – 19:00', start: 1080, end: 1140, img: 'Hidden Gems.jpg', presenters: 'Kedi "Lezozo" Molosiwa' },
-        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'No Cap.jpg', presenters: 'Katalina "Kat" Podi' },
-        { title: 'Late Night Mix', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'Late Night Mix.jpg', presenters: 'On Rotation' }
+        { title: 'Hidden Gems', time: '18:00 – 19:00', start: 1080, end: 1140, img: 'Hidden_Gems.jpg', presenters: 'Kedi "Lezozo" Molosiwa' },
+        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'no_cap.jpg', presenters: 'Katalina "Kat" Podi' },
+        { title: 'Late Night Mix', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'late_night_mix.png', presenters: 'On Rotation' }
       ],
       3: [
         { title: 'The Rush', time: '06:00 – 09:00', start: 360, end: 540, img: 'The_Rush.jpg', presenters: 'Fox, MOG & Thato' },
-        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.jpg', presenters: 'Lerato Modiega' },
-        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'The Good Life.jpg', presenters: 'Luhle (Ngwanamai)' },
+        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.png', presenters: 'Lerato Modiega' },
+        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'the_good_life.jpg', presenters: 'Luhle (Ngwanamai)' },
         { title: 'The Climax', time: '15:00 – 18:00', start: 900, end: 1080, img: 'The_Climax.jpg', presenters: 'DJ Sway & LB' },
-        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'No Cap.jpg', presenters: 'Katalina "Kat" Podi' },
-        { title: 'The Red Room', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'The Red Room.jpg', presenters: 'Paphani Masalila (Paps)' }
+        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'no_cap.jpg', presenters: 'Katalina "Kat" Podi' },
+        { title: 'The Red Room', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'the_red_room.png', presenters: 'Paphani Masalila (Paps)' }
       ],
       4: [
         { title: 'The Rush', time: '06:00 – 09:00', start: 360, end: 540, img: 'The_Rush.jpg', presenters: 'Fox, MOG & Thato' },
-        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.jpg', presenters: 'Lerato Modiega' },
-        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'The Good Life.jpg', presenters: 'Luhle (Ngwanamai)' },
+        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.png', presenters: 'Lerato Modiega' },
+        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'the_good_life.jpg', presenters: 'Luhle (Ngwanamai)' },
         { title: 'The Climax', time: '15:00 – 18:00', start: 900, end: 1080, img: 'The_Climax.jpg', presenters: 'DJ Sway & LB' },
-        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'No Cap.jpg', presenters: 'Katalina "Kat" Podi' },
-        { title: 'Late Night Mix', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'Late Night Mix.jpg', presenters: 'On Rotation' }
+        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'no_cap.jpg', presenters: 'Katalina "Kat" Podi' },
+        { title: 'Late Night Mix', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'late_night_mix.png', presenters: 'On Rotation' }
       ],
       5: [
         { title: 'The Rush', time: '06:00 – 09:00', start: 360, end: 540, img: 'The_Rush.jpg', presenters: 'Fox, MOG & Thato' },
-        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.jpg', presenters: 'Lerato Modiega' },
-        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'The Good Life.jpg', presenters: 'Luhle (Ngwanamai)' },
+        { title: 'Yired', time: '09:00 – 12:00', start: 540, end: 720, img: 'Yired_Baby_Talk.png', presenters: 'Lerato Modiega' },
+        { title: 'The Good Life', time: '12:00 – 15:00', start: 720, end: 900, img: 'the_good_life.jpg', presenters: 'Luhle (Ngwanamai)' },
         { title: 'The Climax', time: '15:00 – 18:00', start: 900, end: 1080, img: 'The_Climax.jpg', presenters: 'DJ Sway & LB' },
         { title: 'Galaxy Sports', time: '18:00 – 19:00', start: 1080, end: 1140, img: 'Galaxy_Sports_Show.jpg', presenters: 'Thabang Matlale' },
-        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'No Cap.jpg', presenters: 'Katalina "Kat" Podi' },
-        { title: 'The Red Room', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'The Red Room.jpg', presenters: 'Paphani Masalila (Paps)' }
+        { title: 'No Cap', time: '19:00 – 22:00', start: 1140, end: 1320, img: 'no_cap.jpg', presenters: 'Katalina "Kat" Podi' },
+        { title: 'The Red Room', time: '22:00 – 00:00', start: 1320, end: 1440, img: 'the_red_room.png', presenters: 'Paphani Masalila (Paps)' }
       ],
       6: [
         { title: 'Unkaged', time: '06:00 – 09:00', start: 360, end: 540, img: 'Unkaged.jpg', presenters: 'Kage' },
-        { title: 'The Hangover Mix', time: '09:00 – 10:00', start: 540, end: 600, img: 'The Hangover Mix.jpg', presenters: 'Tshepiedee' },
+        { title: 'The Hangover Mix', time: '09:00 – 10:00', start: 540, end: 600, img: 'the_hangover_mix.jpg', presenters: 'Tshepiedee' },
         { title: 'S.O.S', time: '10:00 – 14:00', start: 600, end: 840, img: 'S_O_S.jpg', presenters: 'Soso' },
-        { title: 'Hot 30', time: '14:00 – 16:00', start: 840, end: 960, img: 'Hot 30.jpg', presenters: 'Drew Chadhall' },
+        { title: 'Hot 30', time: '14:00 – 16:00', start: 840, end: 960, img: 'hot_30.png', presenters: 'Drew Chadhall' },
         { title: 'The Dropbox', time: '16:00 – 18:00', start: 960, end: 1080, img: 'The_Dropbox.jpg', presenters: 'VVA' },
         { title: 'Flow & Glow', time: '18:00 – 21:00', start: 1080, end: 1260, img: 'Flow_and_Grow.jpg', presenters: 'Reitumetse' },
-        { title: 'Reloaded', time: '21:00 – 00:00', start: 1260, end: 1440, img: 'Reloaded.jpg', presenters: 'Vincent Roman Matthys' }
+        { title: 'Reloaded', time: '21:00 – 00:00', start: 1260, end: 1440, img: 'reloaded.png', presenters: 'Vincent Roman Matthys' }
       ],
       0: [
-        { title: 'Beats From Heaven', time: '06:00 – 10:00', start: 360, end: 600, img: 'Beats From Heaven.jpg', presenters: 'Mr Tee' },
+        { title: 'Beats From Heaven', time: '06:00 – 10:00', start: 360, end: 600, img: 'Beats_From_Heaven.jpg', presenters: 'Mr Tee' },
         { title: 'S.O.S', time: '10:00 – 14:00', start: 600, end: 840, img: 'S_O_S.jpg', presenters: 'Soso' },
-        { title: 'My Kinda Vibe', time: '13:00 – 14:00', start: 780, end: 840, img: 'My Kinda Vibe.jpg', presenters: 'Mr. O' },
+        { title: 'My Kinda Vibe', time: '13:00 – 14:00', start: 780, end: 840, img: 'my_kinda_vibe.jpg', presenters: 'Mr. O' },
         { title: 'The Dropbox', time: '14:00 – 18:00', start: 840, end: 1080, img: 'The_Dropbox.jpg', presenters: 'VVA' },
-        { title: 'Sunday Soccer Show', time: '18:00 – 21:00', start: 1080, end: 1260, img: 'Sunday Soccer Show.jpg', presenters: 'Fox' },
-        { title: 'The Revolution', time: '21:00 – 00:00', start: 1260, end: 1440, img: 'The Revolution.jpg', presenters: 'DJ Kellz' }
+        { title: 'Sunday Soccer Show', time: '18:00 – 21:00', start: 1080, end: 1260, img: 'Sunday_Soccer_Show.jpg', presenters: 'Fox' },
+        { title: 'The Revolution', time: '21:00 – 00:00', start: 1260, end: 1440, img: 'the_revolution.jpg', presenters: 'DJ Kellz' }
       ]
     };
 
@@ -3582,7 +3583,7 @@
     // ===============================
     var showsInfo = {
       'rush': { title: 'The Rush', sub: 'Mon - Fri 06:00 – 09:00', img: 'The_Rush.jpg', action: "openShow('The Rush')" },
-      'yired': { title: 'Yired', sub: 'Mon - Fri 09:00 – 12:00', img: 'Yired_Baby_Talk.jpg', action: "openShow('Yired')" },
+      'yired': { title: 'Yired', sub: 'Mon - Fri 09:00 – 12:00', img: 'Yired_Baby_Talk.png', action: "openShow('Yired')" },
       'yired-alt': { title: 'Yired (Alt)', sub: 'Mon - Fri 09:00 – 12:00', img: 'Yired_Baby_Talk.png', action: "openShow('Yired')" },
       'climax': { title: 'The Climax', sub: 'Mon - Fri 15:00 – 18:00', img: 'The_Climax.jpg', action: "openShow('The Climax')" },
       'galaxy': { title: 'Galaxy Sports', sub: 'Mon & Fri 18:00 – 19:00', img: 'Galaxy_Sports_Show.jpg', action: "openShow('Galaxy Sports')" },
@@ -3592,18 +3593,18 @@
       'flowglow': { title: 'Flow & Glow', sub: 'Sat 18:00 – 21:00', img: 'Flow_and_Grow.jpg', action: "openShow('Flow & Glow')" },
       'y20': { title: 'Y 20', sub: '', img: 'Y_20.jpg', action: "openShow('Y 20')" },
       'phantsha': { title: 'Phantsha Hoo', sub: '', img: 'Phantsha_Hoo.jpg', action: "openShow('Phantsha Hoo')" },
-      'revolution': { title: 'The Revolution', sub: 'Sun 21:00 – 00:00', img: 'The Revolution.jpg', action: "openShow('The Revolution')" },
-      'redroom': { title: 'The Red Room', sub: 'Mon, Wed, Fri 22:00 – 00:00', img: 'The Red Room.jpg', action: "openShow('The Red Room')" },
-      'hangover': { title: 'The Hangover Mix', sub: 'Sat 09:00 – 10:00', img: 'The Hangover Mix.jpg', action: "openShow('The Hangover Mix')" },
-      'goodlife': { title: 'The Good Life', sub: 'Mon - Fri 12:00 – 15:00', img: 'The Good Life.jpg', action: "openShow('The Good Life')" },
-      'soccer': { title: 'Sunday Soccer Show', sub: 'Sun 18:00 – 21:00', img: 'Sunday Soccer Show.jpg', action: "openShow('Sunday Soccer Show')" },
-      'reloaded': { title: 'Reloaded', sub: 'Sat 21:00 – 00:00', img: 'Reloaded.jpg', action: "openShow('Reloaded')" },
-      'nocap': { title: 'No Cap', sub: 'Mon - Fri 19:00 – 22:00', img: 'No Cap.jpg', action: "openShow('No Cap')" },
-      'vibes': { title: 'My Kinda Vibe', sub: 'Sun 13:00 – 14:00', img: 'My Kinda Vibe.jpg', action: "openShow('My Kinda Vibe')" },
-      'latenight': { title: 'Late Night Mix', sub: 'Tue & Thu 22:00 – 00:00', img: 'Late Night Mix.jpg', action: "openShow('Late Night Mix')" },
-      'hot30': { title: 'Hot 30', sub: 'Sat 14:00 – 16:00', img: 'Hot 30.jpg', action: "openShow('Hot 30')" },
-      'gems': { title: 'Hidden Gems', sub: 'Tue 18:00 – 19:00', img: 'Hidden Gems.jpg', action: "openShow('Hidden Gems')" },
-      'gospel': { title: 'Beats From Heaven', sub: 'Sun 06:00 – 10:00', img: 'Beats From Heaven.jpg', action: "openShow('Beats From Heaven')" },
+      'revolution': { title: 'The Revolution', sub: 'Sun 21:00 – 00:00', img: 'the_revolution.jpg', action: "openShow('The Revolution')" },
+      'redroom': { title: 'The Red Room', sub: 'Mon, Wed, Fri 22:00 – 00:00', img: 'the_red_room.png', action: "openShow('The Red Room')" },
+      'hangover': { title: 'The Hangover Mix', sub: 'Sat 09:00 – 10:00', img: 'the_hangover_mix.jpg', action: "openShow('The Hangover Mix')" },
+      'goodlife': { title: 'The Good Life', sub: 'Mon - Fri 12:00 – 15:00', img: 'the_good_life.jpg', action: "openShow('The Good Life')" },
+      'soccer': { title: 'Sunday Soccer Show', sub: 'Sun 18:00 – 21:00', img: 'Sunday_Soccer_Show.jpg', action: "openShow('Sunday Soccer Show')" },
+      'reloaded': { title: 'Reloaded', sub: 'Sat 21:00 – 00:00', img: 'reloaded.png', action: "openShow('Reloaded')" },
+      'nocap': { title: 'No Cap', sub: 'Mon - Fri 19:00 – 22:00', img: 'no_cap.jpg', action: "openShow('No Cap')" },
+      'vibes': { title: 'My Kinda Vibe', sub: 'Sun 13:00 – 14:00', img: 'my_kinda_vibe.jpg', action: "openShow('My Kinda Vibe')" },
+      'latenight': { title: 'Late Night Mix', sub: 'Tue & Thu 22:00 – 00:00', img: 'late_night_mix.png', action: "openShow('Late Night Mix')" },
+      'hot30': { title: 'Hot 30', sub: 'Sat 14:00 – 16:00', img: 'hot_30.png', action: "openShow('Hot 30')" },
+      'gems': { title: 'Hidden Gems', sub: 'Tue 18:00 – 19:00', img: 'Hidden_Gems.jpg', action: "openShow('Hidden Gems')" },
+      'gospel': { title: 'Beats From Heaven', sub: 'Sun 06:00 – 10:00', img: 'Beats_From_Heaven.jpg', action: "openShow('Beats From Heaven')" },
       'pointoforder': { title: 'Point of Order', sub: '', img: 'Point_of_Order.jpg', action: "openShow('Point of Order')" }
     };
 
