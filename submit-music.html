@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Music — Yarona FM</title>
+  <style>
+    :root {
+      /* Strict Palette: Red, Black, White, Grey */
+      --brand-red: #d81a1a;
+      --brand-red-light: rgba(216, 26, 26, 0.1);
+      --brand-red-shadow: rgba(216, 26, 26, 0.3);
+      --brand-black: #000000;
+      --brand-white: #ffffff;
+      --app-bg: #f4f4f4; /* Light Grey */
+      --border-grey: #dddddd; /* Medium Grey */
+      --text-main: #333333; /* Dark Grey */
+      --text-muted: #777777; /* Grey */
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--app-bg); color: var(--text-main); padding-bottom: 90px; }
+
+    /* Screen Management */
+    .screen { display: none; }
+    .screen.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Header */
+    .header { background: var(--brand-black); padding: 20px; text-align: center; color: var(--brand-white); position: relative; }
+    .header h1 { font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+    .header p { color: var(--text-muted); font-size: 13px; margin-top: 5px; }
+    
+    .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+    /* Cards */
+    .card { background: var(--brand-white); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-grey); }
+    .card-title { font-size: 16px; font-weight: 800; color: var(--brand-black); margin-bottom: 15px; text-transform: uppercase; border-bottom: 2px solid var(--brand-red); padding-bottom: 8px; display: inline-block; }
+
+    /* Form Elements */
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 12px; font-weight: bold; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid var(--border-grey); border-radius: 8px; font-size: 14px; background: var(--app-bg); color: var(--brand-black); transition: 0.2s; }
+    .form-control:focus { outline: none; border-color: var(--brand-red); background: var(--brand-white); }
+    
+    select.form-control { cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
+
+    /* Genres */
+    .genres-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .genre-pill { background: var(--app-bg); border: 1px solid var(--border-grey); color: var(--text-main); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; user-select: none; }
+    .genre-pill.active { background: var(--brand-red); border-color: var(--brand-red); color: var(--brand-white); }
+
+    /* Track Box (Form) */
+    .track-box { background: var(--brand-white); border: 2px solid var(--brand-black); border-radius: 12px; padding: 15px; margin-bottom: 20px; position: relative; }
+    .track-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .track-number { font-size: 14px; font-weight: 800; color: var(--brand-white); background: var(--brand-black); padding: 4px 10px; border-radius: 6px; }
+    .remove-track { background: none; border: none; color: var(--brand-red); font-size: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+    
+    /* Media Previews */
+    .cover-preview { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-grey); display: none; }
+    .yt-preview { width: 100%; margin-top: 10px; border-radius: 8px; overflow: hidden; background: var(--brand-black); }
+    
+    /* Buttons */
+    .btn { padding: 14px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; text-align: center; display: inline-block; border: none; }
+    .btn:active { transform: scale(0.98); }
+    .btn-block { width: 100%; }
+    .btn-secondary { background: var(--brand-white); color: var(--brand-black); border: 2px solid var(--brand-black); }
+    .btn-primary { background: var(--brand-red); color: var(--brand-white); box-shadow: 0 4px 10px var(--brand-red-shadow); }
+
+    /* Sticky Footers */
+    .sticky-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--brand-black); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-top: 3px solid var(--brand-red); z-index: 100; transition: 0.3s; }
+    .sticky-footer.hidden { transform: translateY(100%); }
+    .price-display { color: var(--brand-white); font-size: 13px; line-height: 1.2; }
+    .price-display strong { font-size: 20px; color: var(--brand-red); display: block; margin-top: 2px; }
+    
+    /* Preview Screen Specific Styles */
+    .preview-section { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-grey); }
+    .preview-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .preview-label { font-size: 11px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .preview-value { font-size: 15px; font-weight: 600; color: var(--brand-black); }
+    .preview-track-card { background: var(--app-bg); border: 1px solid var(--border-grey); border-radius: 8px; padding: 12px; margin-top: 10px; }
+    .preview-track-title { font-size: 16px; font-weight: 800; color: var(--brand-red); margin-bottom: 5px; }
+    .preview-tag { display: inline-block; background: var(--brand-black); color: var(--brand-white); font-size: 10px; padding: 3px 6px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+
+    /* Custom File Input */
+    input[type="file"] { display: none; }
+    .file-upload-label { display: inline-block; background: var(--app-bg); border: 1px dashed var(--text-muted); color: var(--text-main); padding: 10px 15px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 600; text-align: center; width: 100%; }
+
+    /* Home Back Button */
+    .btn-home-back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brand-white);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .btn-home-back svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--brand-white);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Submit Music</h1>
+    <p>The P50/Song New Comers Pipeline</p>
+  </div>
+
+  <!-- ==================== FORM SCREEN ==================== -->
+  <div id="form-screen" class="screen active">
+    <div class="container">
+      
+      <!-- Artist Details -->
+      <div class="card">
+        <h2 class="card-title">Artist Details</h2>
+        <div class="form-group">
+          <label>Artist / Group Name *</label>
+          <input type="text" id="global-artist" class="form-control" placeholder="Enter your stage name">
+        </div>
+        <div class="form-group">
+          <label>Contact Email *</label>
+          <input type="email" id="global-email" class="form-control" placeholder="artist@example.com">
+        </div>
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="tel" id="global-phone" class="form-control" placeholder="+267...">
+        </div>
+      </div>
+
+      <!-- Tracks Container -->
+      <div id="tracks-container">
+        <!-- Tracks will be injected here by JS -->
+      </div>
+
+      <!-- Add Track Button -->
+      <button class="btn btn-secondary btn-block" style="margin-bottom: 20px;" onclick="addTrack()">+ ADD ANOTHER TRACK</button>
+
+      <!-- Notes -->
+      <div class="card">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Message to Yarona FM (Optional)</label>
+          <textarea id="global-notes" class="form-control" rows="3" placeholder="Any special notes about this release?"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Form Footer -->
+    <div class="sticky-footer" id="footer-form">
+      <a href="index.html" class="btn-home-back">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      </a>
+      <div class="price-display">
+        Total Due:
+        <strong id="total-price-display">P50</strong>
+      </div>
+      <button class="btn btn-primary" onclick="goToPreview()">PREVIEW SUBMISSION</button>
+    </div>
+  </div>
+
+
+  <!-- ==================== PREVIEW SCREEN ==================== -->
+  <div id="preview-screen" class="screen">
+    <div class="container">
+      
+      <div class="card" style="border-color: var(--brand-black); border-width: 2px;">
+        <h2 class="card-title">Submission Summary</h2>
+        
+        <div class="preview-section">
+          <div class="preview-label">Artist Info</div>
+          <div class="preview-value" id="prev-artist">Artist Name</div>
+          <div style="font-size: 13px; color: var(--text-muted);" id="prev-contact">email@example.com</div>
+        </div>
+
+        <div class="preview-section">
+          <div class="preview-label">Tracks Included (<span id="prev-track-count">1</span>)</div>
+          <div id="prev-tracks-container">
+            <!-- Preview tracks injected here -->
+          </div>
+        </div>
+
+        <div class="preview-section" id="prev-notes-container" style="display:none;">
+          <div class="preview-label">Additional Notes</div>
+          <div class="preview-value" style="font-size: 13px; font-weight: normal;" id="prev-notes">...</div>
+        </div>
+
+        <div class="preview-section" style="background: var(--brand-red-light); padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid var(--brand-red);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-weight: bold; color: var(--brand-black); text-transform: uppercase;">Total Cost</div>
+            <div style="font-size: 24px; font-weight: 900; color: var(--brand-red);" id="prev-total-cost">P50</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Preview Footer -->
+    <div class="sticky-footer" id="footer-preview">
+      <a href="index.html" class="btn-home-back">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      </a>
+      <button class="btn btn-secondary" onclick="goBackToForm()">EDIT</button>
+      <button class="btn btn-primary" onclick="confirmAndPay()">CONFIRM & PAY</button>
+    </div>
+  </div>
+
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script>
+    // Comprehensive Southern African Genre List
+    const GENRES = [
+      "Amapiano", "Kwaito", "Motswako", "House Kwasa", "Gqom", 
+      "Afro House", "Bacardi House", "Lekompo", "Mbaqanga", 
+      "Marabi", "Kwela", "Hip-Hop", "R&B", "Gospel", "Jazz", 
+      "Reggae", "Heavy Metal", "EDM"
+    ];
+
+    // Targeted Charts based on PDF
+    const CHARTS = [
+      "Submission Chart (New Comers)",
+      "Local Hip Hop (Motswako) Chart",
+      "House Heat Top 10",
+      "Local R&B Top 10",
+      "Pop Chart",
+      "Chillstep Chart",
+      "Local Gospel Chart"
+    ];
+
+    let trackCount = 0;
+    const PRICE_PER_TRACK = 50;
+
+    // Initialize first track on load
+    window.onload = () => {
+      addTrack();
+    };
+
+    function addTrack() {
+      trackCount++;
+      const trackId = `track-${Date.now()}`;
+      const container = document.getElementById('tracks-container');
+
+      const box = document.createElement('div');
+      box.className = 'track-box';
+      box.id = trackId;
+
+      let genresHtml = '';
+      GENRES.forEach(g => {
+        genresHtml += `<div class="genre-pill" onclick="toggleGenre(this)">${g}</div>`;
+      });
+
+      let chartsHtml = '';
+      CHARTS.forEach(c => {
+        chartsHtml += `<option value="${c}">${c}</option>`;
+      });
+
+      box.innerHTML = `
+        <div class="track-header">
+          <div class="track-number">TRACK ${trackCount}</div>
+          ${trackCount > 1 ? `<button class="remove-track" onclick="removeTrack('${trackId}')">Remove</button>` : ''}
+        </div>
+        
+        <div class="form-group">
+          <label>Track Title *</label>
+          <input type="text" class="form-control track-title" placeholder="Enter song name">
+        </div>
+
+        <div class="form-group">
+          <label>Target Chart</label>
+          <select class="form-control track-chart">
+            ${chartsHtml}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Select Genres</label>
+          <div class="genres-container track-genres">
+            ${genresHtml}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Cover Art (Optional)</label>
+          <label class="file-upload-label" for="cover-${trackId}">Upload Image</label>
+          <input type="file" id="cover-${trackId}" accept="image/*" onchange="previewCover(this, '${trackId}')">
+          <img id="preview-${trackId}" class="cover-preview" src="" alt="Cover Preview">
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label>YouTube Link (Required for voting)</label>
+          <input type="text" class="form-control track-yt" placeholder="https://youtube.com/..." oninput="previewYouTube(this, '${trackId}')">
+          <div id="yt-preview-${trackId}" class="yt-preview"></div>
+        </div>
+      `;
+
+      container.appendChild(box);
+      updateTotal();
+    }
+
+    function removeTrack(trackId) {
+      const el = document.getElementById(trackId);
+      if(el) {
+        el.remove();
+        trackCount--;
+        updateTrackNumbers();
+        updateTotal();
+      }
+    }
+
+    function updateTrackNumbers() {
+      const tracks = document.querySelectorAll('.track-box');
+      tracks.forEach((track, index) => {
+        track.querySelector('.track-number').textContent = `TRACK ${index + 1}`;
+      });
+    }
+
+    function updateTotal() {
+      const currentTracks = document.querySelectorAll('.track-box').length;
+      const total = currentTracks * PRICE_PER_TRACK;
+      document.getElementById('total-price-display').textContent = `P${total}`;
+    }
+
+    function toggleGenre(element) {
+      element.classList.toggle('active');
+    }
+
+    // Handlers for media previews inside the form
+    function previewCover(input, trackId) {
+      const file = input.files[0];
+      const preview = document.getElementById(`preview-${trackId}`);
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+
+    function previewYouTube(input, trackId) {
+      const previewContainer = document.getElementById(`yt-preview-${trackId}`);
+      previewContainer.innerHTML = '';
+      const url = input.value.trim();
+      const ytRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//;
+      if (!url || !ytRegex.test(url)) return;
+
+      try {
+        let videoId = '';
+        if (url.includes('youtu.be/')) { videoId = url.split('youtu.be/')[1].split('?')[0]; } 
+        else if (url.includes('v=')) { videoId = new URL(url).searchParams.get('v'); }
+        
+        if (videoId) {
+          const iframe = document.createElement('iframe');
+          iframe.width = '100%'; iframe.height = '180';
+          iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0`;
+          iframe.frameBorder = '0';
+          previewContainer.appendChild(iframe);
+        }
+      } catch(e) { }
+    }
+
+    // Screen Transition Logic
+    function goToPreview() {
+      const artist = document.getElementById('global-artist').value.trim();
+      const email = document.getElementById('global-email').value.trim();
+      const phone = document.getElementById('global-phone').value.trim();
+      
+      if(!artist || !email) {
+        alert("Please provide your Artist Name and Email before proceeding.");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // Populate Preview Screen Data
+      document.getElementById('prev-artist').textContent = artist;
+      document.getElementById('prev-contact').textContent = `${email} ${phone ? '| ' + phone : ''}`;
+      
+      const tracks = document.querySelectorAll('.track-box');
+      document.getElementById('prev-track-count').textContent = tracks.length;
+      document.getElementById('prev-total-cost').textContent = `P${tracks.length * PRICE_PER_TRACK}`;
+      
+      const prevTracksContainer = document.getElementById('prev-tracks-container');
+      prevTracksContainer.innerHTML = '';
+
+      tracks.forEach((track, index) => {
+        const title = track.querySelector('.track-title').value.trim() || `Untitled Track ${index+1}`;
+        const chart = track.querySelector('.track-chart').value;
+        const yt = track.querySelector('.track-yt').value.trim();
+        
+        const activeGenres = Array.from(track.querySelectorAll('.genre-pill.active')).map(p => p.textContent);
+        const genresHtml = activeGenres.length > 0 
+          ? activeGenres.map(g => `<span class="preview-tag">${g}</span>`).join('') 
+          : `<span style="font-size:12px; color:var(--text-muted)">No genres selected</span>`;
+
+        prevTracksContainer.innerHTML += `
+          <div class="preview-track-card">
+            <div class="preview-track-title">${index + 1}. ${title}</div>
+            <div style="font-size:13px; color:var(--brand-black); margin-bottom: 5px;"><strong>Chart:</strong> ${chart}</div>
+            <div style="margin-bottom: 5px;">${genresHtml}</div>
+            <div style="font-size:12px; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis;">
+              ${yt ? `YouTube: <a href="${yt}" target="_blank" style="color:var(--brand-red)">Link Provided</a>` : 'No YouTube Link'}
+            </div>
+          </div>
+        `;
+      });
+
+      const notes = document.getElementById('global-notes').value.trim();
+      const notesContainer = document.getElementById('prev-notes-container');
+      if(notes) {
+        document.getElementById('prev-notes').textContent = notes;
+        notesContainer.style.display = 'block';
+      } else {
+        notesContainer.style.display = 'none';
+      }
+
+      // Switch Screens
+      document.getElementById('form-screen').classList.remove('active');
+      document.getElementById('preview-screen').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goBackToForm() {
+      document.getElementById('preview-screen').classList.remove('active');
+      document.getElementById('form-screen').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function confirmAndPay() {
+      const artist = document.getElementById('global-artist').value.trim();
+      const email = document.getElementById('global-email').value.trim();
+      const notes = document.getElementById('global-notes').value.trim();
+      const tracks = document.querySelectorAll('.track-box');
+      const totalCost = tracks.length * PRICE_PER_TRACK;
+
+      let submissionData = [];
+      tracks.forEach((track, index) => {
+        const title = track.querySelector('.track-title').value.trim() || `Untitled Track ${index+1}`;
+        const chart = track.querySelector('.track-chart').value;
+        const yt = track.querySelector('.track-yt').value.trim();
+        const activeGenres = Array.from(track.querySelectorAll('.genre-pill.active')).map(p => p.textContent);
+        submissionData.push(`\nTrack ${index+1}: ${title}\nChart: ${chart}\nGenres: ${activeGenres.join(', ')}\nYouTube: ${yt}`);
+      });
+
+      const subject = encodeURIComponent(`Music Submission: ${artist} (${tracks.length} Tracks)`);
+      const body = encodeURIComponent(
+        `Artist: ${artist}\nContact: ${email}\n\n=== SUBMISSIONS (Total Due: P${totalCost}) ===\n${submissionData.join('\n')}\n\nNotes: ${notes}`
+      );
+
+      // In a real application, trigger payment gateway modal here
+      alert(`Routing to Payment Gateway...\nTotal Due: P${totalCost}\n\nOnce paid, your songs will enter the New Comers Pipeline.`);
+      
+      // Fallback action
+      window.location.href = `mailto:submit@yaronafm.co.bw?subject=${subject}&body=${body}`;
+    }
+  </script>
+</body>
+</html>

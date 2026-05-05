@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="stylesheet" href="../style.css"/><title>Unkaged — Show</title>
+<style>.wrap{padding:12px;max-width:760px;margin:0 auto}.tabs{display:flex;gap:8px;margin-top:12px}.tab{padding:8px;border-radius:6px;background:#fff;border:1px solid #eee;cursor:pointer}.active{background:#c00;color:#fff}</style>
+</head>
+<body>
+<div class="wrap">
+  <img src="../Assets/Shows/Unkaged.jpg" alt="Unkaged" style="width:100%;border-radius:8px;margin-bottom:8px"/>
+  <h1>Unkaged</h1>
+  <div class="tabs"><div class="tab active" data-tab="about">About</div><div class="tab" data-tab="content">Content</div></div>
+  <div id="about" style="margin-top:12px">
+    <p><strong>Hosts:</strong> <a href="../presenters/kage.html">Kage</a> • Saturday</p>
+    <p>Unkaged brings hip-hop culture, interviews, and curated music to listeners.</p>
+  </div>
+  <div id="content" style="display:none;margin-top:12px"><p>Episodes and mixes (placeholder).</p></div>
+</div>
+<script>document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', e=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); e.target.classList.add('active'); const tab=e.target.dataset.tab; document.getElementById('about').style.display = tab==='about' ? 'block' : 'none'; document.getElementById('content').style.display = tab==='content' ? 'block' : 'none'; }));</script>
+</body>
+</html>

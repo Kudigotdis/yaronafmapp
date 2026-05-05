@@ -1,0 +1,17 @@
+# Backup copies
+*-Copy*.html
+*-Copy*.js
+
+# Extracted docs
+Notes/Yarona_docx_unzip/
+
+# ZIP files
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yarona FM - Regular Music Quiz</title>
+  <style>
+    :root { 
+      --brand-main: #e63946; /* A vibrant red for the music energy */
+      --brand-black: #1d3557; /* Deep navy/black */
+      --brand-white: #ffffff; 
+      --app-bg: #f8f9fa; 
+      --text-main: #333333;
+      --text-muted: #6c757d;
+      --success-green: #2a9d8f;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--app-bg); color: var(--text-main); overflow-x: hidden; padding-bottom: 70px; }
+
+    /* Screen Management */
+    .screen { display: none; min-height: 100vh; flex-direction: column; }
+    .screen.active { display: flex; }
+
+    /* --- HOME SCREEN --- */
+    .hero-container { position: relative; width: 100%; height: 40vh; background: #ededed; }
+    .hero-bg { width: 100%; height: 100%; object-fit: contain; opacity: 1; transform: scale(0.95); }
+    .hero-title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 32px; font-weight: 900; text-align: center; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 4px 10px rgba(0,0,0,0.5); width: 100%; }
+    
+    .content-wrapper { padding: 20px; margin-top: -30px; position: relative; z-index: 5; flex: 1; }
+    
+    .card { background: var(--brand-white); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+    .card-title { font-size: 18px; font-weight: 800; color: var(--brand-black); margin-bottom: 8px; text-transform: uppercase; }
+    .card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 15px; }
+    
+    .game-options { display: flex; gap: 10px; margin-bottom: 20px; }
+    .game-tab { flex: 1; text-align: center; padding: 12px; background: var(--app-bg); border-radius: 8px; font-size: 13px; font-weight: bold; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+    .game-tab.active { background: #ffe5e5; color: var(--brand-main); border-color: var(--brand-main); }
+
+    .prize-list { list-style: none; margin-top: 10px; }
+    .prize-list li { font-size: 13px; padding: 10px 0; border-bottom: 1px solid #eee; color: var(--text-main); display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; }
+    .prize-list li:last-child { border-bottom: none; }
+    .prize-list li::before { content: '🏆'; font-size: 16px; margin-top: 2px; }
+
+    .btn-primary { background: var(--brand-main); color: var(--brand-white); border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3); transition: 0.2s; }
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* --- GAME SCREEN --- */
+    #game-screen { padding: 20px; background: var(--brand-white); }
+    .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
+    
+    .timer-track { width: 100%; height: 8px; background: var(--app-bg); border-radius: 4px; overflow: hidden; margin-bottom: 30px; }
+    .timer-fill { height: 100%; width: 100%; background: var(--brand-main); border-radius: 4px; transform-origin: left; }
+    
+    .question-box { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .q-category { font-size: 12px; color: var(--brand-main); text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; display: inline-block; background: #ffe5e5; padding: 4px 10px; border-radius: 20px; }
+    .q-text { font-size: 20px; font-weight: 800; color: var(--brand-black); line-height: 1.4; margin-bottom: 30px; }
+    
+    .options-grid { display: flex; flex-direction: column; gap: 12px; }
+    .opt-btn { background: var(--app-bg); border: 2px solid var(--app-bg); color: var(--brand-black); padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: space-between; }
+    .opt-btn:active { transform: scale(0.98); }
+    .opt-btn.correct { background: #e8f5e9; border-color: var(--success-green); color: #1e7e34; }
+    .opt-btn.wrong { background: #ffe5e5; border-color: var(--brand-main); color: var(--brand-main); }
+
+    /* --- RESULTS SCREEN --- */
+    .result-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; text-align: center; }
+    .score-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--brand-main); color: white; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(230, 57, 70, 0.4); }
+    .result-title { font-size: 24px; font-weight: 800; color: var(--brand-black); margin-bottom: 10px; }
+    .result-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 30px; }
+
+    .form-group { width: 100%; margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; font-size: 12px; font-weight: bold; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+    .form-control { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 15px; background: var(--app-bg); }
+
+    .game-bottom-nav {
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
+      background: var(--brand-main);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 10000;
+    }
+    .game-nav-home {
+      color: var(--brand-white); text-decoration: none;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; cursor: pointer;
+    }
+    .game-nav-home svg { width: 22px; height: 22px; fill: var(--brand-white); }
+  </style>
+</head>
+<body>
+
+  <!-- HOME SCREEN -->
+  <div id="home-screen" class="screen active">
+    <div class="hero-container">
+      <img src="../Assets/Games/music_quiz.png" class="hero-bg" alt="Music Audio">
+      <div class="hero-title">The Master Mix</div>
+    </div>
+    
+    <div class="content-wrapper">
+      <div class="card">
+        <h1 class="card-title">Ultimate Music Quiz</h1>
+        <p class="card-desc">Think you know the history of Botswana's urban music scene and the Yarona FM Music Awards? Test your knowledge across a decade of hitmakers, and win big!</p>
+        
+        <div class="game-options">
+          <div class="game-tab active">YAMAs History</div>
+          <div class="game-tab active">Fast-Paced Quiz</div>
+        </div>
+
+        <button class="btn-primary" onclick="startGame()">START THE QUIZ</button>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title" style="font-size: 15px;">Lifestyle Prize Vault</h2>
+        <ul class="prize-list">
+          <li><strong>Mascom:</strong> Streaming Data Bundles, Bluetooth Speakers & Urban Kits.</li>
+          <li><strong>FNBB:</strong> P500 Gift Cards & Concert Travel Funds.</li>
+          <li><strong>ODC:</strong> Premium "Brilliant Sound" Headphones & VIP Dinner Passes.</li>
+          <li><strong>MYSC:</strong> Local Music Starter Packs & Masterclass Workshop Passes.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen" class="screen">
+    <div class="game-header">
+      <span id="score-display">Score: 0</span>
+      <span id="q-counter">1/50</span>
+      <button onclick="endGame(true)" style="background:none;border:none;color:var(--brand-main);font-weight:bold;cursor:pointer;">QUIT</button>
+    </div>
+    
+    <div class="timer-track">
+      <div class="timer-fill" id="timer-bar"></div>
+    </div>
+
+    <div class="question-box">
+      <div class="q-category" id="q-category">Category</div>
+      <div class="q-text" id="q-text">Question text?</div>
+      <div class="options-grid" id="options-grid">
+        <!-- Options injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="result-screen" class="screen" style="background: var(--brand-white);">
+    <div class="result-content">
+      <div class="score-circle" id="final-score">0</div>
+      <h2 class="result-title" id="result-title">Game Over!</h2>
+      <p class="result-desc" id="result-desc">You've completed The Master Mix quiz.</p>
+      
+      <div class="card" style="width: 100%; border: 1px solid #eee; box-shadow: none; background: var(--app-bg);">
+        <h3 style="font-size: 14px; margin-bottom: 15px; color: var(--brand-black);">CLAIM YOUR TIER</h3>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" class="form-control" id="player-name" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" class="form-control" id="player-phone" placeholder="+267...">
+        </div>
+        <button class="btn-primary" onclick="submitScore()">ENTER DRAW</button>
+      </div>
+      
+      <button class="btn-primary" style="background: var(--brand-black); margin-top: 10px;" onclick="location.reload()">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script>
+    // All 50 Questions transcribed from the Master Mix History Document provided
+    const ALL_QUESTIONS =[
+      // General History
+      { cat: "General History", text: "Who is the local artist credited with designing the YAMA award trophy?", opts:["Kudi Chitate", "Mothusi Lesolle", "Kedi Molosiwa", "Batho Kgosimang"], ans: 0 },
+      { cat: "General History", text: "In what year were the inaugural Yarona FM Music Awards held?", opts:["2012", "2014", "2015", "2016"], ans: 1 },
+      { cat: "General History", text: "How many official editions of the YAMAs have been held as of May 2026?", opts: ["8", "9", "10", "11"], ans: 1 },
+      { cat: "General History", text: "Which major telecommunications company has been a consistent sponsor across almost all editions?", opts: ["Orange", "Mascom Wireless", "BTC", "BeMobile"], ans: 1 },
+      { cat: "General History", text: "What specific government ministry is a frequent financial supporter of the YAMAs?", opts: ["Ministry of Health", "MYSC", "Ministry of Education", "BTO"], ans: 1 },
+      { cat: "General History", text: "Which bank is a recurring sponsor of the main award categories?", opts: ["FNBB", "Absa", "Stanbic", "Standard Chartered"], ans: 0 },
+      { cat: "General History", text: "In 2019, the awards took a hiatus. In what year did they return virtually?", opts:["2019", "2020", "2021", "2022"], ans: 1 },
+
+      // 2014: The Inaugural Edition
+      { cat: "2014: Inaugural", text: "Who won the first 'Artist of the Year' award in 2014?", opts:["Vee", "ATI", "Scar", "Han C"], ans: 0 },
+      { cat: "2014: Inaugural", text: "What was the hit song that won Vee 'Song of the Year' in 2014?", opts: ["Eita", "Pula", "Dumeleng", "Taku Taku"], ans: 0 },
+      { cat: "2014: Inaugural", text: "Which female artist won 'Best Female Single' in 2014?", opts:["Amantle Brown", "Samantha Mogwe", "Sasa Klaas", "Mpho Sebina"], ans: 1 },
+      { cat: "2014: Inaugural", text: "Which beverage brand specifically sponsored the 'Best Newcomer' category in 2014?", opts:["Coca-Cola", "St Louis", "Vigo", "Fanta"], ans: 2 },
+      { cat: "2014: Inaugural", text: "Who took home the 'Best Newcomer' award in 2014?", opts:["Han C", "Ban T", "TGB Linxsta", "ATI"], ans: 2 },
+      { cat: "2014: Inaugural", text: "Who won 'Best Hip Hop DJ' in 2014?", opts:["DJ Izzy", "DJ Boogie Sid", "Tumie Black Ace", "DJ Fauz"], ans: 1 },
+
+      // 2015: YAMAs 2.0
+      { cat: "2015: YAMAs 2.0", text: "Which group dominated the 2015 night by winning three major awards?", opts:["Team Distant", "MMP Family", "Eskimos", "Groove Cartel"], ans: 1 },
+      { cat: "2015: YAMAs 2.0", text: "What song won MMP Family 'Song of the Year'?", opts:["Lebala Ka Nna", "Kwela Kwela", "Sananapo", "Zaka"], ans: 0 },
+      { cat: "2015: YAMAs 2.0", text: "Who was the breakout female artist that won both 'Best Female' and 'Best Newcomer' in 2015?", opts:["Amantle Brown", "Licky", "Bouncy", "Sasa Klaas"], ans: 1 },
+      { cat: "2015: YAMAs 2.0", text: "Which telco sponsored the 'Best Collaboration' category in 2015?", opts: ["Mascom", "BTC", "Orange Botswana", "BeMobile"], ans: 2 },
+      { cat: "2015: YAMAs 2.0", text: "Which production house/group won the 'Best Producer' award in 2015?", opts:["Heartbeat Sounds", "Bang Gae", "Team Distant", "Amobeatz"], ans: 1 },
+
+      // 2016: YAMAs XXXL
+      { cat: "2016: YAMAs XXXL", text: "What was the branding tagline/suffix for the 2016 awards?", opts:["YAMAs 2.0", "YAMAs XXXL", "Fu7ure Cul7ure", "Drip Till Infinity"], ans: 1 },
+      { cat: "2016: YAMAs XXXL", text: "Which artist was the 'breakout star' of 2016, winning three awards?", opts: ["Han C", "ATI", "Ban T", "Chef Gustos"], ans: 2 },
+      { cat: "2016: YAMAs XXXL", text: "What song won Amantle Brown 'Song of the Year' in 2016?", opts:["Moratiwa", "Black Mampatile", "Fololo", "Sedi Laka"], ans: 1 },
+      { cat: "2016: YAMAs XXXL", text: "Who won 'Best Newcomer' in 2016?", opts: ["Ban T", "Han C", "Yaw Bannerman", "Khoisan"], ans: 1 },
+      { cat: "2016: YAMAs XXXL", text: "Which cider brand sponsored the 'Artist of the Year' category in 2016?", opts:["Savanna", "Hunters Gold", "Bernini", "Flying Fish"], ans: 1 },
+
+      // 2017 & 2018: The A.T.I Era
+      { cat: "2017/18: A.T.I Era", text: "Which artist won every category he was nominated for in the 4th edition (2017/2018)?", opts:["Han C", "Vee", "A.T.I", "Scar"], ans: 2 },
+      { cat: "2017/18: A.T.I Era", text: "What was A.T.I’s massive hit song that dominated the 2017/2018 awards?", opts:["Stimamolelo", "Khiring Khiring Khorong", "Kachin", "Sedi Laka"], ans: 1 },
+      { cat: "2017/18: A.T.I Era", text: "Who won 'Artist of the Year' (People's Choice) in the 2017/2018 edition?", opts:["A.T.I", "Vee", "Ban T", "Han C"], ans: 3 },
+      { cat: "2017/18: A.T.I Era", text: "Which song won 'Best Collaboration' in 2018?", opts: ["Zaka (Veezo View)", "Pelo", "Away", "Sananapo"], ans: 0 },
+      { cat: "2017/18: A.T.I Era", text: "Bouncy won 'Best Female Single' in 2018 for which song?", opts:["Side 1", "Peter", "Dumeleng", "Black Mampatile"], ans: 0 },
+      { cat: "2017/18: A.T.I Era", text: "Who won 'Best Producer' in 2018?", opts:["Bangu", "DJ Bino", "MB On The Beat", "Flex The Ninja"], ans: 0 },
+
+      // 2020: Fabulous 21
+      { cat: "2020: Fabulous 21", text: "What was the theme for the 6th Annual YAMAs in 2020?", opts:["YAMAs XXXL", "Fabulous 21", "Fu7ure Cul7ure", "Drip Till Infinity"], ans: 1 },
+      { cat: "2020: Fabulous 21", text: "Why was the 2020 event held virtually?", opts:["Lack of funding", "Venue unavailable", "COVID-19 pandemic", "Weather"], ans: 2 },
+      { cat: "2020: Fabulous 21", text: "Who was the night's biggest winner, taking Song and Artist of the Year in 2020?", opts: ["ATI", "Chef Gustos", "Vee", "Han C"], ans: 3 },
+      { cat: "2020: Fabulous 21", text: "What was the Song of the Year in 2020?", opts:["Sananapo", "Rejection", "Happy", "Dlala Ngamla"], ans: 1 },
+      { cat: "2020: Fabulous 21", text: "Who won 'Best Newcomer' in 2020?", opts:["Khoisan", "Jinger Stone", "Yaw Bannerman", "KX Legit"], ans: 0 },
+
+      // 2021: Fu7ure Cul7ure
+      { cat: "2021: Fu7ure Cul7ure", text: "What was the stylized theme for the 7th YAMAs in 2021?", opts:["Fabulous 21", "Fu7ure Cul7ure", "Drip Till Infinity", "YAMAS NINE"], ans: 1 },
+      { cat: "2021: Fu7ure Cul7ure", text: "On which TV channel was the virtual ceremony broadcast in 2021?", opts:["BTV", "NOW! TV", "Yarona TV", "Channel O"], ans: 1 },
+      { cat: "2021: Fu7ure Cul7ure", text: "Who won 'Best Female Single' in 2021 for the song 'BMW'?", opts: ["Mpho Sebina", "Amantle Brown", "Girly", "Sal Angel"], ans: 2 },
+      { cat: "2021: Fu7ure Cul7ure", text: "Who took home the 'Best Newcomer' award in 2021?", opts:["Jinger Stone", "Khoisan", "KX Legit", "Abitola"], ans: 0 },
+      { cat: "2021: Fu7ure Cul7ure", text: "Which artist won 'Best Hip Hop' for the song 'Ndeya' in 2021?", opts:["ATI", "Flyboy Que", "Veezo View", "William Last KRM"], ans: 1 },
+      { cat: "2021: Fu7ure Cul7ure", text: "Who was the 'Best Producer' in 2021?", opts:["DJ Bino", "Bangu", "MB On The Beat", "AmoBeatz"], ans: 2 },
+
+      // 2023: Drip Till Infinity
+      { cat: "2023: Drip Till Infinity", text: "Which South African media personality co-hosted the 2023 YAMAs?", opts:["Bonang Matheba", "Pearl Thusi", "Boity Thulo", "Minnie Dlamini"], ans: 1 },
+      { cat: "2023: Drip Till Infinity", text: "Where was the 8th edition held, marking the return to physical venues?", opts: ["GICC", "National Stadium", "Molapo Showcase Piazza", "UB Indoor Sports"], ans: 2 },
+      { cat: "2023: Drip Till Infinity", text: "Which artist led the 2023 pack with seven nominations?", opts:["Chef Gustos", "Han C", "William Last KRM", "DJ Kuchi"], ans: 0 },
+      { cat: "2023: Drip Till Infinity", text: "What was the theme of the 2023 edition?", opts:["Fabulous 21", "Fu7ure Cul7ure", "Drip Till Infinity", "YAMAs 2.0"], ans: 2 },
+      { cat: "2023: Drip Till Infinity", text: "Which choir gave a special performance at the 2023 night?", opts:["KTM Choir", "Joyous Celebration", "Gaborone Youth Choir", "Ubuntu Choir"], ans: 0 },
+      { cat: "2023: Drip Till Infinity", text: "Which beer brand collaborated with ODC to support the 2023 event?", opts:["Carling Black Label", "St Louis Lager", "Castle Lite", "Hunters Gold"], ans: 1 },
+
+      // 2025: YAMAS NINE
+      { cat: "2025: YAMAS NINE", text: "What was the unique format of the 2025 event?", opts:["Stadium Concert", "A 'Curated Morning'", "Virtual Reality Show", "3-Day Festival"], ans: 1 },
+      { cat: "2025: YAMAS NINE", text: "Who was inducted into the Hall of Fame posthumously in 2025?", opts:["Sasa Klaas", "Dramaboi", "Steez", "Presley Metshe"], ans: 1 },
+      { cat: "2025: YAMAS NINE", text: "Who won 'Song of the Year' in 2025?", opts: ["Away", "Rejection", "Sebinki", "Malatsa"], ans: 2 },
+      { cat: "2025: YAMAS NINE", text: "Who won 'Best Newcomer' and 'Best Hip Hop' in 2025?", opts:["KX Legit", "Abitola", "Flyboy Que", "Veezo View"], ans: 0 },
+      { cat: "2025: YAMAS NINE", text: "How many total categories were contested in 2025?", opts: ["10", "14", "17", "21"], ans: 1 },
+      { cat: "2025: YAMAS NINE", text: "Which female artist won 'Best Female Single' in 2025?", opts:["Mpho Sebina", "Amantle Brown", "Kayso the Enigma", "Girly"], ans: 2 },
+      { cat: "2025: YAMAS NINE", text: "Who received the 'Diamond Award' in 2025?", opts:["Han C", "Chef Gustos", "KTM Choir", "Vee"], ans: 2 },
+      { cat: "2025: YAMAS NINE", text: "Who was the 2025 Icon Award recipient?", opts:["Tumie Ramsden", "Boipelo Seleke", "Percy Raditladi", "Jazelle Kebakile"], ans: 3 }
+    ];
+
+    let currentQIndex = 0;
+    let score = 0;
+    let timerTimeout;
+    let isLocked = false;
+    
+    // Set to 3000ms (3 seconds) for fast-paced action
+    const TIME_LIMIT_MS = 10000; 
+
+    function switchScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function startGame() {
+      currentQIndex = 0;
+      score = 0;
+      document.getElementById('score-display').textContent = `Score: ${score}`;
+      switchScreen('game-screen');
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      if (currentQIndex >= ALL_QUESTIONS.length) {
+        endGame();
+        return;
+      }
+      
+      isLocked = false;
+      const q = ALL_QUESTIONS[currentQIndex];
+      
+      document.getElementById('q-counter').textContent = `${currentQIndex + 1} / 50`;
+      document.getElementById('q-category').textContent = q.cat;
+      document.getElementById('q-text').textContent = q.text;
+      
+      const optionsContainer = document.getElementById('options-grid');
+      optionsContainer.innerHTML = '';
+      
+      q.opts.forEach((optText, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = optText;
+        btn.onclick = () => selectOption(index, btn);
+        optionsContainer.appendChild(btn);
+      });
+
+      startTimer();
+    }
+
+    function startTimer() {
+      const bar = document.getElementById('timer-bar');
+      // Instantly reset the bar to full
+      bar.style.transition = 'none';
+      bar.style.transform = 'scaleX(1)';
+      
+      // Delay slightly, then start the CSS animation shrink
+      setTimeout(() => {
+        bar.style.transition = `transform ${TIME_LIMIT_MS}ms linear`;
+        bar.style.transform = 'scaleX(0)';
+      }, 50);
+
+      clearTimeout(timerTimeout);
+      timerTimeout = setTimeout(() => {
+        if (!isLocked) {
+          handleTimeUp();
+        }
+      }, TIME_LIMIT_MS);
+    }
+
+    function selectOption(selectedIndex, btnElement) {
+      if (isLocked) return;
+      isLocked = true;
+      clearTimeout(timerTimeout);
+
+      // Stop the timer bar dynamically
+      const bar = document.getElementById('timer-bar');
+      const currentScale = window.getComputedStyle(bar).getPropertyValue('transform');
+      bar.style.transition = 'none';
+      bar.style.transform = currentScale;
+
+      const q = ALL_QUESTIONS[currentQIndex];
+      const allBtns = document.querySelectorAll('.opt-btn');
+
+      if (selectedIndex === q.ans) {
+        btnElement.classList.add('correct');
+        score += 100; // 100 pts per correct answer
+        document.getElementById('score-display').textContent = `Score: ${score}`;
+      } else {
+        btnElement.classList.add('wrong');
+        allBtns[q.ans].classList.add('correct');
+      }
+
+      // Next question delay
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 800);
+    }
+
+    function handleTimeUp() {
+      isLocked = true;
+      const q = ALL_QUESTIONS[currentQIndex];
+      const allBtns = document.querySelectorAll('.opt-btn');
+      
+      // Reveal answer on timeout
+      if(allBtns[q.ans]) {
+        allBtns[q.ans].classList.add('correct');
+      }
+
+      // Next question delay
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 800);
+    }
+
+    function endGame(quit = false) {
+      clearTimeout(timerTimeout);
+      switchScreen('result-screen');
+      
+      document.getElementById('final-score').textContent = score;
+      const title = document.getElementById('result-title');
+      const desc = document.getElementById('result-desc');
+      
+      if (quit) {
+        title.textContent = "You Quit!";
+        desc.textContent = `You secured ${score} points before stepping out.`;
+      } else if (score >= 4000) {
+        title.textContent = "The Maverick! (1st Tier)";
+        desc.textContent = "You're a true VIP! ODC Headphones & FNBB Cash await your draw.";
+      } else if (score >= 2000) {
+        title.textContent = "The Hitmaker! (2nd Tier)";
+        desc.textContent = "Awesome memory! Mascom Speakers & MYSC Merch are within reach.";
+      } else {
+        title.textContent = "The Newcomer! (3rd Tier)";
+        desc.textContent = "Great try! You qualify for Mascom Data & Local Music Starter Packs.";
+      }
+    }
+
+    function submitScore() {
+      const name = document.getElementById('player-name').value;
+      const phone = document.getElementById('player-phone').value;
+      if(!name || !phone) {
+        alert("Please enter your name and mobile number to enter the prize draw!");
+        return;
+      }
+      alert(`Awesome ${name}! Your score of ${score} has been submitted to the Lifestyle Vault Draw.`);
+      location.reload();
+    }
+  </script>
+  <nav class="game-bottom-nav">
+    <a href="../index.html" class="game-nav-home">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </a>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YAMAs Trivia & Predict - Yarona FM</title>
+  <style>
+    :root { 
+      --brand-red: #d81a1a; 
+      --brand-black: #000000; 
+      --brand-white: #ffffff; 
+      --app-bg: #f2f2f6; 
+      --text-main: #333333;
+      --text-muted: #666666;
+      --success-green: #28a745;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--app-bg); color: var(--text-main); overflow-x: hidden; padding-bottom: 70px; }
+
+    /* Screen Management */
+    .screen { display: none; min-height: 100vh; flex-direction: column; }
+    .screen.active { display: flex; }
+
+    /* --- HOME SCREEN --- */
+    .hero-container { position: relative; width: 100%; height: 45vh; background: #ededed; }
+    .hero-bg { width: 100%; height: 100%; object-fit: contain; opacity: 1; transform: scale(0.95); }
+    
+    .content-wrapper { padding: 20px; margin-top: -30px; position: relative; z-index: 5; flex: 1; }
+    
+    .card { background: var(--brand-white); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .card-title { font-size: 18px; font-weight: 800; color: var(--brand-black); margin-bottom: 8px; text-transform: uppercase; }
+    .card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px; }
+    
+    .game-options { display: flex; gap: 10px; margin-bottom: 20px; }
+    .game-tab { flex: 1; text-align: center; padding: 12px; background: var(--app-bg); border-radius: 8px; font-size: 13px; font-weight: bold; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+    .game-tab.active { background: #ffe5e5; color: var(--brand-red); border-color: var(--brand-red); }
+
+    .prize-list { list-style: none; margin-top: 10px; }
+    .prize-list li { font-size: 13px; padding: 8px 0; border-bottom: 1px solid #eee; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+    .prize-list li:last-child { border-bottom: none; }
+    .prize-list li::before { content: '🎁'; font-size: 16px; }
+
+    .btn-primary { background: var(--brand-red); color: var(--brand-white); border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(216, 26, 26, 0.3); transition: 0.2s; }
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* --- GAME SCREEN --- */
+    #game-screen { padding: 20px; background: var(--brand-white); }
+    .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
+    
+    .timer-track { width: 100%; height: 8px; background: var(--app-bg); border-radius: 4px; overflow: hidden; margin-bottom: 30px; }
+    .timer-fill { height: 100%; width: 100%; background: var(--brand-red); border-radius: 4px; transform-origin: left; }
+    
+    .question-box { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .q-category { font-size: 12px; color: var(--brand-red); text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; }
+    .q-text { font-size: 22px; font-weight: 800; color: var(--brand-black); line-height: 1.3; margin-bottom: 30px; }
+    
+    .options-grid { display: flex; flex-direction: column; gap: 12px; }
+    .opt-btn { background: var(--app-bg); border: 2px solid var(--app-bg); color: var(--brand-black); padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: space-between; }
+    .opt-btn:active { transform: scale(0.98); }
+    .opt-btn.correct { background: #e8f5e9; border-color: var(--success-green); color: #1e7e34; }
+    .opt-btn.wrong { background: #ffe5e5; border-color: var(--brand-red); color: var(--brand-red); }
+
+    /* --- RESULTS SCREEN --- */
+    .result-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; text-align: center; }
+    .score-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--brand-red); color: white; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(216, 26, 26, 0.4); }
+    .result-title { font-size: 24px; font-weight: 800; color: var(--brand-black); margin-bottom: 10px; }
+    .result-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 30px; }
+
+    .form-group { width: 100%; margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; font-size: 12px; font-weight: bold; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+    .form-control { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 15px; background: var(--app-bg); }
+
+    .game-bottom-nav {
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
+      background: var(--brand-red);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 10000;
+    }
+    .game-nav-home {
+      color: var(--brand-white); text-decoration: none;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; cursor: pointer;
+    }
+    .game-nav-home svg { width: 22px; height: 22px; fill: var(--brand-white); }
+  </style>
+</head>
+<body>
+
+  <!-- HOME SCREEN -->
+  <div id="home-screen" class="screen active">
+    <div class="hero-container">
+      <img src="../Assets/Games/games_yamas_trivia.png" class="hero-bg" alt="YAMAs 10">
+    </div>
+    
+    <div class="content-wrapper">
+      <div class="card">
+        <h1 class="card-title">YAMAs 10: Play, Predict & Win</h1>
+        <p class="card-desc">The 10th anniversary of the Yarona FM Music Awards is almost here! Test your knowledge of the last decade of urban music and predict this year's winners to claim massive prizes.</p>
+        
+        <div class="game-options">
+          <div class="game-tab active">YAMAs Trivia</div>
+          <div class="game-tab active">Predict & Win</div>
+        </div>
+
+        <button class="btn-primary" onclick="startGame()">ENTER THE GAME</button>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title" style="font-size: 15px;">The Prize Vault</h2>
+        <ul class="prize-list">
+          <li><strong>Mascom:</strong> P500 Data & P200 Airtime Vouchers</li>
+          <li><strong>FNBB:</strong> VIP Tickets & P1,000 Cash Prizes</li>
+          <li><strong>ODC:</strong> Golden Circle Access & Merch</li>
+          <li><strong>MYSC:</strong> All-Access Event Passes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen" class="screen">
+    <div class="game-header">
+      <span id="score-display">Score: 0</span>
+      <span id="q-counter">1/50</span>
+      <button onclick="endGame(true)" style="background:none;border:none;color:var(--brand-red);font-weight:bold;cursor:pointer;">QUIT</button>
+    </div>
+    
+    <div class="timer-track">
+      <div class="timer-fill" id="timer-bar"></div>
+    </div>
+
+    <div class="question-box">
+      <div class="q-category" id="q-category">Category</div>
+      <div class="q-text" id="q-text">Question text goes here?</div>
+      <div class="options-grid" id="options-grid">
+        <!-- Options injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="result-screen" class="screen" style="background: var(--brand-white);">
+    <div class="result-content">
+      <div class="score-circle" id="final-score">0</div>
+      <h2 class="result-title" id="result-title">Game Over!</h2>
+      <p class="result-desc" id="result-desc">You survived the YAMAs 10 challenge.</p>
+      
+      <div class="card" style="width: 100%; border: 1px solid #eee; box-shadow: none; background: var(--app-bg);">
+        <h3 style="font-size: 14px; margin-bottom: 15px; color: var(--brand-black);">CLAIM YOUR ENTRY</h3>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" class="form-control" id="player-name" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" class="form-control" id="player-phone" placeholder="+267...">
+        </div>
+        <button class="btn-primary" onclick="submitScore()">SUBMIT & CLAIM</button>
+      </div>
+      
+      <button class="btn-primary" style="background: var(--brand-black); margin-top: 10px;" onclick="location.reload()">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script>
+    // All 50 Questions accurately transcribed from your text
+    const ALL_QUESTIONS = [
+      // The "Big 4"
+      { cat: "The Big 4", text: "Predict the 2026 Artist of the Year (People’s Choice):", opts: ["Han C", "Mpho Sebina", "William Last KRM", "Tebby-G"], ans: 1 },
+      { cat: "The Big 4", text: "Which track will be crowned 2026 Song of the Year?", opts: ["Sebinki", "O Serame", "Ditebogo", "Pula"], ans: 1 },
+      { cat: "The Big 4", text: "Who will win Best Male Single 2026?", opts: ["Han C", "Veezo View", "William Last KRM", "Lekoko"], ans: 1 },
+      { cat: "The Big 4", text: "Who will win Best Female Single 2026?", opts: ["Kayso the Enigma", "Mpho Sebina", "Abitola", "Seyi"], ans: 1 },
+      { cat: "The Big 4", text: "Which artist will have the most total nominations at YAMAs 10?", opts: ["Han C", "Chef Gustos", "Mpho Sebina", "KX Legit"], ans: 1 },
+      // The "Next Gen"
+      { cat: "Next Gen", text: "Predict the winner for Best Newcomer 2026:", opts: ["KX Legit", "Abitola", "D-Low", "Fifi"], ans: 0 },
+      { cat: "Next Gen", text: "Which new artist will win Best Hip Hop/Motswako?", opts: ["Flyboy Que", "KX Legit", "Speero", "Veezo View"], ans: 1 },
+      { cat: "Next Gen", text: "Who will win the Best Pop Artist category?", opts: ["Han C", "Abitola", "Seyi", "Bouncy"], ans: 1 },
+      { cat: "Next Gen", text: "Predict the winner for Best Amapiano Single (New Category for 2026):", opts: ["DJ Ngwazi", "Master KG", "Team Distant", "The Lowkeys"], ans: 0 },
+      { cat: "Next Gen", text: "Which fresh face will take home the Best R&B Single?", opts: ["Mpho Sebina", "Sal Angel", "Abitola", "Tebby-G"], ans: 1 },
+      { cat: "Next Gen", text: "Who will win Best Dance Single 2026?", opts: ["Thato Tladi", "Courtney", "D-Low", "Chef Gustos"], ans: 0 },
+      { cat: "Next Gen", text: "Which artist will win the 'Social Media Maverick' award?", opts: ["William Last KRM", "Mdu Tha Party", "Kayso the Enigma", "Priscilla K"], ans: 1 },
+      { cat: "Next Gen", text: "Predict the winner of Best Collaboration:", opts: ["Han C ft. Mpho Sebina", "Chef Gustos ft. KX Legit", "William Last KRM ft. Veezo View", "Sal Angel ft. Tebby-G"], ans: 0 },
+      { cat: "Next Gen", text: "Which new producer will win Producer of the Year?", opts: ["MB Onthebeat", "Flex The Ninja", "Amobeatz", "KD Bangers"], ans: 1 },
+      { cat: "Next Gen", text: "Who will win the Best Video of the Year?", opts: ["William Last KRM", "Mpho Sebina", "KX Legit", "Chef Gustos"], ans: 0 },
+      // Performance & Stage
+      { cat: "Performance", text: "Which artist will be the opening act for YAMAs 10?", opts: ["Han C", "KTM Choir", "KX Legit", "Ubuntu Band"], ans: 1 },
+      { cat: "Performance", text: "Which collaboration will be performed live for the first time?", opts: ["Malatsa", "Pelo 2.0", "Ditebogo", "Away"], ans: 0 },
+      { cat: "Performance", text: "Will there be an international surprise guest from South Africa?", opts: ["Yes (Uncle Waffles)", "Yes (Kabza De Small)", "Yes (Nasty C)", "No"], ans: 0 },
+      { cat: "Performance", text: "Predict the closing performance artist:", opts: ["Vee Mampeezy", "Han C", "Mpho Sebina", "KX Legit"], ans: 0 },
+      { cat: "Performance", text: "Which group will provide the live backing instrumentation?", opts: ["Ubuntu Band", "KTM Choir", "Metrophones", "The Power of One"], ans: 0 },
+      // 10th Anniversary Specials
+      { cat: "Anniversary", text: "Predict the 2026 Hall of Fame Inductee:", opts: ["Vee Mampeezy", "Scar", "Zeus", "Maxy Khoisan"], ans: 0 },
+      { cat: "Anniversary", text: "Who will receive the 10th Anniversary 'Legacy Award'?", opts: ["DJ Fresh", "Sidney Baitsile", "Zenzele Hirschfeld", "Thabo Bolokwe"], ans: 0 },
+      { cat: "Anniversary", text: "What will be the theme of the 10th Edition?", opts: ["Decade of Excellence", "YAMAs X", "Diamond Urban", "Fu7ure 10"], ans: 0 },
+      { cat: "Anniversary", text: "Where will the 10th Anniversary Gala take place?", opts: ["National Stadium", "GICC", "Molapo Piazza", "UB Indoor Sports"], ans: 0 },
+      { cat: "Anniversary", text: "Which artist will receive a special 'Diamond Certification' for sales?", opts: ["Han C", "Vee Mampeezy", "Mpho Sebina", "Chef Gustos"], ans: 0 },
+      // Red Carpet & Viral Moments
+      { cat: "Red Carpet", text: "Which female artist will be voted Best Dressed?", opts: ["Mpho Sebina", "Amantle Brown", "Kayso the Enigma", "Abitola"], ans: 0 },
+      { cat: "Red Carpet", text: "Which male artist will have the most 'talked-about' outfit?", opts: ["ATI", "Han C", "William Last KRM", "Veezo View"], ans: 0 },
+      { cat: "Red Carpet", text: "Predict the host of the Red Carpet 2026:", opts: ["Mdu Tha Party", "Khedi", "LB", "Guest from SA"], ans: 0 },
+      { cat: "Red Carpet", text: "Which brand will be the lead fashion partner?", opts: ["Mothusi Lesolle", "Glitz & Glam", "Dihdah", "The Local Corner"], ans: 0 },
+      { cat: "Red Carpet", text: "Will there be a hologram performance of a late legend?", opts: ["Yes (Sasa Klaas)", "Yes (Dramaboi)", "No", "Tribute but no hologram"], ans: 0 },
+      // Category Winners
+      { cat: "Category Winners", text: "Best Kwaito Single 2026:", opts: ["MMP Family", "Noello", "Eskimos", "Girly"], ans: 0 },
+      { cat: "Category Winners", text: "Best House Kwasa:", opts: ["Vee", "Wizards", "Mingo", "Amanandos"], ans: 0 },
+      { cat: "Category Winners", text: "Best Dance DJ:", opts: ["DJ Kuchi", "DJ Ngwazi", "Chrispin The Drummer", "Groove Cartel"], ans: 0 },
+      { cat: "Category Winners", text: "Best Hip Hop DJ:", opts: ["DJ Izzy", "Tumie Black Ace", "DJ Cupid", "DJ Fauz"], ans: 0 },
+      { cat: "Category Winners", text: "Best Gospel (New for 2026):", opts: ["Vusi", "KTM Choir", "Joyous Celebration Guest", "Local Legend"], ans: 0 },
+      { cat: "Category Winners", text: "Best Afro-Pop:", opts: ["Han C", "Mpho Sebina", "Amantle Brown", "Tebby-G"], ans: 0 },
+      { cat: "Category Winners", text: "Best Reggae/Dancehall:", opts: ["Natty O", "Local Breakout", "King B", "Steppa"], ans: 0 },
+      { cat: "Category Winners", text: "Best Alternative/Indie:", opts: ["Mpho Sebina", "Jordan Moozy", "Kandu", "Seyi"], ans: 0 },
+      { cat: "Category Winners", text: "Best Lyricist (Motswako):", opts: ["Scar", "KX Legit", "Flyboy Que", "Veezo View"], ans: 0 },
+      { cat: "Category Winners", text: "Best International Collab:", opts: ["Han C & SA Artist", "Vee & Nigerian Artist", "Mpho Sebina & US Artist", "None"], ans: 0 },
+      // Fun Wildcards
+      { cat: "Wildcards", text: "How many awards will Han C win total?", opts: ["Zero", "One", "Two", "Three or More"], ans: 3 },
+      { cat: "Wildcards", text: "Will any artist win 'Double' (Artist & Song of the Year)?", opts: ["Yes", "No", "Maybe", "Tie"], ans: 0 },
+      { cat: "Wildcards", text: "What time will the show actually end?", opts: ["Midnight", "1:00 AM", "2:00 AM", "3:00 AM"], ans: 1 },
+      { cat: "Wildcards", text: "Which telco will have the biggest activation at the venue?", opts: ["Mascom", "Orange", "BTC", "BeMobile"], ans: 0 },
+      { cat: "Wildcards", text: "Which bank will sponsor the 'Diamond Moment' of the night?", opts: ["FNBB", "Stanbic", "Absa", "Bank Gaborone"], ans: 0 },
+      { cat: "Wildcards", text: "Predict the lead host for the main ceremony:", opts: ["KingB", "Ross", "Pearl Thusi", "Sway"], ans: 0 },
+      { cat: "Wildcards", text: "How many outfit changes for the main host?", opts: ["Two", "Three", "Four", "Five+"], ans: 2 },
+      { cat: "Wildcards", text: "Will an artist decline an award on stage?", opts: ["Yes", "No", "Walk off", "Send Manager"], ans: 1 },
+      { cat: "Wildcards", text: "Will any winner be absent and accept via video?", opts: ["Yes", "No", "Audio only", "Written speech"], ans: 0 },
+      { cat: "Wildcards", text: "Will the 10th edition be the highest-rated in history?", opts: ["Yes", "No", "Tied", "Unrated"], ans: 0 }
+    ];
+
+    let currentQIndex = 0;
+    let score = 0;
+    let timerTimeout;
+    let transitionTimeout;
+    let isLocked = false;
+    
+    // 3 seconds per question as requested
+    const TIME_LIMIT_MS = 10000; 
+
+    function switchScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function startGame() {
+      currentQIndex = 0;
+      score = 0;
+      document.getElementById('score-display').textContent = `Score: ${score}`;
+      switchScreen('game-screen');
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      if (currentQIndex >= ALL_QUESTIONS.length) {
+        endGame();
+        return;
+      }
+      
+      isLocked = false;
+      const q = ALL_QUESTIONS[currentQIndex];
+      
+      document.getElementById('q-counter').textContent = `${currentQIndex + 1} / 50`;
+      document.getElementById('q-category').textContent = q.cat;
+      document.getElementById('q-text').textContent = q.text;
+      
+      const optionsContainer = document.getElementById('options-grid');
+      optionsContainer.innerHTML = '';
+      
+      q.opts.forEach((optText, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = optText;
+        btn.onclick = () => selectOption(index, btn);
+        optionsContainer.appendChild(btn);
+      });
+
+      startTimer();
+    }
+
+    function startTimer() {
+      const bar = document.getElementById('timer-bar');
+      // Reset bar instantly
+      bar.style.transition = 'none';
+      bar.style.transform = 'scaleX(1)';
+      
+      // Small delay to allow browser to render reset, then start CSS transition
+      setTimeout(() => {
+        bar.style.transition = `transform ${TIME_LIMIT_MS}ms linear`;
+        bar.style.transform = 'scaleX(0)';
+      }, 50);
+
+      clearTimeout(timerTimeout);
+      timerTimeout = setTimeout(() => {
+        if (!isLocked) {
+          handleTimeUp();
+        }
+      }, TIME_LIMIT_MS);
+    }
+
+    function selectOption(selectedIndex, btnElement) {
+      if (isLocked) return;
+      isLocked = true;
+      clearTimeout(timerTimeout);
+
+      // Stop the timer bar where it is
+      const bar = document.getElementById('timer-bar');
+      const currentScale = window.getComputedStyle(bar).getPropertyValue('transform');
+      bar.style.transition = 'none';
+      bar.style.transform = currentScale;
+
+      const q = ALL_QUESTIONS[currentQIndex];
+      const allBtns = document.querySelectorAll('.opt-btn');
+
+      if (selectedIndex === q.ans) {
+        btnElement.classList.add('correct');
+        score += 100; // 100 pts per correct answer
+        document.getElementById('score-display').textContent = `Score: ${score}`;
+      } else {
+        btnElement.classList.add('wrong');
+        allBtns[q.ans].classList.add('correct');
+      }
+
+      // Move to next question after short delay
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 800);
+    }
+
+    function handleTimeUp() {
+      isLocked = true;
+      const q = ALL_QUESTIONS[currentQIndex];
+      const allBtns = document.querySelectorAll('.opt-btn');
+      
+      // Highlight correct answer
+      if(allBtns[q.ans]) {
+        allBtns[q.ans].classList.add('correct');
+      }
+
+      // Auto move after short delay
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 800);
+    }
+
+    function endGame(quit = false) {
+      clearTimeout(timerTimeout);
+      switchScreen('result-screen');
+      
+      document.getElementById('final-score').textContent = score;
+      const title = document.getElementById('result-title');
+      const desc = document.getElementById('result-desc');
+      
+      if (quit) {
+        title.textContent = "You Quit!";
+        desc.textContent = `You scored ${score} points before leaving.`;
+      } else if (score > 4000) {
+        title.textContent = "YAMAs Legend!";
+        desc.textContent = "Incredible! You know Botswana's urban music inside out.";
+      } else if (score > 2000) {
+        title.textContent = "Superfan Status!";
+        desc.textContent = "Great job, you are definitely ready for YAMAs 10.";
+      } else {
+        title.textContent = "Keep Listening!";
+        desc.textContent = "Tune into Yarona FM to brush up on your music knowledge.";
+      }
+    }
+
+    function submitScore() {
+      const name = document.getElementById('player-name').value;
+      const phone = document.getElementById('player-phone').value;
+      if(!name || !phone) {
+        alert("Please enter your name and number to claim your entry!");
+        return;
+      }
+      alert(`Thanks ${name}! Your score of ${score} has been submitted for the weekly draw.`);
+      location.reload();
+    }
+  </script>
+  <nav class="game-bottom-nav">
+    <a href="../index.html" class="game-nav-home">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </a>
+  </nav>
+</body>
+</html>

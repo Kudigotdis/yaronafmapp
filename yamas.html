@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/>
+  <title>YAMAs — Yarona FM Music Awards</title>
+  <style>
+    /* Base Styles */
+    :root {
+      --bg-color: #000000;
+      --text-color: #ffffff;
+      --card-bg: #ffffff;
+      --card-text: #000000;
+      --accent: #888888;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Mobile App Dimensions Constraint */
+    .wrap {
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px;
+      padding-bottom: 80px;
+      min-height: 100vh;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Views */
+    .view {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Images */
+    .hero-img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      background-color: #222;
+      box-shadow: 0 4px 12px rgba(255,255,255,0.1);
+    }
+
+    /* Typography */
+    h1 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #ccc;
+    }
+    p {
+      line-height: 1.5;
+      margin-bottom: 20px;
+      color: #dddddd;
+      font-size: 15px;
+    }
+
+    /* Stacked Buttons for Mobile */
+    .btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+      padding-bottom: 40px;
+    }
+    
+    .btn {
+      background-color: var(--card-bg);
+      color: var(--card-text);
+      padding: 18px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.1s, background-color 0.2s;
+      box-shadow: 0 2px 8px rgba(255,255,255,0.05);
+      width: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active {
+      transform: scale(0.98);
+      background-color: #e0e0e0;
+    }
+
+    /* Tabs & Swipe Layout */
+    .tabs-header {
+      display: flex;
+      border-bottom: 1px solid #333;
+      margin-bottom: 16px;
+    }
+    .tab-link {
+      flex: 1;
+      text-align: center;
+      padding: 14px 12px;
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 15px;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab-link.active {
+      color: #fff;
+      border-color: #fff;
+    }
+
+    .swipe-wrapper {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+      padding-bottom: 20px;
+    }
+    .swipe-wrapper::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
+    .swipe-panel {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      padding-right: 1px; /* Prevents content clipping */
+      box-sizing: border-box;
+    }
+
+    /* Accordions (Cards) */
+    details {
+      background-color: var(--card-bg);
+      color: var(--card-text);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(255,255,255,0.05);
+    }
+    details[open] summary {
+      margin-bottom: 12px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 12px;
+    }
+    summary {
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      outline: none;
+      list-style: none;
+      position: relative;
+      padding-right: 20px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    summary::after {
+      content: '+';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.4em;
+      line-height: 1;
+      color: #666;
+      font-weight: 400;
+    }
+    details[open] summary::after {
+      content: '−';
+    }
+    .accordion-content {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .winner {
+      font-weight: 700;
+      color: #000;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+    .winner::before {
+      content: '🏆 Winner: ';
+      color: #d32f2f;
+    }
+    .nominees {
+      color: #555;
+      display: block;
+    }
+    
+    .hosts-list {
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      border: 1px solid #333;
+    }
+    .hosts-list p { 
+      margin: 0; 
+      font-weight: 600; 
+      color: #fff; 
+      font-size: 15px;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 12px 16px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+
+    .bottom-bar .btn {
+      background: var(--card-bg);
+      color: var(--card-text);
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: transform 0.1s;
+    }
+
+    .bottom-bar .btn:active {
+      transform: scale(0.98);
+    }
+
+    .sponsor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .sponsor-card {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .sponsor-card img {
+      width: 100%;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    .sponsor-card .sponsor-name {
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- VIEW: HOME -->
+  <div id="home-view" class="wrap view active">
+    <!-- Large Hero Image -->
+    <img src="Assets/YAMAs/yamas_artwork.jpg" alt="Yarona FM Music Awards" class="hero-img" />
+    
+    <h1>YAMAs</h1>
+    <p>The Yarona FM Music Awards (YAMAs) celebrate the best in urban music across Botswana. Launched to recognize local talent, the awards have become a cornerstone of the nation's music industry.</p>
+    
+    <div class="btn-stack" id="year-buttons">
+      <!-- Buttons stacked vertically populated by JS -->
+    </div>
+  </div>
+
+  <!-- VIEW: YEAR DETAIL -->
+  <div id="year-view" class="wrap view">
+    <img id="y-image" src="" alt="Year Event" class="hero-img" />
+    <h1 id="y-title">Year</h1>
+    <p id="y-desc">Description</p>
+    
+    <div class="hosts-list">
+      <p id="y-hosts">🎤 Hosts: </p>
+    </div>
+
+    <!-- Tabs Header -->
+    <div class="tabs-header">
+      <div id="tab-categories" class="tab-link active" onclick="scrollToTab(0)">Categories</div>
+      <div id="tab-sponsors" class="tab-link" onclick="scrollToTab(1)">Sponsors</div>
+    </div>
+
+    <!-- Swipeable Area -->
+    <div class="swipe-wrapper" id="swipe-wrapper">
+      
+      <!-- Panel 1: Categories -->
+      <div class="swipe-panel">
+        <div id="categories-container">
+          <!-- Accordions populated by JS -->
+        </div>
+      </div>
+
+      <!-- Panel 2: Sponsors -->
+      <div class="swipe-panel">
+        <div id="sponsors-container">
+          <!-- Sponsor Accordions populated by JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FIXED BOTTOM BAR -->
+  <div class="bottom-bar">
+    <button class="btn" id="bottom-back-btn" onclick="handleBack()">Back</button>
+  </div>
+
+  <script>
+    // --- DATA ---
+    const yamasData = {
+      "2014": {
+        title: "YAMAs 2014",
+        img: "Assets/YAMAs/2014/yamas_artwork_2014.jpg",
+        description: "The inaugural Yarona FM Music Awards (YAMAs) marked the first event of its kind to specifically celebrate urban music in Botswana, heavily focused on fashion and daring outfits. Held at the GICC.",
+        hosts:["Dollar", "KingBee (Khumo Kgwaadira)"],
+        categories:[
+          { name: "Artist of the Year", winner: "Vee", nominees: "Zeus, A.T.I, Team Distant, MMP Family" },
+          { name: "Song of the Year", winner: "\"Eita\" by Vee", nominees: "\"Kave Ngoma\" (Team Distant), \"Transition\" (Samantha Mogwe)" },
+          { name: "Best Newcomer", winner: "TGB Linxsta", nominees: "Team Distant, Chef Gustos, Gaone, Licky" },
+          { name: "Best Female Single", winner: "Samantha Mogwe", nominees: "—" },
+          { name: "Best Male Single", winner: "TBC", nominees: "Kast, Epic, Chrome, ATI" },
+          { name: "Best Dance DJ", winner: "DJ Easy B", nominees: "Ricky Lamar, T-Man, Chrispin The Drummer, Kuchi" },
+          { name: "Best Hip Hop DJ", winner: "DJ Boogie Sid", nominees: "DJ Kelz, DJ T-Izzy, DJ Root, DJ Fauz" },
+          { name: "Best Kwaito", winner: "TBC", nominees: "MMP Family, Eskimos, Amanandos" },
+          { name: "Best Hip Hop/Motswako", winner: "TBC", nominees: "Epic, Chrome, B Block/Touch" }
+        ],
+        sponsors:["Mascom Wireless", "First National Bank of Botswana (FNBB)", "Ministry of Youth Empowerment, Sport and Culture Development (MYSC)", "Vigo"]
+      },
+      "2015": {
+        title: "YAMAs 2.0 (2015)",
+        img: "Assets/YAMAs/2015/yamas_artwork_2014.jpg",
+        description: "The second installment saw MMP Family dominate the night by winning three major awards, cementing the event's importance in Botswana's urban music scene. Held at the GICC.",
+        hosts: ["Dollar Mac", "Leungo"],
+        categories:[
+          { name: "Song of the Year", winner: "\"Lebala Ka Nna\" by MMP Family", nominees: "Various" },
+          { name: "Artist of the Year (People's Choice)", winner: "MMP Family", nominees: "Various" },
+          { name: "Best Female / Best Newcomer", winner: "Licky", nominees: "Various" },
+          { name: "Best Male", winner: "Chrome", nominees: "Various" },
+          { name: "Best Hip Hop", winner: "B Blok", nominees: "Various" },
+          { name: "Best Social Media", winner: "DJ Izzy", nominees: "Various" }
+        ],
+        sponsors:["FNB Botswana", "Mascom Wireless", "Orange Botswana", "MYSC"]
+      },
+      "2016": {
+        title: "YAMAs XXXL (2016)",
+        img: "Assets/YAMAs/2016/yamas_artwork_2014.jpg",
+        description: "Defined by breakout star Ban T, who emerged as the night's biggest winner, and Amantle Brown securing the prestigious Song of the Year title. Held at the GICC.",
+        hosts:["Leungo Pitse", "Dollar Mac"],
+        categories:[
+          { name: "Song of the Year", winner: "\"Black Mampatile\" by Amantle Brown", nominees: "Dramaboi / Katlego, Team Distant ft. Han-C, Ban T" },
+          { name: "People's Choice Artist of the Year", winner: "Ban T", nominees: "Amantle Brown, Scar, Dramaboi, DJ Izzy, Vee" },
+          { name: "Best Male Single / Best Hip Hop", winner: "Ban T", nominees: "Various" },
+          { name: "Best Newcomer", winner: "Han C", nominees: "Ban T, Kay Cee, Katlego, Han-C" }
+        ],
+        sponsors:["Mascom (Song of the Year)", "Hunters Gold (Artist of the Year)"]
+      },
+      "2017": {
+        title: "YAMAs 2017",
+        img: "Assets/YAMAs/2017/yamas_artwork_2014.jpg",
+        description: "The 4th annual YAMAs were heavily dominated by A.T.I, whose hit song 'Khiring Khiring Khorong' swept every category it was nominated for.",
+        hosts:["Bonnie B", "Ross"],
+        categories:[
+          { name: "Song of the Year / Best Male / Best Hip Hop", winner: "\"Khiring Khiring Khorong\" by A.T.I", nominees: "Various" },
+          { name: "Artist of the Year", winner: "Han-C", nominees: "Various" },
+          { name: "Best Single Female/R&B", winner: "Bouncy/Perion", nominees: "Various" },
+          { name: "Best Newcomer", winner: "Yaw Bannerman", nominees: "Various" },
+          { name: "Best Kwaito", winner: "MMP Family", nominees: "Various" }
+        ],
+        sponsors:["MYSC (P800,000)", "FNBB (P500,000)", "Mascom Wireless (P150,000)"]
+      },
+      "2018": {
+        title: "YAMAs 2018",
+        img: "Assets/YAMAs/2018/yamas_artwork_2014.jpg",
+        description: "Defined by the massive success of A.T.I scooping multiple major awards, and Han-C continuing his streak as a fan favorite.",
+        hosts: ["Bonnie B", "Ross"],
+        categories:[
+          { name: "Song of the Year", winner: "\"Khiring Khiring Khorong\" – A.T.I ft. Young Amazing", nominees: "Zaka, Follo, Monyopi, Hani Mubone" },
+          { name: "Artist of the Year", winner: "Han-C", nominees: "Various" },
+          { name: "Best Male Single", winner: "A.T.I", nominees: "DJ Kuchi, Balaclava Blanco, Pholoholo, Veezo View" },
+          { name: "Best Female Single", winner: "Bouncy", nominees: "Girlie wa di Body, Ms Abbey, Thato Jessica, Trippe Rhe_" },
+          { name: "Best Newcomer", winner: "Yaw Bannerman", nominees: "Khoisan, Ms Abbey, Wndr, Stretch ft. Jasmine" },
+          { name: "Producer of the Year", winner: "Bangu", nominees: "Various" }
+        ],
+        sponsors:["MYSC", "First National Bank Botswana (FNBB)", "Mascom Wireless", "Grand Palm Resort", "Botswana Tourism"]
+      },
+      "2020": {
+        title: "YAMAs 2020: Fabulous 21",
+        img: "Assets/YAMAs/2020/yamas_artwork_2014.jpg",
+        description: "Held virtually due to the COVID-19 pandemic under the theme 'Fabulous 21' to celebrate the station's 21st anniversary. Pre-recorded at New Capital Cinemas.",
+        hosts: ["Leungo Andre Pitse", "Kedi Molosiwa (Lezozo)"],
+        categories:[
+          { name: "Song of the Year", winner: "\"Rejection\" by Han C ft. DJ Kuchi", nominees: "Sananapo, Pelo" },
+          { name: "Artist of the Year", winner: "Han C", nominees: "Various" },
+          { name: "Best Female Single / Best Kwaito", winner: "\"Dlala Ngamla\" by Girly", nominees: "Various" },
+          { name: "Best Male Single / Best Hip Hop", winner: "\"Re MaAfrika\" by Phologolo", nominees: "Veezo View, Han C, Thato Tladi" },
+          { name: "Best Newcomer", winner: "\"Sananapo\" by Khoisan", nominees: "Jackalas Onetym, Thato Tladi" }
+        ],
+        sponsors:["Ministry of Youth Empowerment, Sport and Culture Development (MYSC)", "First National Bank Botswana (FNBB)", "Mascom Wireless"]
+      },
+      "2021": {
+        title: "YAMAs 2021: Fu7ure Cul7ure",
+        img: "Assets/YAMAs/2021/yamas_artwork_2014.jpg",
+        description: "Broadcast as a virtual event aired live on NOW! TV and Yarona FM's social media platforms due to ongoing precautions.",
+        hosts:["Loungo 'King B' Pitse", "Lebowa 'LB' Moroen"],
+        categories:[
+          { name: "Song of the Year", winner: "\"Rejection\" – DJ Kuchi ft. Han C", nominees: "\"Sananapo\" (Khoisan), \"Pelo\" (FME DJs), \"BMW\" (Girly)" },
+          { name: "Artist of the Year", winner: "Han C", nominees: "Khoisan, ATI, Mpho Sebina, Bouncy" },
+          { name: "Best Male Single", winner: "Han C", nominees: "Sal Angel, Yaw Bannerman" },
+          { name: "Best Female Single", winner: "Girly", nominees: "Thato Jessica, Mpho Sebina" },
+          { name: "Best Newcomer", winner: "Jinger Stone", nominees: "Wada, Blue Flame, Shaba Stele, Alain Bright" },
+          { name: "Best Hip Hop", winner: "Flyboy Que", nominees: "ATI ft Veezo View, Khoisan ft Han C" }
+        ],
+        sponsors:["MYSC", "FNB Botswana", "Mascom Wireless"]
+      },
+      "2023": {
+        title: "YAMAs 2023: Drip Till Infinity",
+        img: "Assets/YAMAs/2023/yamas_artwork_2014.jpg",
+        description: "Marked the physical return of the awards after several years of virtual ceremonies. Held at the Molapo Showcase Piazza in Gaborone.",
+        hosts:["Pearl Thusi", "DJ Sway"],
+        categories:[
+          { name: "People's Choice Artist of the Year", winner: "Han C", nominees: "A.T.I, Jordan Moozy, William Last KRM, Veezo View" },
+          { name: "Song of the Year", winner: "\"Rejection\" – DJ Kuchi ft. Han C", nominees: "\"Away\" (Chef Gustos), \"BMW\" (Girly)" },
+          { name: "Best Newcomer", winner: "Khoisan", nominees: "Jackalas Onetym, Thato Tladi, Courtney" },
+          { name: "Best Female Single", winner: "Girly", nominees: "Mpho Sebina, Bouncy" },
+          { name: "Best Male Single", winner: "Han C", nominees: "Chef Gustos, Phologolo, Sal Angel" }
+        ],
+        sponsors:["St Louis Lager (ODC)", "Mascom Wireless", "National Arts Council of Botswana (NACB)", "Taurus Batteries"]
+      },
+      "2025": {
+        title: "YAMAs NINE (2025)",
+        img: "Assets/YAMAs/2025/yamas_artwork_2025.jpg",
+        description: "A strategic shift to a more intimate, invite-only 'Curated Morning' format designed to foster dialogue between artists and industry players.",
+        hosts: ["Yarona FM Presenters"],
+        categories:[
+          { name: "Artist of the Year", winner: "Han C", nominees: "Mpho Sebina, Amantle Brown" },
+          { name: "Song of the Year", winner: "\"Sebinki\" by Han C", nominees: "\"Away\" (Chef Gustos), \"Malatsa\" (MB Onthebeat x Han-C)" },
+          { name: "Best Male Single", winner: "Han C", nominees: "Chef Gustos, William Last KRM" },
+          { name: "Best Female Single", winner: "Kayso the Enigma", nominees: "Amantle Brown, Mpho Sebina" },
+          { name: "Best Newcomer", winner: "KX Legit", nominees: "Jinger Stone, Abitola" },
+          { name: "Best Hip Hop", winner: "KX Legit", nominees: "Flyboy Que, Veezo View" }
+        ],
+        sponsors:["Okavango Diamond Company (ODC)", "First National Bank Botswana (FNBB)", "Mascom Wireless", "Ministry of Youth Empowerment, Sport and Culture Development (MYSC)"]
+      }
+    };
+
+    const years = Object.keys(yamasData);
+    
+    // --- INIT ---
+    document.addEventListener("DOMContentLoaded", () => {
+      const btnStack = document.getElementById("year-buttons");
+      years.forEach(year => {
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.textContent = year;
+        btn.onclick = () => showYear(year);
+        btnStack.appendChild(btn);
+      });
+
+      // Swipe listener to update tab active state
+      const swipeWrapper = document.getElementById("swipe-wrapper");
+      swipeWrapper.addEventListener('scroll', () => {
+        const scrollLeft = swipeWrapper.scrollLeft;
+        const width = swipeWrapper.offsetWidth;
+        const index = Math.round(scrollLeft / width);
+        updateTabUI(index);
+      });
+    });
+
+    // --- NAVIGATION ---
+    function handleBack() {
+      if (document.getElementById("year-view").classList.contains("active")) {
+        showHome();
+      } else {
+        window.location.href = "index.html?view=view-station";
+      }
+    }
+
+    function showHome() {
+      document.getElementById("year-view").classList.remove("active");
+      document.getElementById("home-view").classList.add("active");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showYear(year) {
+      const data = yamasData[year];
+      if(!data) return;
+
+      // Populate Data
+      document.getElementById("y-title").textContent = data.title;
+      document.getElementById("y-desc").textContent = data.description;
+      document.getElementById("y-hosts").textContent = `🎤 Hosts: ${data.hosts.join(" & ")}`;
+      document.getElementById("y-image").src = data.img;
+
+      // Populate Categories
+      const catContainer = document.getElementById("categories-container");
+      catContainer.innerHTML = '';
+      data.categories.forEach(cat => {
+        const details = document.createElement("details");
+        details.innerHTML = `
+          <summary>${cat.name}</summary>
+          <div class="accordion-content">
+            <span class="winner">${cat.winner}</span>
+            <span class="nominees"><strong>Nominees:</strong> ${cat.nominees}</span>
+          </div>
+        `;
+        catContainer.appendChild(details);
+      });
+
+      // Populate Sponsors
+      const sponsContainer = document.getElementById("sponsors-container");
+      sponsContainer.innerHTML = '';
+      const sDetails = document.createElement("details");
+      sDetails.setAttribute("open", "true");
+      const sponsorLogos = data.sponsors.map(s => `
+        <div class="sponsor-card">
+          <img src="Assets/YAMAs/sponsor_logo_dummy.svg" alt="${s}">
+          <div class="sponsor-name">${s}</div>
+        </div>
+      `).join('');
+      sDetails.innerHTML = `
+        <summary>Official Sponsors</summary>
+        <div class="accordion-content">
+          <div class="sponsor-grid">${sponsorLogos}</div>
+        </div>
+      `;
+      sponsContainer.appendChild(sDetails);
+
+      // Reset Tabs
+      scrollToTab(0);
+
+      // Switch View
+      document.getElementById("home-view").classList.remove("active");
+      document.getElementById("year-view").classList.add("active");
+      window.scrollTo({ top: 0 });
+    }
+
+    // --- TABS & SWIPE LOGIC ---
+    function scrollToTab(index) {
+      const swipeWrapper = document.getElementById("swipe-wrapper");
+      const width = swipeWrapper.offsetWidth;
+      swipeWrapper.scrollTo({ left: width * index, behavior: 'smooth' });
+      updateTabUI(index);
+    }
+
+    function updateTabUI(index) {
+      const tabCat = document.getElementById("tab-categories");
+      const tabSpons = document.getElementById("tab-sponsors");
+      
+      if(index === 0) {
+        tabCat.classList.add("active");
+        tabSpons.classList.remove("active");
+      } else {
+        tabSpons.classList.add("active");
+        tabCat.classList.remove("active");
+      }
+    }
+  </script>
+</body>
+</html>

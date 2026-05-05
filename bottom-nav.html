@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bottom Nav</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --brand-red: #d81a1a;
+      --brand-white: #ffffff;
+    }
+    
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
+      background: var(--brand-red);
+      display: flex; justify-content: space-around; align-items: center;
+      z-index: 10000;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    
+    .nav-item {
+      color: var(--brand-white); text-decoration: none; font-size: 10px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 8px;
+      transition: background 0.2s;
+      pointer-events: auto;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    
+    .nav-item.active {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .nav-item svg {
+      width: 24px; height: 24px; fill: var(--brand-white);
+    }
+    
+    .nav-item img {
+      width: 24px; height: 24px; object-fit: contain;
+    }
+    .nav-item span {
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <nav id="bottom-nav" class="bottom-nav">
+    <div class="nav-item active" data-view="view-news" data-index="0">
+      <img src="Assets/icons/news_icon.png" alt="News">
+    </div>
+    <div class="nav-item" data-view="view-live" data-index="1">
+      <img src="Assets/icons/live_icon.png" alt="Live">
+    </div>
+    <div class="nav-item" data-view="view-act" data-index="2">
+      <svg viewBox="0 0 24 24"><path d="M21 4h-3V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v1H3a1 1 0 0 0-1 1v3c0 3.8 3.1 7 7 7h1v2a5 5 0 0 0-4 4.9v2h12v-2a5 5 0 0 0-4-4.9v-2h1c3.8 0 7-3.1 7-7V5a1 1 0 0 0-1-1zM4 9V6h2v6.8C4.8 11.7 4 10.4 4 9zm16 0c0 1.4-.8 2.7-2 3.8V6h2v3z"/></svg>
+    
+    </div>
+    <div class="nav-item" data-view="view-station" data-index="3">
+      <svg viewBox="0 0 24 24"><path d="M12 14c1.6 0 3-1.3 3-3V5c0-1.6-1.3-3-3-3S9 3.3 9 5v6c0 1.6 1.3 3 3 3zm5.9-3c-.4 0-.9.3-.9.8 0 2.5-2 4.3-5 4.3s-5-1.8-5-4.3c0-.4-.4-.8-.9-.8-.6 0-1 .5-1 1.1.4 3 2.8 5.3 5.9 5.7V20c0 .5.4 1 1 1s1-.4 1-1v-2.1c3-.4 5.4-2.7 5.9-5.7.1-.6-.3-1.1-1-1.1z"/></svg>
+    
+    </div>
+    <div class="nav-item" data-view="view-menu" data-index="4">
+      <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    
+    </div>
+  </nav>
+  
+  <!-- Menu overlay for view-menu -->
+  <div id="menu-overlay" style="display:none; position:fixed; right:12px; bottom:88px; width:320px; max-width:calc(100% - 24px); background:linear-gradient(180deg,#fff,#f6f6f6); box-shadow:0 8px 24px rgba(0,0,0,0.15); border-radius:12px; padding:12px; z-index:11000;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <strong style="font-size:15px;color:#222">Menu</strong>
+      <button id="menu-close" style="background:transparent;border:0;font-size:18px;cursor:pointer">✕</button>
+    </div>
+
+    <div id="menu-buttons" style="display:flex;flex-direction:column;gap:8px">
+      <button id="install-btn" class="btn-black" style="width:100%;display:flex;align-items:center;gap:8px;padding:10px;border-radius:8px;">Install App</button>
+
+      <!-- Social / utility buttons using provided icons -->
+      <button class="btn-white" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;" onclick="openMedia('tel:+000000000')">
+        <img src="Assets/icons/Call_on.png" alt="Call" style="width:22px;height:22px"> Call
+      </button>
+
+      <button class="btn-white" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;" onclick="openMedia('https://www.facebook.com/yaronafm')">
+        <img src="Assets/icons/facebook_icon_on.png" alt="Facebook" style="width:22px;height:22px"> Facebook
+      </button>
+
+      <button class="btn-white" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;" onclick="openMedia('https://www.instagram.com/yaronafm')">
+        <img src="Assets/icons/Instagram_On.png" alt="Instagram" style="width:22px;height:22px"> Instagram
+      </button>
+
+      <button class="btn-white" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;" onclick="openMedia('https://www.youtube.com/@yaronafm')">
+        <img src="Assets/icons/YouTube_On.png" alt="YouTube" style="width:22px;height:22px"> YouTube
+      </button>
+
+      <button class="btn-white" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;" onclick="openMedia('https://www.twitter.com/yaronafm')">
+        <img src="Assets/icons/Twitter_On.png" alt="Twitter" style="width:22px;height:22px"> Twitter
+      </button>
+
+      <button class="btn-white" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;" onclick="openMedia('https://wa.me/')">
+        <img src="Assets/icons/whatsApp_icon_on.png" alt="WhatsApp" style="width:22px;height:22px"> WhatsApp
+      </button>
+    </div>
+  </div>
+  
+  <script>
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        var viewId = item.getAttribute('data-view');
+        var tabIndex = parseInt(item.getAttribute('data-index'), 10);
+        
+        // Update active state
+        document.querySelectorAll('.nav-item').forEach(function(i) {
+          i.classList.remove('active');
+        });
+        item.classList.add('active');
+        
+        // Send to parent
+        if (window.parent !== window) {
+          window.parent.postMessage({
+            type: 'nav-click',
+            viewId: viewId,
+            tabIndex: tabIndex
+          }, '*');
+        }
+        // Toggle menu overlay when view-menu clicked
+        try {
+          var menu = document.getElementById('menu-overlay');
+          if (viewId === 'view-menu') {
+            if (menu) menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+          } else {
+            if (menu) menu.style.display = 'none';
+          }
+        } catch (err) { console.error(err); }
+      });
+    });
+
+    // Helper to open external links or deep links
+    function openMedia(url) {
+      try {
+        if (!url) return;
+        window.open(url, '_blank');
+      } catch (e) { console.error(e); }
+    }
+
+    // Menu close button
+    var menuClose = document.getElementById('menu-close');
+    if (menuClose) menuClose.addEventListener('click', function() { document.getElementById('menu-overlay').style.display = 'none'; });
+
+    // PWA install prompt handling
+    var deferredPrompt = null;
+    var installBtn = document.getElementById('install-btn');
+
+    function updateInstallButton() {
+      if (!installBtn) return;
+      var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      installBtn.style.display = (deferredPrompt && !isStandalone) ? 'flex' : 'none';
+    }
+
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      updateInstallButton();
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async function() {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        var choice = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        updateInstallButton();
+      });
+    }
+
+    window.addEventListener('appinstalled', function() {
+      deferredPrompt = null;
+      updateInstallButton();
+    });
+
+    // Hide menu when clicking outside
+    document.addEventListener('click', function(e) {
+      var menu = document.getElementById('menu-overlay');
+      var isClickInside = menu && (menu.contains(e.target) || e.target.closest('.nav-item'));
+      if (!isClickInside && menu) menu.style.display = 'none';
+    });
+
+    // Initial state
+    updateInstallButton();
+  </script>
+</body>
+</html>

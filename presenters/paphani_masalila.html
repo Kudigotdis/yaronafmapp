@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="stylesheet" href="../style.css"/><title>Paphani Masalila (Paps) — Presenter</title>
+<style>.wrap{padding:12px;max-width:760px;margin:0 auto}.head{display:flex;gap:12px;align-items:center}.head img{width:96px;height:96px;border-radius:8px}.tabs{display:flex;gap:8px;margin-top:12px}.tab{padding:8px;border-radius:6px;background:#fff;border:1px solid #eee;cursor:pointer}.active{background:#c00;color:#fff}</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <img src="Assets/Presenters/Paphani_Masalila.png" alt="Paphani Masalila"/>
+    <div>
+      <h2>Paphani Masalila (Paps)</h2>
+      <div>—</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-tab="about">About</div>
+    <div class="tab" data-tab="content">Content</div>
+  </div>
+  <div id="about" style="margin-top:12px">
+    <p><strong>Bio:</strong> Paphani Masalila (Paps) is a Yarona FM presenter and producer. This demo profile links Paphani to their shows in the app and uses the provided headshot.</p>
+    <p><strong>Show(s):</strong> Point of Order (and guest appearances)</p>
+    <p><strong>Role:</strong> Presenter</p>
+    <p><strong>Socials:</strong> —</p>
+  </div>
+  <div id="content" style="display:none;margin-top:12px">
+    <p>Clips and schedule (placeholder).</p>
+  </div>
+</div>
+<script>document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', e=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); e.target.classList.add('active'); const tab=e.target.dataset.tab; document.getElementById('about').style.display = tab==='about' ? 'block' : 'none'; document.getElementById('content').style.display = tab==='content' ? 'block' : 'none'; }));</script>
+</body>
+</html>

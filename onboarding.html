@@ -2,30 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yarona FM - Welcome</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Yarona FM - Onboarding</title>
   <style>
     :root {
       --brand-red: #C41E3A;
       --brand-black: #000000;
       --brand-white: #FFFFFF;
       --grey-light: #E5E5E5;
+      --grey-medium: #DDDDDD;
       --grey-dark: #666666;
+      --bg-color: #F8F9FA;
     }
     
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
     
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--brand-white);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      background: var(--bg-color);
       color: var(--brand-black);
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--brand-white);
+      position: relative;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
     }
     
     /* Header */
@@ -34,126 +47,456 @@
       padding: 20px;
       text-align: center;
       border-bottom: 1px solid var(--grey-light);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
     
-    .header img {
-      height: 40px;
-      max-width: 150px;
-    }
-    
-    .tagline {
-      font-size: 24px;
-      font-weight: bold;
+    .header h1 {
+      font-size: 22px;
       color: var(--brand-red);
-      margin-top: 10px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
     }
-    
-    /* Content */
-    .content {
+    .header p {
+      font-size: 13px;
+      color: var(--grey-dark);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* Views */
+    .view {
+      display: none;
       flex: 1;
+      padding: 24px 20px;
+      animation: fadeIn 0.3s ease;
+    }
+    .view.active {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding: 40px 20px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Step 1: Type Selection */
+    .type-card {
+      background: var(--brand-white);
+      border: 2px solid var(--grey-light);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    .type-card:active {
+      transform: scale(0.98);
+      background: var(--bg-color);
+    }
+    .type-card.selected {
+      border-color: var(--brand-red);
+      background: rgba(196, 30, 58, 0.05);
+    }
+    .type-icon {
+      font-size: 32px;
+      margin-right: 16px;
+    }
+    .type-text h3 {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    .type-text p {
+      font-size: 14px;
+      color: var(--grey-dark);
+    }
+
+    /* Step 2: Accordion Form */
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--grey-dark);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 0;
+    }
+    .back-btn svg {
+      margin-right: 6px;
+    }
+
+    details {
+      background: var(--brand-white);
+      border: 1px solid var(--grey-light);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    summary {
+      padding: 18px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      outline: none;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    summary::after {
+      content: '+';
+      font-size: 20px;
+      color: var(--brand-red);
+      font-weight: 400;
+    }
+    details[open] summary {
+      border-bottom: 1px solid var(--grey-light);
+    }
+    details[open] summary::after {
+      content: '−';
     }
     
-    .welcome-text {
-      font-size: 28px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 40px;
+    .accordion-body {
+      padding: 20px 18px;
+      background: var(--bg-color);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--grey-dark);
+      margin-bottom: 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      border: 1px solid var(--grey-medium);
+      border-radius: 8px;
+      background: var(--brand-white);
       color: var(--brand-black);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--brand-black);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
     }
     
+    /* Photo Upload Placeholder */
+    .photo-upload {
+      width: 80px;
+      height: 80px;
+      background: var(--grey-light);
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 20px auto;
+      border: 2px dashed var(--grey-dark);
+      cursor: pointer;
+    }
+
     /* Buttons */
     .btn {
-      width: calc(100% - 40px);
-      max-width: 300px;
-      margin: 10px auto;
-      padding: 16px 20px;
+      width: 100%;
+      padding: 16px;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
       text-align: center;
+      margin-top: auto;
     }
-    
     .btn-primary {
       background: var(--brand-red);
       color: var(--brand-white);
+      margin-top: 20px;
     }
-    
     .btn-primary:active {
-      opacity: 0.8;
+      transform: scale(0.98);
     }
-    
-    .btn-secondary {
+    .btn-outline {
       background: var(--brand-white);
       color: var(--brand-black);
       border: 2px solid var(--brand-black);
     }
     
-    .btn-secondary:active {
-      background: var(--grey-light);
+    /* Conditional Sections */
+    #presenter-fields {
+      display: none;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px dashed var(--grey-medium);
     }
-    
-    .btn-preview {
-      background: var(--grey-light);
-      color: var(--brand-black);
-    }
-    
-    /* Divider */
-    .divider {
-      margin: 30px 20px;
-      text-align: center;
-      color: var(--grey-dark);
-      font-size: 14px;
-    }
-    
-    /* Footer */
-    .footer {
-      padding: 20px;
-      text-align: center;
-      color: var(--grey-dark);
-      font-size: 12px;
-    }
-    
-    .footer a {
-      color: var(--brand-red);
-      text-decoration: none;
-    }
+
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <div class="header">
-    <img src="Assets/logo/yarona-logo.svg" alt="Yarona FM">
-    <div class="tagline">Live The Music</div>
+
+  <div class="app-container">
+    
+    <!-- Header -->
+    <div class="header">
+      <h1>Yarona FM</h1>
+      <p>Live The Music</p>
+    </div>
+    
+    <!-- VIEW 1: Profile Type Selection -->
+    <div id="selection-view" class="view active">
+      <h2 style="margin-bottom: 8px; font-size: 22px;">Welcome</h2>
+      <p style="color: var(--grey-dark); margin-bottom: 30px; font-size: 15px;">Choose the profile type you'd like to create to personalize your experience.</p>
+      
+      <div class="type-card" onclick="selectType('Listener')">
+        <div class="type-icon">🎧</div>
+        <div class="type-text">
+          <h3>Listener Profile</h3>
+          <p>Vote for YAMAs, discover shows, and engage with the station.</p>
+        </div>
+      </div>
+      
+      <div class="type-card" onclick="selectType('Staff')">
+        <div class="type-icon">🎙️</div>
+        <div class="type-text">
+          <h3>Staff Profile</h3>
+          <p>For presenters, DJs, producers, and station management.</p>
+        </div>
+      </div>
+      
+      <div style="margin-top: 30px; text-align: center;">
+        <p style="font-size: 14px; color: var(--grey-dark);">Already have a profile? <a href="#" style="color: var(--brand-red); font-weight: bold; text-decoration: none;">Log in</a></p>
+      </div>
+    </div>
+
+    <!-- VIEW 2: Accordion Form -->
+    <div id="form-view" class="view">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        Back
+      </button>
+
+      <h2 style="margin-bottom: 20px; font-size: 22px;">Create <span id="profile-title">Listener</span> Profile</h2>
+
+      <!-- ACCORDION: Identity -->
+      <details open>
+        <summary>👤 Identity</summary>
+        <div class="accordion-body">
+          <div class="photo-upload" onclick="alert('Photo uploader will open here')">📷</div>
+          
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="Enter your first name">
+          </div>
+          <div class="form-group">
+            <label>Second Name (Optional)</label>
+            <input type="text" placeholder="Enter your second name">
+          </div>
+          <div class="form-group">
+            <label>Surname</label>
+            <input type="text" placeholder="Enter your surname">
+          </div>
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date">
+          </div>
+          <div class="form-group">
+            <label>Gender</label>
+            <select>
+              <option value="" disabled selected>Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Race (Optional)</label>
+            <select>
+              <option value="" disabled selected>Select race</option>
+              <option value="Black">Black</option>
+              <option value="White">White</option>
+              <option value="Coloured">Coloured</option>
+              <option value="Asian">Asian</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+      </details>
+
+      <!-- ACCORDION: Contact & Location -->
+      <details>
+        <summary>📞 Contact & Location</summary>
+        <div class="accordion-body">
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" placeholder="+267 7X XXX XXX">
+          </div>
+          <div class="form-group">
+            <label>Mobile Banking Number</label>
+            <input type="tel" placeholder="+267 7X XXX XXX">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="tel" placeholder="+267 7X XXX XXX">
+          </div>
+          <div class="form-group">
+            <label>City / Town</label>
+            <select>
+              <option value="" disabled selected>Select your city</option>
+              <option value="Gaborone">Gaborone</option>
+              <option value="Francistown">Francistown</option>
+              <option value="Maun">Maun</option>
+              <option value="Palapye">Palapye</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Area / Neighbourhood</label>
+            <input type="text" placeholder="e.g. Phakalane, Block 8, etc.">
+          </div>
+        </div>
+      </details>
+
+      <!-- ACCORDION: Staff Details (Only shows if Staff) -->
+      <details id="acc-staff" style="display: none;">
+        <summary>🎙️ Professional Details</summary>
+        <div class="accordion-body">
+          <div class="form-group">
+            <label>Staff Role</label>
+            <select id="staff-role" onchange="togglePresenterFields()">
+              <option value="" disabled selected>Select your role</option>
+              <option value="Presenter">Presenter</option>
+              <option value="Producer">Producer</option>
+              <option value="DJ">DJ</option>
+              <option value="News Anchor">News Anchor</option>
+              <option value="Station Manager">Station Manager</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- PRESENTER SPECIFIC FIELDS -->
+          <div id="presenter-fields">
+            <h4 style="margin-bottom: 12px; font-size: 15px;">Presenter Info</h4>
+            <div class="form-group">
+              <label>On-Air Alias</label>
+              <input type="text" placeholder="e.g. DJ Izzy, King B">
+            </div>
+            <div class="form-group">
+              <label>Show Name</label>
+              <input type="text" placeholder="e.g. The Morning Crew">
+            </div>
+            <div class="form-group">
+              <label>Show Times</label>
+              <input type="text" placeholder="e.g. Mon-Fri, 06:00-10:00">
+            </div>
+            <div class="form-group">
+              <label>Show Description</label>
+              <textarea placeholder="Briefly describe the show..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Instagram Handle</label>
+              <input type="text" placeholder="@yourhandle">
+            </div>
+            <div class="form-group">
+              <label>TikTok Handle</label>
+              <input type="text" placeholder="@yourhandle">
+            </div>
+            <div class="form-group">
+              <label>Staff Email</label>
+              <input type="email" placeholder="name@yaronafm.co.bw">
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <button class="btn btn-primary" onclick="completeProfile()">Save & Continue</button>
+    </div>
+    
   </div>
-  
-  <!-- Content -->
-  <div class="content">
-    <div class="welcome-text">Welcome to Yarona FM</div>
-    
-    <button class="btn btn-primary" onclick="location.href='listener-profile.html'">
-      Create Listener Profile
-    </button>
-    
-    <button class="btn btn-primary" onclick="location.href='staff-profile.html'">
-      Create Staff Profile
-    </button>
-    
-    <div class="divider">- or -</div>
-    
-    <button class="btn btn-preview" onclick="location.href='preview.html'">
-      Preview Profile
-    </button>
-  </div>
-  
-  <!-- Footer -->
-  <div class="footer">
-    Already have a profile? <a href="login.html">Login</a>
-  </div>
+
+  <script>
+    let currentProfileType = '';
+
+    // Switch to Form View
+    function selectType(type) {
+      currentProfileType = type;
+      
+      // Update Title
+      document.getElementById('profile-title').innerText = type;
+
+      // Handle Accordion Visibility
+      const staffAccordion = document.getElementById('acc-staff');
+      if (type === 'Staff') {
+        staffAccordion.style.display = 'block';
+      } else {
+        staffAccordion.style.display = 'none';
+      }
+
+      // Switch views
+      document.getElementById('selection-view').classList.remove('active');
+      document.getElementById('form-view').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // Go back to selection
+    function goBack() {
+      document.getElementById('form-view').classList.remove('active');
+      document.getElementById('selection-view').classList.add('active');
+      
+      // Reset selections
+      currentProfileType = '';
+      document.getElementById('staff-role').value = '';
+      togglePresenterFields(); // hide presenter fields just in case
+    }
+
+    // Toggle extra fields if Staff Role is Presenter
+    function togglePresenterFields() {
+      const role = document.getElementById('staff-role').value;
+      const presenterFields = document.getElementById('presenter-fields');
+      
+      if (role === 'Presenter') {
+        presenterFields.style.display = 'block';
+      } else {
+        presenterFields.style.display = 'none';
+      }
+    }
+
+    // Handle form completion
+    function completeProfile() {
+      // Mock Saving
+      let data = {
+        type: currentProfileType,
+        timestamp: new Date().toISOString()
+      };
+      
+      localStorage.setItem('yarona_user_onboarding', JSON.stringify(data));
+      
+      alert(currentProfileType + ' Profile successfully created!');
+      // In a real app, you would redirect here:
+      // window.location.href = 'index.html';
+    }
+  </script>
 </body>
 </html>

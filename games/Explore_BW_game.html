@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore BW Trivia - Salt Pans Challenge</title>
+  <style>
+    :root { 
+      /* Strict Palette: Red, Black, White, and Greys */
+      --brand-red: #d81a1a; 
+      --brand-red-10: rgba(216, 26, 26, 0.1);
+      --brand-red-30: rgba(216, 26, 26, 0.3);
+      --brand-red-40: rgba(216, 26, 26, 0.4);
+      
+      --brand-black: #000000; 
+      --brand-white: #ffffff; 
+      
+      --grey-light: #f5f5f5;
+      --grey-bg: #eeeeee;
+      --grey-border: #dddddd;
+      --text-main: #222222;
+      --text-muted: #666666;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--grey-bg); color: var(--text-main); overflow-x: hidden; padding-bottom: 70px; }
+
+    /* Screen Management */
+    .screen { display: none; min-height: 100vh; flex-direction: column; }
+    .screen.active { display: flex; }
+
+    /* --- HOME SCREEN --- */
+    .hero-container { position: relative; width: 100%; height: 45vh; background: #ededed; }
+    .hero-bg { width: 100%; height: 100%; object-fit: contain; opacity: 0.8; transform: scale(0.95); }
+    
+    .content-wrapper { padding: 20px; margin-top: -30px; position: relative; z-index: 5; flex: 1; }
+    
+    .card { background: var(--brand-white); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .card-title { font-size: 18px; font-weight: 800; color: var(--brand-black); margin-bottom: 8px; text-transform: uppercase; }
+    .card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px; }
+    
+    .game-options { display: flex; gap: 10px; margin-bottom: 20px; }
+    .game-tab { flex: 1; text-align: center; padding: 12px; background: var(--grey-light); border-radius: 8px; font-size: 13px; font-weight: bold; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+    .game-tab.active { background: var(--brand-red-10); color: var(--brand-red); border-color: var(--brand-red); }
+
+    .prize-list { list-style: none; margin-top: 10px; }
+    .prize-list li { font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--grey-border); color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+    .prize-list li:last-child { border-bottom: none; }
+    .prize-list li::before { content: '■'; color: var(--brand-red); font-size: 14px; }
+
+    .btn-primary { background: var(--brand-red); color: var(--brand-white); border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px var(--brand-red-30); transition: 0.2s; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-secondary { background: var(--brand-black); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+    /* --- GAME SCREEN --- */
+    #game-screen { padding: 20px; background: var(--brand-white); }
+    .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
+    
+    .timer-track { width: 100%; height: 8px; background: var(--grey-bg); border-radius: 4px; overflow: hidden; margin-bottom: 30px; }
+    .timer-fill { height: 100%; width: 100%; background: var(--brand-red); border-radius: 4px; transform-origin: left; }
+    
+    .question-box { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .q-category { font-size: 12px; color: var(--brand-red); text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; }
+    .q-text { font-size: 20px; font-weight: 800; color: var(--brand-black); line-height: 1.3; margin-bottom: 30px; }
+    
+    .options-grid { display: flex; flex-direction: column; gap: 12px; }
+    .opt-btn { background: var(--grey-light); border: 2px solid var(--grey-light); color: var(--brand-black); padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: space-between; }
+    .opt-btn:active { transform: scale(0.98); }
+    
+    /* Strict color adherence for right/wrong feedback */
+    .opt-btn.correct { background: var(--brand-black); border-color: var(--brand-black); color: var(--brand-white); }
+    .opt-btn.wrong { background: var(--brand-red-10); border-color: var(--brand-red); color: var(--brand-red); }
+
+    /* --- RESULTS SCREEN --- */
+    .result-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; text-align: center; }
+    .score-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--brand-red); color: var(--brand-white); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; margin-bottom: 20px; box-shadow: 0 8px 20px var(--brand-red-40); }
+    .result-title { font-size: 24px; font-weight: 800; color: var(--brand-black); margin-bottom: 10px; }
+    .result-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 30px; }
+
+    .form-group { width: 100%; margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; font-size: 12px; font-weight: bold; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+    .form-control { width: 100%; padding: 14px; border: 1px solid var(--grey-border); border-radius: 10px; font-size: 15px; background: var(--grey-light); color: var(--text-main); outline: none; transition: border 0.2s; }
+    .form-control:focus { border-color: var(--brand-red); background: var(--brand-white); }
+    select.form-control { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
+
+    .game-bottom-nav {
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
+      background: var(--brand-red);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 10000;
+    }
+    .game-nav-home {
+      color: var(--brand-white); text-decoration: none;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; cursor: pointer;
+    }
+    .game-nav-home svg { width: 22px; height: 22px; fill: var(--brand-white); }
+  </style>
+</head>
+<body>
+
+  <!-- HOME SCREEN -->
+  <div id="home-screen" class="screen active">
+    <div class="hero-container">
+      <img src="../Assets/Games/games_explore_bw.png" class="hero-bg" alt="Makgadikgadi Salt Pans">
+    </div>
+    
+    <div class="content-wrapper">
+      <div class="card">
+        <h1 class="card-title">Explore BW: Salt Pans Challenge</h1>
+        <p class="card-desc">Are you ready for the second edition of the Makgadikgadi Salt Pans Challenge? Test your knowledge of this unique event and the stunning Nata region to win exclusive experiences!</p>
+        
+        <div class="game-options">
+          <div class="game-tab active">Challenge Trivia</div>
+          <div class="game-tab" onclick="alert('Event Maps Coming Soon!')">Event Maps</div>
+        </div>
+
+        <button class="btn-primary" onclick="startGame()">ENTER THE CHALLENGE</button>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title" style="font-size: 15px;">The Prize Vault</h2>
+        <ul class="prize-list">
+          <li><strong>Adrenaline:</strong> Exclusive Helicopter Rides</li>
+          <li><strong>Premium:</strong> VIP Event Upgrades</li>
+          <li><strong>Scenic:</strong> Sunset Boat Cruise on Nata River</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen" class="screen">
+    <div class="game-header">
+      <span id="score-display">Score: 0</span>
+      <span id="q-counter">1/25</span>
+      <button onclick="endGame(true)" style="background:none;border:none;color:var(--brand-red);font-weight:bold;cursor:pointer;text-transform:uppercase;">Quit</button>
+    </div>
+    
+    <div class="timer-track">
+      <div class="timer-fill" id="timer-bar"></div>
+    </div>
+
+    <div class="question-box">
+      <div class="q-category" id="q-category">Category</div>
+      <div class="q-text" id="q-text">Question text goes here?</div>
+      <div class="options-grid" id="options-grid">
+        <!-- Options injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="result-screen" class="screen" style="background: var(--brand-white);">
+    <div class="result-content">
+      <div class="score-circle" id="final-score">0</div>
+      <h2 class="result-title" id="result-title">Challenge Complete!</h2>
+      <p class="result-desc" id="result-desc">You survived the Salt Pans trivia.</p>
+      
+      <div class="card" style="width: 100%; border: 1px solid var(--grey-border); box-shadow: none; background: var(--grey-bg);">
+        <h3 style="font-size: 14px; margin-bottom: 15px; color: var(--brand-black);">CLAIM YOUR ENTRY</h3>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" class="form-control" id="player-name" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" class="form-control" id="player-phone" placeholder="+267...">
+        </div>
+        <!-- PRIZE SELECTION DROPDOWN -->
+        <div class="form-group">
+          <label>Choose Your Preferred Prize</label>
+          <select class="form-control" id="player-prize">
+            <option value="" disabled selected>Select a prize...</option>
+            <option value="Helicopter Ride">Exclusive Helicopter Ride</option>
+            <option value="VIP Upgrade">Event VIP Upgrade</option>
+            <option value="Sunset Boat Cruise">Sunset Boat Cruise</option>
+          </select>
+        </div>
+        <button class="btn-primary" onclick="submitScore()">SUBMIT & CLAIM</button>
+      </div>
+      
+      <button class="btn-primary btn-secondary" style="margin-top: 10px;" onclick="location.reload()">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script>
+    // 25 Questions transcribed from Explore BW Trivia
+    const ALL_QUESTIONS = [
+      // Category 1: The Challenge & Event Logistics
+      { cat: "Event Logistics", text: "On which dates will the 2026 Makgadikgadi Salt Pans Challenge take place?", opts: ["May 1st – May 3rd", "May 29th – May 31st", "June 5th – June 7th", "August 10th – August 12th"], ans: 1 },
+      { cat: "Event Logistics", text: "Where is the official venue for the 2026 event?", opts: ["Kubu Island", "Nata Bird Sanctuary", "Gweta Village", "Sua Pan Gate"], ans: 1 },
+      { cat: "Event Logistics", text: "What is the central attraction and main sporting event of the festival?", opts: ["Horse Racing", "Camel Racing", "Quad Bike Endurance", "Marathon Running"], ans: 0 },
+      { cat: "Event Logistics", text: "What is the estimated total prize pool for the 2026 horse racing categories?", opts: ["P50,000", "P150,000", "P350,000", "P500,000"], ans: 2 },
+      { cat: "Event Logistics", text: "Which horse breeds are eligible to compete in the various racing categories?", opts: ["Thoroughbred only", "Tswana breed only", "Thoroughbred, Crossbreed, & Local Tswana", "Arabian and Mustang"], ans: 2 },
+      { cat: "Event Logistics", text: "A new 'thrilling' addition to the 2026 program features which of the following?", opts: ["Hot Air Ballooning", "An Air Show", "Bungee Jumping", "Desert Rally Car Racing"], ans: 1 },
+      { cat: "Event Logistics", text: "Who is scheduled to host the 'Boot Camp' session during the event weekend?", opts: ["The Minister of Tourism", "A famous local DJ", "Miss Universe Botswana", "An Olympic athlete"], ans: 2 },
+      { cat: "Event Logistics", text: "The 24-hour music festival and celebration officially kicks off after the races on which day?", opts: ["Friday, May 29", "Saturday, May 30", "Sunday, May 31", "Monday, June 1"], ans: 1 },
+      { cat: "Event Logistics", text: "What is the price for a single VIP ticket for the 2026 event?", opts: ["P150", "P500", "P1,000", "P1,700"], ans: 2 },
+      { cat: "Event Logistics", text: "Through which platform can self-drive visitors typically purchase their entry tickets?", opts: ["Facebook Marketplace", "Tickito", "Computicket", "Shoprite"], ans: 1 },
+      
+      // Category 2: Tour Packages & Travel
+      { cat: "Travel & Packages", text: "Which tour operator offers a package including return transport from Gaborone for P1,900?", opts: ["Rethabile African Tours", "Rustic Woods Travel", "Nata Adventure Safaris", "Kalahari Expeditions"], ans: 0 },
+      { cat: "Travel & Packages", text: "If you are traveling from Francistown with Rustic Woods Travel, how many nights of tented camping are included in their P795 package?", opts: ["1 Night", "2 Nights", "3 Nights", "Day trip only"], ans: 1 },
+      { cat: "Travel & Packages", text: "Which of these activities is generally an 'Own Account' (extra cost) booking?", opts: ["Daily Breakfast", "Entry Ticket", "Helicopter Rides", "The Bonfire"], ans: 2 },
+      { cat: "Travel & Packages", text: "The Rethabile African Tours 'Couple's Package' is priced at...?", opts: ["P2,500", "P3,000", "P3,750", "P4,000"], ans: 2 },
+      { cat: "Travel & Packages", text: "What is the cost of a VIP Double ticket for those who want a premium experience for two?", opts: ["P1,200", "P1,500", "P1,700", "P2,000"], ans: 3 },
+      
+      // Category 3: Geography of the Nata Region
+      { cat: "Geography", text: "The Nata Bird Sanctuary is unique because it is managed by...?", opts: ["The Government only", "The local community", "A private international hotel chain", "De Beers"], ans: 1 },
+      { cat: "Geography", text: "Which major river feeds into the Sua Pan near the Nata Bird Sanctuary?", opts: ["Chobe River", "Thamalakane River", "Nata River", "Boteti River"], ans: 2 },
+      { cat: "Geography", text: "The Nata Bird Sanctuary is a vital breeding ground for which iconic pink bird?", opts: ["Pelican", "Lesser and Greater Flamingo", "Spoonbill", "Ostrich"], ans: 1 },
+      { cat: "Geography", text: "What is the primary 'look' of the Makgadikgadi landscape during the dry season?", opts: ["Tropical Forest", "Vast white salt crust", "Rolling green hills", "Deep blue lakes"], ans: 1 },
+      { cat: "Geography", text: "Nata village is often called a 'crossroads' because it connects Gaborone/Francistown to which two major tourism hubs?", opts: ["Kanye and Molepolole", "Kasane and Maun", "Lobatse and Ghanzi", "Serowe and Palapye"], ans: 1 },
+      
+      // Category 4: Adventure & Wildlife
+      { cat: "Adventure & Wildlife", text: "Which adrenaline activity allows you to see the vastness of the pans from the air?", opts: ["Quad biking", "Helicopter rides", "Boat cruise", "Camel trekking"], ans: 1 },
+      { cat: "Adventure & Wildlife", text: "When the pans are flooded, which activity becomes possible at the Sanctuary?", opts: ["Desert skiing", "Mountain climbing", "Boat cruises", "Caving"], ans: 2 },
+      { cat: "Adventure & Wildlife", text: "The Makgadikgadi region is famous for having one of the largest populations of which tree species?", opts: ["Pine", "Baobab", "Eucalyptus", "Palm"], ans: 1 },
+      { cat: "Adventure & Wildlife", text: "Besides flamingos, which other large white bird is a frequent resident of the Sanctuary?", opts: ["Great White Pelican", "Penguin", "Albatross", "Swan"], ans: 0 },
+      { cat: "Adventure & Wildlife", text: "Which motorized adventure is a favorite for exploring the edge of the salt crust?", opts: ["Segway", "Quad biking", "Go-karting", "Scooter"], ans: 1 },
+      
+      // Category 5: Conservation & Heritage
+      { cat: "Conservation & Heritage", text: "What is the main goal of the Nata Bird Sanctuary project?", opts: ["Diamond mining", "Conservation and community tourism", "Cattle farming", "Industrial salt production"], ans: 1 },
+      { cat: "Conservation & Heritage", text: "The Makgadikgadi Pans are the remains of which ancient super-lake?", opts: ["Lake Victoria", "Lake Makgadikgadi", "Lake Chad", "Lake Tanganyika"], ans: 1 },
+      { cat: "Conservation & Heritage", text: "What is the best way to ensure the pans remain pristine during the festival?", opts: ["Driving everywhere on the pans", "Disposing of litter in bins and staying on tracks", "Feeding the wild animals", "Lighting fires anywhere"], ans: 1 },
+      { cat: "Conservation & Heritage", text: "The Nata Bird Sanctuary was one of Botswana’s first ______?", opts: ["Shopping malls", "Community-managed wildlife sanctuaries", "Sky-diving centers", "Gold mines"], ans: 1 },
+      { cat: "Conservation & Heritage", text: "What does the word 'Makgadikgadi' roughly translate to?", opts: ["Land of Water", "Vast lifeless land (The Great Thirstland)", "Forest of Trees", "Mountain of Salt"], ans: 1 }
+    ];
+
+    let currentQIndex = 0;
+    let score = 0;
+    let timerTimeout;
+    let isLocked = false;
+    
+    const TIME_LIMIT_MS = 10000; 
+    const TOTAL_QUESTIONS = ALL_QUESTIONS.length;
+
+    function switchScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function startGame() {
+      currentQIndex = 0;
+      score = 0;
+      document.getElementById('score-display').textContent = `Score: ${score}`;
+      switchScreen('game-screen');
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      if (currentQIndex >= TOTAL_QUESTIONS) {
+        endGame();
+        return;
+      }
+      
+      isLocked = false;
+      const q = ALL_QUESTIONS[currentQIndex];
+      
+      document.getElementById('q-counter').textContent = `${currentQIndex + 1} / ${TOTAL_QUESTIONS}`;
+      document.getElementById('q-category').textContent = q.cat;
+      document.getElementById('q-text').textContent = q.text;
+      
+      const optionsContainer = document.getElementById('options-grid');
+      optionsContainer.innerHTML = '';
+      
+      q.opts.forEach((optText, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = optText;
+        btn.onclick = () => selectOption(index, btn);
+        optionsContainer.appendChild(btn);
+      });
+
+      startTimer();
+    }
+
+    function startTimer() {
+      const bar = document.getElementById('timer-bar');
+      bar.style.transition = 'none';
+      bar.style.transform = 'scaleX(1)';
+      
+      setTimeout(() => {
+        bar.style.transition = `transform ${TIME_LIMIT_MS}ms linear`;
+        bar.style.transform = 'scaleX(0)';
+      }, 50);
+
+      clearTimeout(timerTimeout);
+      timerTimeout = setTimeout(() => {
+        if (!isLocked) {
+          handleTimeUp();
+        }
+      }, TIME_LIMIT_MS);
+    }
+
+    function selectOption(selectedIndex, btnElement) {
+      if (isLocked) return;
+      isLocked = true;
+      clearTimeout(timerTimeout);
+
+      const bar = document.getElementById('timer-bar');
+      const currentScale = window.getComputedStyle(bar).getPropertyValue('transform');
+      bar.style.transition = 'none';
+      bar.style.transform = currentScale;
+
+      const q = ALL_QUESTIONS[currentQIndex];
+      const allBtns = document.querySelectorAll('.opt-btn');
+
+      if (selectedIndex === q.ans) {
+        // Correct response is indicated with solid black based on the new palette
+        btnElement.classList.add('correct');
+        score += 100; 
+        document.getElementById('score-display').textContent = `Score: ${score}`;
+      } else {
+        // Incorrect response is red
+        btnElement.classList.add('wrong');
+        allBtns[q.ans].classList.add('correct');
+      }
+
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 1000);
+    }
+
+    function handleTimeUp() {
+      isLocked = true;
+      const q = ALL_QUESTIONS[currentQIndex];
+      const allBtns = document.querySelectorAll('.opt-btn');
+      
+      if(allBtns[q.ans]) {
+        allBtns[q.ans].classList.add('correct');
+      }
+
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 1200);
+    }
+
+    function endGame(quit = false) {
+      clearTimeout(timerTimeout);
+      switchScreen('result-screen');
+      
+      document.getElementById('final-score').textContent = score;
+      const title = document.getElementById('result-title');
+      const desc = document.getElementById('result-desc');
+      
+      if (quit) {
+        title.textContent = "You Quit!";
+        desc.textContent = `You scored ${score} points before leaving.`;
+      } else if (score >= 2000) {
+        title.textContent = "Salt Pans Explorer!";
+        desc.textContent = "Incredible! You know the Nata region and the challenge inside out.";
+      } else if (score >= 1000) {
+        title.textContent = "Adventure Seeker!";
+        desc.textContent = "Great job, you are definitely ready for the Makgadikgadi Challenge.";
+      } else {
+        title.textContent = "Keep Exploring!";
+        desc.textContent = "Read up on your Explore BW facts and try again!";
+      }
+    }
+
+    function submitScore() {
+      const name = document.getElementById('player-name').value;
+      const phone = document.getElementById('player-phone').value;
+      const prize = document.getElementById('player-prize').value;
+
+      if(!name || !phone) {
+        alert("Please enter your name and number to claim your entry!");
+        return;
+      }
+      if(!prize) {
+        alert("Don't forget to select which prize you are playing for!");
+        return;
+      }
+
+      alert(`Thanks ${name}! Your score of ${score} has been submitted into the draw for the [${prize}]. We will contact you at ${phone} if you win!`);
+      location.reload();
+    }
+  </script>
+  <nav class="game-bottom-nav">
+    <a href="../index.html" class="game-nav-home">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </a>
+  </nav>
+</body>
+</html>

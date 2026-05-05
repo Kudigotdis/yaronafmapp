@@ -1,0 +1,36 @@
+Yarona FM App KPI's
+Management for a radio station like Yarona FM needs to see how the app bridges the gap between traditional broadcasting and digital engagement.
+
+Based on your app's architecture (Live streaming, Games, YAMAs voting, and Music submissions), here are 20 KPIs categorized by business value:
+
+📡 Audience Reach & Growth
+DAU/MAU Ratio (Stickiness): The percentage of monthly users who open the app daily. This tells management how "essential" the app is to a listener's daily routine.
+Peak Concurrent Listeners (PCL): The maximum number of people listening to the live stream at once. Crucial for selling ad slots during specific shows (e.g., "The Rush").
+Onboarding Completion Rate: The percentage of new users who finish the setup. If users drop off here, you’re losing potential data on your "Listener Profiles."
+New vs. Returning Listeners: Helps management understand if marketing is bringing in new blood or just serving the existing loyal base.
+🎧 Listener Loyalty & Engagement
+Average Session Duration (ASD): How long a user stays in the app per visit. Longer sessions usually correlate with higher brand affinity.
+Live Stream "Drop-off" Points: At what point in a show do listeners stop? Management can use this to evaluate show content or presenter performance.
+News Read-Through Rate: The percentage of users who tap "Read More" on the news feed. This validates your editorial team's efforts.
+Presenter Affinity Score: Comparing page views/interactions between different presenter.html pages to see who has the most digital "pull."
+🎮 Gamification & Interactive Performance
+Game Participation Rate: What % of your total users are playing the "Music Quiz" or "YAMAs Trivia"?
+Trivia Completion Rate: Of those who start a game, how many finish? Low completion suggests the games are too hard or boring.
+Leaderboard Competition Index: How many times a user returns to the game to improve their score. High numbers mean your game logic is "addictive."
+Music Submission Volume: Tracking how many artists use submit-music.html. This is a KPI for your "A&R" and "Community" departments.
+💰 Monetization & Commercial Impact
+YAMAs Voting Volume: Total votes triggered via the app (SMS/In-app). This is a direct revenue/engagement KPI for the award season.
+Merch Click-Through Rate (CTR): How many users browsing merch.html actually click "Buy" or view a product?
+Promo Feed Impressions: How many times a sponsored post in the "Instagram-style" feed was viewed. This is the data you sell to advertisers.
+Ad Engagement Rate: If you have audio or banner ads, how many users interacted with them rather than just closing them.
+🛠️ Operational & Technical Health
+Data-Saver (Zero Rating) Adoption: The % of users using the "Social Media Bundle" mode. This helps management understand the economic profile of your audience.
+WhatsApp Sharing Velocity: How often users share news or shows to WhatsApp. This is "Earned Media" and costs $0.
+Search Intent Trends: What are people searching for in the app? (e.g., searching for "Amapiano" tells management what music to play more of).
+Stream Buffer/Error Rate: The technical "health" of the stream. If this is high, management will see a high Churn Rate.
+Summary for Management
+Focus Area	Primary KPI	Why it matters
+Growth	DAU/MAU	Predicts long-term survival.
+Revenue	YAMAs Voting	Direct ROI on the app's features.
+Content	Peak Listeners	Directly impacts advertising rates.
+Technical	Zero-Rating Use	Essential for the Botswana/Local market context.

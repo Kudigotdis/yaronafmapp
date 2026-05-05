@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Botswana Tourism - Trivia Game</title>
+  <style>
+    :root { 
+      /* Strictly Red, Black, White, and Grey */
+      --brand-red: #d81a1a; 
+      --brand-red-light: rgba(216, 26, 26, 0.1); /* Opacity variation */
+      --brand-red-shadow: rgba(216, 26, 26, 0.3); /* Opacity variation */
+      --brand-black: #000000; 
+      --brand-white: #ffffff; 
+      --app-bg: #f4f4f4; /* Light Grey */
+      --border-grey: #dddddd; /* Medium Grey */
+      --text-main: #333333; /* Dark Grey */
+      --text-muted: #777777; /* Grey */
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--app-bg); color: var(--text-main); overflow-x: hidden; padding-bottom: 70px; }
+
+    /* Screen Management */
+    .screen { display: none; min-height: 100vh; flex-direction: column; }
+    .screen.active { display: flex; }
+
+    /* --- HOME SCREEN --- */
+    .hero-container { position: relative; width: 100%; height: 45vh; background: #ededed; }
+    .hero-bg { width: 100%; height: 100%; object-fit: contain; opacity: 1; transform: scale(0.95); }
+    
+    .content-wrapper { padding: 20px; margin-top: -30px; position: relative; z-index: 5; flex: 1; }
+    
+    .card { background: var(--brand-white); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .card-title { font-size: 18px; font-weight: 800; color: var(--brand-black); margin-bottom: 8px; text-transform: uppercase; }
+    .card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px; }
+    
+    .game-options { display: flex; gap: 10px; margin-bottom: 20px; }
+    .game-tab { flex: 1; text-align: center; padding: 12px; background: var(--app-bg); border-radius: 8px; font-size: 13px; font-weight: bold; color: var(--text-muted); cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+    .game-tab.active { background: var(--brand-red-light); color: var(--brand-red); border-color: var(--brand-red); }
+
+    .prize-list { list-style: none; margin-top: 10px; }
+    .prize-list li { font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--border-grey); color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+    .prize-list li:last-child { border-bottom: none; }
+    .prize-list li::before { content: '🌍'; font-size: 16px; filter: grayscale(100%); }
+
+    .btn-primary { background: var(--brand-red); color: var(--brand-white); border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px var(--brand-red-shadow); transition: 0.2s; }
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* --- GAME SCREEN --- */
+    #game-screen { padding: 20px; background: var(--brand-white); }
+    .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px; font-weight: bold; color: var(--text-muted); margin-top: 10px; }
+    
+    .timer-track { width: 100%; height: 8px; background: var(--app-bg); border-radius: 4px; overflow: hidden; margin-bottom: 30px; }
+    .timer-fill { height: 100%; width: 100%; background: var(--brand-red); border-radius: 4px; transform-origin: left; }
+    
+    .question-box { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .q-category { font-size: 12px; color: var(--brand-red); text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; }
+    .q-text { font-size: 22px; font-weight: 800; color: var(--brand-black); line-height: 1.3; margin-bottom: 30px; }
+    
+    .options-grid { display: flex; flex-direction: column; gap: 12px; }
+    .opt-btn { background: var(--app-bg); border: 2px solid var(--app-bg); color: var(--brand-black); padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: space-between; }
+    .opt-btn:active { transform: scale(0.98); }
+    
+    /* Correct answer is now Black, Wrong is Red */
+    .opt-btn.correct { background: var(--brand-black); border-color: var(--brand-black); color: var(--brand-white); }
+    .opt-btn.wrong { background: var(--brand-red-light); border-color: var(--brand-red); color: var(--brand-red); }
+
+    /* --- RESULTS SCREEN --- */
+    .result-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; text-align: center; }
+    .score-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--brand-red); color: var(--brand-white); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; margin-bottom: 20px; box-shadow: 0 8px 20px var(--brand-red-shadow); border: 4px solid var(--brand-black); }
+    .result-title { font-size: 24px; font-weight: 800; color: var(--brand-black); margin-bottom: 10px; }
+    .result-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 30px; }
+
+    .form-group { width: 100%; margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; font-size: 12px; font-weight: bold; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+    .form-control { width: 100%; padding: 14px; border: 1px solid var(--border-grey); border-radius: 10px; font-size: 15px; background: var(--app-bg); color: var(--brand-black); }
+    select.form-control { cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
+
+    .game-bottom-nav {
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
+      background: var(--brand-red);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 10000;
+    }
+    .game-nav-home {
+      color: var(--brand-white); text-decoration: none;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; cursor: pointer;
+    }
+    .game-nav-home svg { width: 22px; height: 22px; fill: var(--brand-white); }
+  </style>
+</head>
+<body>
+
+  <!-- HOME SCREEN -->
+  <div id="home-screen" class="screen active">
+    <div class="hero-container">
+      <img src="../Assets/Games/games_botswana_trivia.png" class="hero-bg" alt="Botswana Safari">
+    </div>
+    
+    <div class="content-wrapper">
+      <div class="card">
+        <h1 class="card-title">Botswana Trivia Challenge</h1>
+        <p class="card-desc">Showcase your knowledge of our beauty, heritage, and "Our Pride, Your Destination" spirit. Explore the heart of the Kalahari and beyond to win exclusive prizes!</p>
+        
+        <div class="game-options">
+          <div class="game-tab active">Play Trivia</div>
+          <div class="game-tab">Win Prizes</div>
+        </div>
+
+        <button class="btn-primary" onclick="startGame()">ENTER THE GAME</button>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title" style="font-size: 15px;">The Prize Vault</h2>
+        <ul class="prize-list">
+          <li><strong>Grand Prize:</strong> 2-Night Okavango Delta Safari</li>
+          <li><strong>Adventure:</strong> Scenic Flight over Makgadikgadi Pans</li>
+          <li><strong>Leisure:</strong> Weekend Stay at The Grand Palm</li>
+          <li><strong>Merch:</strong> Botswana Tourism Exclusive Pack</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen" class="screen">
+    <div class="game-header">
+      <span id="score-display">Score: 0</span>
+      <span id="q-counter">1/50</span>
+      <button onclick="endGame(true)" style="background:none;border:none;color:var(--brand-red);font-weight:bold;cursor:pointer;">QUIT</button>
+    </div>
+    
+    <div class="timer-track">
+      <div class="timer-fill" id="timer-bar"></div>
+    </div>
+
+    <div class="question-box">
+      <div class="q-category" id="q-category">Category</div>
+      <div class="q-text" id="q-text">Question text goes here?</div>
+      <div class="options-grid" id="options-grid">
+        <!-- Options injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="result-screen" class="screen" style="background: var(--brand-white);">
+    <div class="result-content">
+      <div class="score-circle" id="final-score">0</div>
+      <h2 class="result-title" id="result-title">Game Over!</h2>
+      <p class="result-desc" id="result-desc">You explored the wonders of Botswana.</p>
+      
+      <div class="card" style="width: 100%; border: 1px solid var(--border-grey); box-shadow: none; background: var(--app-bg);">
+        <h3 style="font-size: 14px; margin-bottom: 15px; color: var(--brand-black);">CLAIM YOUR ENTRY</h3>
+        
+        <div class="form-group">
+          <label>Select Your Desired Prize</label>
+          <select class="form-control" id="prize-selection">
+            <option value="Okavango Safari">2-Night Okavango Delta Safari</option>
+            <option value="Scenic Flight">Scenic Flight over Makgadikgadi</option>
+            <option value="Grand Palm Stay">Weekend Stay at The Grand Palm</option>
+            <option value="Merch Pack">Botswana Tourism Merch Pack</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" class="form-control" id="player-name" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" class="form-control" id="player-phone" placeholder="+267...">
+        </div>
+        
+        <button class="btn-primary" onclick="submitScore()">SUBMIT & CLAIM</button>
+      </div>
+      
+      <button class="btn-primary" style="background: var(--brand-black); margin-top: 10px; box-shadow: none;" onclick="location.reload()">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script>
+    const ALL_QUESTIONS = [
+      // Geography & Natural Wonders
+      { cat: "Geography", text: "Which UNESCO World Heritage site is known as the 'Jewel of the Kalahari'?", opts: ["Makgadikgadi Pans", "The Okavango Delta", "Tsodilo Hills", "Chobe National Park"], ans: 1 },
+      { cat: "Geography", text: "Which massive salt pan complex in Botswana is one of the largest in the world?", opts: ["Sua Pan", "Makgadikgadi Pans", "Nxai Pan", "Etosha Pan"], ans: 1 },
+      { cat: "Geography", text: "What is the capital city of Botswana?", opts: ["Francistown", "Maun", "Gaborone", "Kasane"], ans: 2 },
+      { cat: "Geography", text: "Which river forms the northern border of Botswana and is famous for large elephant herds?", opts: ["Limpopo River", "Zambezi River", "Okavango River", "The Chobe River"], ans: 3 },
+      { cat: "Geography", text: "What is the highest point in Botswana?", opts: ["Tsodilo Hills", "Kgale Hill", "Monalanong Hill", "Tswapong Hills"], ans: 2 },
+      { cat: "Geography", text: "Which desert covers approximately 70% of Botswana’s land area?", opts: ["The Kalahari Desert", "The Namib Desert", "The Sahara Desert", "The Karoo"], ans: 0 },
+      { cat: "Geography", text: "In which district would you find the world-famous Moremi Game Reserve?", opts: ["Chobe District", "Ngamiland", "Central District", "Kgalagadi District"], ans: 1 },
+      { cat: "Geography", text: "Which hills are known as the 'Louvre of the Desert' due to thousands of rock paintings?", opts: ["Tsodilo Hills", "Tswapong Hills", "Gcwihaba Caves", "Lepokole Hills"], ans: 0 },
+      { cat: "Geography", text: "Which town is known as the 'Gateway to the Okavango'?", opts: ["Kasane", "Ghanzi", "Maun", "Orapa"], ans: 2 },
+      { cat: "Geography", text: "Which bridge, opened in 2021, connects Botswana and Zambia?", opts: ["Mohembo Bridge", "Kazungula Bridge", "Martins Drift", "Pioneer Gate"], ans: 1 },
+
+      // Wildlife & Conservation
+      { cat: "Wildlife", text: "Which animal is the national symbol of Botswana and appears on the Coat of Arms?", opts: ["Lion", "Leopard", "Zebra", "Elephant"], ans: 2 },
+      { cat: "Wildlife", text: "Botswana is home to the world’s largest population of which land mammal?", opts: ["Rhinoceros", "Hippopotamus", "Giraffe", "The African Elephant"], ans: 3 },
+      { cat: "Wildlife", text: "Which bird is the national bird of Botswana?", opts: ["African Fish Eagle", "Kori Bustard", "Lilac-breasted Roller", "Ostrich"], ans: 1 },
+      { cat: "Wildlife", text: "The 'Big Five' consists of Lion, Leopard, Elephant, Buffalo, and which other animal?", opts: ["Cheetah", "Hippopotamus", "Rhinoceros", "Wild Dog"], ans: 2 },
+      { cat: "Wildlife", text: "What is the name of the rare, swamp-dwelling antelope found in the Okavango Delta?", opts: ["Impala", "Sitatunga", "Kudu", "Waterbuck"], ans: 1 },
+      { cat: "Wildlife", text: "Which massive bird of prey is highly revered in Botswana and frequently seen in Chobe?", opts: ["Martial Eagle", "Bateleur", "African Fish Eagle", "Lappet-faced Vulture"], ans: 2 },
+      { cat: "Wildlife", text: "In the Makgadikgadi, which small mammal is famous for 'standing guard' on its hind legs?", opts: ["Mongoose", "Ground Squirrel", "Meerkat", "Honey Badger"], ans: 2 },
+      { cat: "Wildlife", text: "Which animal migration in Botswana is the longest mammal migration in Africa?", opts: ["Wildebeest migration", "Elephant migration", "Buffalo migration", "The Zebra migration"], ans: 3 },
+      { cat: "Wildlife", text: "What is a 'Mekoro'?", opts: ["A traditional dugout canoe", "A type of hunting spear", "A local fishing net", "A swamp reed"], ans: 0 },
+      { cat: "Wildlife", text: "Which tree is often called the 'Upside-down Tree'?", opts: ["Mopane", "Baobab", "Acacia", "Marula"], ans: 1 },
+
+      // History & National Symbols
+      { cat: "History", text: "On what date did Botswana gain independence from Britain?", opts: ["September 30, 1966", "October 24, 1964", "April 18, 1980", "March 21, 1990"], ans: 0 },
+      { cat: "History", text: "Who was the first President of Botswana?", opts: ["Quett Masire", "Festus Mogae", "Ian Khama", "Sir Seretse Khama"], ans: 3 },
+      { cat: "History", text: "What was the name of Botswana before independence?", opts: ["Rhodesia", "Basutoland", "Bechuanaland Protectorate", "Nyasaland"], ans: 2 },
+      { cat: "History", text: "What do the blue stripes on the Botswana flag represent?", opts: ["The Sky", "Water (Rain/Pula)", "Peace", "Diamond wealth"], ans: 1 },
+      { cat: "History", text: "What is the national currency of Botswana?", opts: ["Rand", "Kwacha", "Pula", "Shilling"], ans: 2 },
+      { cat: "History", text: "What is the subunit of the Pula?", opts: ["Cent", "Thebe", "Kobo", "Ngwee"], ans: 1 },
+      { cat: "History", text: "Who are the 'Three Dikgosi' represented by the monument in Gaborone?", opts: ["Seretse, Masire, Mogae", "Khama III, Sebele I, Bathoen I", "Linchwe, Sekgoma, Kgamane", "Moshoeshoe, Shaka, Mzilikazi"], ans: 1 },
+      { cat: "History", text: "Who is the current President of Botswana (as of 2024)?", opts: ["Ian Khama", "Mokgweetsi Masisi", "Slumber Tsogwane", "Ndaba Gaolathe"], ans: 1 },
+      { cat: "History", text: "Which famous Scottish explorer and missionary lived in Kolobeng?", opts: ["David Livingstone", "Henry Morton Stanley", "John Mackenzie", "Cecil Rhodes"], ans: 0 },
+      { cat: "History", text: "In what year were the first diamonds discovered in Orapa?", opts: ["1960", "1966", "1967", "1975"], ans: 2 },
+
+      // Culture, Arts & Tradition
+      { cat: "Culture", text: "What is the national dish of Botswana, consisting of pounded meat?", opts: ["Bogobe", "Seswaa", "Phane", "Madila"], ans: 1 },
+      { cat: "Culture", text: "What is the traditional name for the village meeting place?", opts: ["Kraal", "Boma", "Kgotla", "Lapa"], ans: 2 },
+      { cat: "Culture", text: "What is the primary language spoken in Botswana?", opts: ["Kalanga", "English", "Setswana", "San"], ans: 2 },
+      { cat: "Culture", text: "Which region is world-renowned for its intricate and high-quality hand-woven baskets?", opts: ["Ngamiland/Okavango", "Kgalagadi", "Central District", "South East"], ans: 0 },
+      { cat: "Culture", text: "Which traditional dance involves rapid leg movements and rhythmic hand-clapping?", opts: ["Gumboot", "Borankana (Phathisi)", "Indlamu", "Jerusalema"], ans: 1 },
+      { cat: "Culture", text: "What do you call the traditional beer made from sorghum?", opts: ["Umqombothi", "Chibuku", "Palm Wine", "Ginger beer"], ans: 1 },
+      { cat: "Culture", text: "What is 'Botho'?", opts: ["A harvest festival", "A traditional dress", "Humanity towards others", "A type of drum"], ans: 2 },
+      { cat: "Culture", text: "Which insect is a seasonal delicacy and a major source of protein?", opts: ["Locust", "Termite", "Mopane Worm (Phane)", "Cricket"], ans: 2 },
+      { cat: "Culture", text: "What is a 'Lobola'?", opts: ["A traditional wedding dress", "The traditional bride price", "A musical instrument", "A village chief"], ans: 1 },
+      { cat: "Culture", text: "The 'Dumela' greeting is used for what?", opts: ["Saying 'Goodbye'", "Saying 'Thank You'", "Saying 'Hello'", "Saying 'Please'"], ans: 2 },
+
+      // Economy & Industry
+      { cat: "Economy", text: "What is Botswana’s primary export and the backbone of its economy?", opts: ["Beef", "Gold", "Tourism", "Diamonds"], ans: 3 },
+      { cat: "Economy", text: "Which company is a 50/50 partnership between the Botswana government and De Beers?", opts: ["Lucara", "Debswana", "Gem Diamonds", "Petra Diamonds"], ans: 1 },
+      { cat: "Economy", text: "Which mine in Botswana is the richest diamond mine in the world by value?", opts: ["Orapa", "Jwaneng", "Karowe", "Letlhakane"], ans: 1 },
+      { cat: "Economy", text: "Besides diamonds, what is Botswana’s largest agricultural export to the European Union?", opts: ["Maize", "Sorghum", "Beef", "Cotton"], ans: 2 },
+      { cat: "Economy", text: "Tourism is the ________ largest contributor to Botswana’s GDP?", opts: ["First", "Second", "Third", "Fourth"], ans: 1 },
+      { cat: "Economy", text: "Which town is the center of Botswana’s copper and nickel mining?", opts: ["Francistown", "Lobatse", "Selebi-Phikwe", "Palapye"], ans: 2 },
+      { cat: "Economy", text: "What is the main source of electricity generation in Botswana?", opts: ["Solar", "Hydroelectric", "Coal", "Wind"], ans: 2 },
+      { cat: "Economy", text: "Which organization manages the national parks and game reserves?", opts: ["BTO", "DWNP", "SADC", "BSE"], ans: 1 },
+      { cat: "Economy", text: "Which international organization has its headquarters in Gaborone?", opts: ["African Union", "SACU", "SADC", "COMESA"], ans: 2 },
+      { cat: "Economy", text: "What is the estimated population of Botswana (as of 2024 projections)?", opts: ["Approx. 1.5 million", "Approx. 2.6 million", "Approx. 4.2 million", "Approx. 5.1 million"], ans: 1 }
+    ];
+
+    let currentQIndex = 0;
+    let score = 0;
+    let timerTimeout;
+    let isLocked = false;
+    
+    // Set to 8 seconds per question to give users time to read the text
+    const TIME_LIMIT_MS = 10000; 
+
+    function switchScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function startGame() {
+      // Shuffle questions so the game is different every time
+      ALL_QUESTIONS.sort(() => Math.random() - 0.5);
+      
+      currentQIndex = 0;
+      score = 0;
+      document.getElementById('score-display').textContent = `Score: ${score}`;
+      switchScreen('game-screen');
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      if (currentQIndex >= ALL_QUESTIONS.length) {
+        endGame();
+        return;
+      }
+      
+      isLocked = false;
+      const q = ALL_QUESTIONS[currentQIndex];
+      
+      document.getElementById('q-counter').textContent = `${currentQIndex + 1} / 50`;
+      document.getElementById('q-category').textContent = q.cat;
+      document.getElementById('q-text').textContent = q.text;
+      
+      const optionsContainer = document.getElementById('options-grid');
+      optionsContainer.innerHTML = '';
+      
+      q.opts.forEach((optText, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = optText;
+        btn.onclick = () => selectOption(index, btn);
+        optionsContainer.appendChild(btn);
+      });
+
+      startTimer();
+    }
+
+    function startTimer() {
+      const bar = document.getElementById('timer-bar');
+      bar.style.transition = 'none';
+      bar.style.transform = 'scaleX(1)';
+      
+      setTimeout(() => {
+        bar.style.transition = `transform ${TIME_LIMIT_MS}ms linear`;
+        bar.style.transform = 'scaleX(0)';
+      }, 50);
+
+      clearTimeout(timerTimeout);
+      timerTimeout = setTimeout(() => {
+        if (!isLocked) {
+          handleTimeUp();
+        }
+      }, TIME_LIMIT_MS);
+    }
+
+    function selectOption(selectedIndex, btnElement) {
+      if (isLocked) return;
+      isLocked = true;
+      clearTimeout(timerTimeout);
+
+      const bar = document.getElementById('timer-bar');
+      const currentScale = window.getComputedStyle(bar).getPropertyValue('transform');
+      bar.style.transition = 'none';
+      bar.style.transform = currentScale;
+
+      const q = ALL_QUESTIONS[currentQIndex];
+      const allBtns = document.querySelectorAll('.opt-btn');
+
+      if (selectedIndex === q.ans) {
+        btnElement.classList.add('correct');
+        score += 100;
+        document.getElementById('score-display').textContent = `Score: ${score}`;
+      } else {
+        btnElement.classList.add('wrong');
+        allBtns[q.ans].classList.add('correct');
+      }
+
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 1000);
+    }
+
+    function handleTimeUp() {
+      isLocked = true;
+      const q = ALL_QUESTIONS[currentQIndex];
+      const allBtns = document.querySelectorAll('.opt-btn');
+      
+      if(allBtns[q.ans]) {
+        allBtns[q.ans].classList.add('correct');
+      }
+
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 1000);
+    }
+
+    function endGame(quit = false) {
+      clearTimeout(timerTimeout);
+      switchScreen('result-screen');
+      
+      document.getElementById('final-score').textContent = score;
+      const title = document.getElementById('result-title');
+      const desc = document.getElementById('result-desc');
+      
+      if (quit) {
+        title.textContent = "You Quit!";
+        desc.textContent = `You scored ${score} points before leaving the safari.`;
+      } else if (score >= 4500) {
+        title.textContent = "True Motswana!";
+        desc.textContent = "Incredible! You know Botswana's heritage inside and out.";
+      } else if (score >= 2500) {
+        title.textContent = "Explorer Status!";
+        desc.textContent = "Great job, you are definitely ready for your Botswana adventure.";
+      } else {
+        title.textContent = "Keep Discovering!";
+        desc.textContent = "Read up on 'Our Pride, Your Destination' and try again!";
+      }
+    }
+
+    function submitScore() {
+      const prize = document.getElementById('prize-selection').value;
+      const name = document.getElementById('player-name').value;
+      const phone = document.getElementById('player-phone').value;
+      
+      if(!name || !phone) {
+        alert("Please enter your name and number to claim your entry!");
+        return;
+      }
+      
+      alert(`Thank you ${name}. Your score of ${score} has been submitted. You are now in the draw for the [${prize}]!`);
+      location.reload();
+    }
+  </script>
+  <nav class="game-bottom-nav">
+    <a href="../index.html" class="game-nav-home">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </a>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="stylesheet" href="../style.css"/><title>VVA — Presenter</title>
+<style>.wrap{padding:12px;max-width:760px;margin:0 auto}.head{display:flex;gap:12px;align-items:center}.head img{width:96px;height:96px;border-radius:8px}.tabs{display:flex;gap:8px;margin-top:12px}.tab{padding:8px;border-radius:6px;background:#fff;border:1px solid #eee;cursor:pointer}.active{background:#c00;color:#fff}</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <img src="Assets/Presenters/FB_IMG_1777554292381.jpg" alt="VVA"/>
+    <div>
+      <h2>VVA</h2>
+      <div>—</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-tab="about">About</div>
+    <div class="tab" data-tab="content">Content</div>
+  </div>
+  <div id="about" style="margin-top:12px">
+    <p><strong>Bio:</strong> VVA is one of Botswana's most respected selectors and the architect behind The Dropbox — a Saturday afternoon house and Amapiano showcase.</p>
+    <p><strong>Show(s):</strong> The Dropbox</p>
+    <p><strong>Role:</strong> Host &amp; DJ</p>
+    <p><strong>Socials:</strong> Instagram: <a href="#">@VVADropbox</a> • X: <a href="#">@VVAYFM</a></p>
+  </div>
+  <div id="content" style="display:none;margin-top:12px">
+    <p>Mixes and feature sets (placeholder).</p>
+  </div>
+</div>
+<script>document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', e=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); e.target.classList.add('active'); const tab=e.target.dataset.tab; document.getElementById('about').style.display = tab==='about' ? 'block' : 'none'; document.getElementById('content').style.display = tab==='content' ? 'block' : 'none'; }));</script>
+</body>
+</html>

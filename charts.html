@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charts - Yarona FM</title>
+  <style>
+    :root { 
+      --brand-red: #d81a1a; 
+      --brand-black: #000000; 
+      --brand-white: #ffffff; 
+      --app-bg: #f0f0f0; 
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Roboto, sans-serif; 
+      background: var(--app-bg); 
+      padding: 20px 10px 90px; /* Padding bottom allows scrolling past the fixed buttons */
+    }
+    
+    /* Header Card */
+    .chart-header-card {
+      background: var(--brand-white);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .chart-header-img {
+      width: 80px; 
+      height: 80px; 
+      border-radius: 8px; 
+      object-fit: cover; 
+      background: #ddd;
+      border: 1px solid #eee;
+      flex-shrink: 0;
+    }
+    .chart-header-info {
+      display: flex; 
+      flex-direction: column; 
+      gap: 4px;
+    }
+    .chart-header-title {
+      font-size: 20px; 
+      font-weight: bold; 
+      color: var(--brand-black);
+    }
+    .chart-header-genre {
+      font-size: 13px; 
+      color: #888; 
+      font-weight: 600;
+      text-transform: uppercase; 
+      letter-spacing: 0.5px;
+    }
+    .chart-header-date {
+      font-size: 12px; 
+      color: #999;
+    }
+    .chart-fav-heart { transition: transform 0.2s; }
+    .chart-fav-heart:active { transform: scale(1.3); }
+    
+    /* Chart List */
+    .chart-list { max-width: 760px; margin: 0 auto; padding-bottom: 20px; }
+    
+    /* Charting Song Card */
+    .chart-card { 
+      background: var(--brand-white); margin-bottom: 10px; padding: 12px; 
+      display: flex; align-items: center; gap: 12px; border-radius: 8px; 
+      position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .chart-rank { 
+      width: 55px; height: 55px; background: var(--brand-red); color: white; 
+      border-radius: 6px; /* Square to match the picture */
+      display: flex; align-items: center; justify-content: center; 
+      font-weight: bold; font-size: 20px; flex-shrink: 0; 
+    }
+    .chart-thumb { 
+      width: 55px; height: 55px; border-radius: 6px; object-fit: cover; 
+      background: #eee; flex-shrink: 0; border: 1px solid #ddd;
+    }
+    .chart-info { flex: 1; padding-right: 40px; /* Room for votes/buttons */ }
+    .chart-title { font-weight: bold; font-size: 15px; color: var(--brand-black); margin-bottom: 4px; }
+    .chart-artist { font-size: 13px; color: #666; }
+    
+    /* Votes display (Top Right) */
+    .chart-votes { 
+      position: absolute; top: 10px; right: 12px; 
+      font-size: 13px; font-weight: bold; color: var(--brand-red); 
+    }
+
+    /* Voting Stacked Buttons (+ / -) */
+    .vote-controls {
+      display: flex; flex-direction: column; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    }
+    .vote-controls button {
+      width: 32px; height: 32px; background: var(--app-bg); border: 1px solid #ccc;
+      font-size: 18px; font-weight: bold; cursor: pointer; color: var(--brand-black);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .vote-controls button:first-child { border-bottom: none; border-radius: 6px 6px 0 0; }
+    .vote-controls button:last-child { border-radius: 0 0 6px 6px; }
+    .vote-controls button:active { background: #ddd; }
+
+    /* Bottom Action Area */
+    .bottom-actions {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      width: calc(100% - 20px); max-width: 760px;
+      display: flex; gap: 10px; z-index: 90;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+    .chart-selector-btn {
+      background: var(--brand-black); color: white; border: none; 
+      padding: 16px; font-size: 15px; font-weight: bold; border-radius: 8px; 
+      cursor: pointer; flex: 0 0 auto; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .chart-back-btn {
+      background: var(--brand-black); color: white; border: none; 
+      padding: 16px 20px; font-size: 15px; font-weight: bold; border-radius: 8px; 
+      cursor: pointer; flex: 0 0 auto; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .action-btn { 
+      background: var(--brand-red); color: white; border: none; 
+      padding: 16px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; 
+      flex: 1; box-shadow: 0 4px 10px rgba(216, 26, 26, 0.3);
+    }
+
+    /* Floating Modal for Chart Selection */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(3px);
+      display: none; justify-content: center; align-items: center; z-index: 200;
+    }
+    .modal-content {
+      background: var(--brand-white); width: 90%; max-width: 350px;
+      border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      padding: 16px; background: var(--app-bg); font-weight: bold; text-align: center;
+      border-bottom: 1px solid #ddd; font-size: 16px;
+    }
+    .modal-option {
+      width: 100%; padding: 16px; text-align: left; background: none; border: none;
+      border-bottom: 1px solid #eee; font-size: 15px; font-weight: 500; cursor: pointer; color: var(--brand-black);
+    }
+    .modal-option:last-child { border-bottom: none; }
+    .modal-option:active { background: #f0f0f0; }
+
+  </style>
+</head>
+<body>
+  
+  <!-- Header Card (Artwork + Info) -->
+  <div class="chart-header-card" id="chartHeaderCard">
+    <img id="chartCover" src="Assets/Charts/top_40_chart.jpg" class="chart-header-img" onerror="this.style.background='#ddd'; this.src='';">
+    <div class="chart-header-info">
+      <div id="chartTitleText" class="chart-header-title">Top 40 Chart</div>
+      <div id="chartGenreText" class="chart-header-genre">All Genres</div>
+      <div id="chartDateText" class="chart-header-date">4-12 May 2026</div>
+    </div>
+    <img id="chartFavHeart" class="chart-fav-heart" src="Assets/icons/heart_inactive_icon.png" onclick="toggleFav('charts', currentChartKey, this)" style="width:24px;height:24px;cursor:pointer;margin-left:auto;flex-shrink:0;">
+  </div>
+  
+  <!-- Songs List -->
+  <div class="chart-list" id="chartList">
+    <!-- Chart items dynamically injected here -->
+  </div>
+  
+  <!-- Bottom Actions -->
+  <div class="bottom-actions">
+    <button class="chart-back-btn" onclick="window.location.href='index.html'">Back</button>
+    <button class="chart-selector-btn" onclick="openChartMenu()">Charts</button>
+    <button id="mainActionBtn" class="action-btn" onclick="toggleMode()">VOTE</button>
+  </div>
+
+  <!-- Floating Selection Modal -->
+  <div id="chartModal" class="modal-overlay" onclick="closeChartMenu(event)">
+    <div class="modal-content">
+      <div class="modal-header">Select a Chart</div>
+      <button class="modal-option" onclick="switchChart('top40')">Top 40 Chart</button>
+      <button class="modal-option" onclick="switchChart('rnb')">Top 20 RnB Chart</button>
+      <button class="modal-option" onclick="switchChart('hiphop')">Top 25 Local Hip-Hop</button>
+      <button class="modal-option" onclick="switchChart('house')">Top 20 House</button>
+    </div>
+  </div>
+
+  <script>
+    // Initial Chart Data including Header Card details
+    const defaultData = {
+      top40: {
+        folder: 'top_40_chart',
+        title: 'Top 40 Chart',
+        genre: 'All Genres',
+        dateRange: '4-12 May 2026',
+        votesText: '4,792 votes',
+        songs: [
+          { id: 1, title: 'uValo', artist: 'JAZZWRLD', votes: 2450 },
+          { id: 2, title: 'Push 2 Start', artist: 'Tyla', votes: 2320 },
+          { id: 3, title: 'Aluta Continua', artist: 'Frost ft. Jordan', votes: 2180 },
+          { id: 4, title: 'Bengicela', artist: 'MaWhoo', votes: 2050 },
+          { id: 5, title: 'Say You Love Me', artist: 'Shekhinah', votes: 1920 },
+          { id: 6, title: 'Sgudi Snyc', artist: 'De Mthuda', votes: 1850 },
+          { id: 7, title: 'Mnike', artist: 'Tyler ICU', votes: 1780 },
+          { id: 8, title: 'Hamba Juba', artist: 'Lady Amar', votes: 1710 },
+          { id: 9, title: 'Nana Thula', artist: 'Kabza De Small', votes: 1640 },
+          { id: 10, title: 'Imithandazo', artist: 'Mthunzi', votes: 1570 },
+          { id: 11, title: 'Water', artist: 'Tyla', votes: 1500 },
+          { id: 12, title: 'City Boys', artist: 'Burna Boy', votes: 1430 },
+          { id: 13, title: 'Lonely At The Top', artist: 'Asake', votes: 1360 },
+          { id: 14, title: 'Cough', artist: 'Kizz Daniel', votes: 1290 },
+          { id: 15, title: 'Unavailable', artist: 'Davido', votes: 1220 },
+          { id: 16, title: 'Soweto', artist: 'Victony', votes: 1150 },
+          { id: 17, title: 'Charm', artist: 'Rema', votes: 1080 },
+          { id: 18, title: 'Reason', artist: 'Omah Lay', votes: 1010 },
+          { id: 19, title: 'Ojapiano', artist: 'KCee', votes: 940 },
+          { id: 20, title: 'Party No Dey Stop', artist: 'Adekunle Gold', votes: 870 },
+          { id: 21, title: 'Feel', artist: 'Davido', votes: 800 },
+          { id: 22, title: 'Gwagwalada', artist: 'BNXN', votes: 730 },
+          { id: 23, title: 'Declaration', artist: 'Vee Mampeezy', votes: 660 },
+          { id: 24, title: 'Zwakele', artist: 'DJ Maphorisa', votes: 590 },
+          { id: 25, title: 'Yey', artist: 'Oscar Mbo', votes: 520 },
+          { id: 26, title: 'Awukhuzeki', artist: 'DJ Stokie', votes: 450 },
+          { id: 27, title: 'Bhebha', artist: 'ShaunMusiq', votes: 380 },
+          { id: 28, title: 'Kilimanjaro', artist: 'Pcee', votes: 310 },
+          { id: 29, title: 'Yahyuppiyah', artist: 'Uncle Waffles', votes: 240 },
+          { id: 30, title: 'Terminator', artist: 'King Promise', votes: 170 },
+          { id: 31, title: 'Basquiat', artist: 'Asake', votes: 150 },
+          { id: 32, title: 'Amapiano', artist: 'Asake ft. Olamide', votes: 130 },
+          { id: 33, title: 'Me & U', artist: 'Tems', votes: 110 },
+          { id: 34, title: 'I Believe', artist: 'Mellotique', votes: 90 },
+          { id: 35, title: 'Nkwatako', artist: 'Sheebah', votes: 70 },
+          { id: 36, title: 'Rush', artist: 'Ayra Starr', votes: 50 },
+          { id: 37, title: 'Sability', artist: 'Ayra Starr', votes: 40 },
+          { id: 38, title: 'Holiday', artist: 'Rema', votes: 30 },
+          { id: 39, title: 'Carry Me Go', artist: 'Khaid', votes: 20 },
+          { id: 40, title: 'Who Is Your Guy', artist: 'Spyro', votes: 10 }
+        ]
+      },
+      rnb: {
+        folder: 'top_20_rnb_chart',
+        title: 'Top 20 RnB Chart',
+        genre: 'RnB & Soul',
+        dateRange: '4-12 May 2026',
+        votesText: '2,134 votes',
+        songs: [
+          { id: 1, title: 'Say You Love Me', artist: 'Shekhinah', votes: 1560 },
+          { id: 2, title: 'Push 2 Start', artist: 'Tyla', votes: 1420 },
+          { id: 3, title: 'What You Need', artist: 'Tems', votes: 1280 },
+          { id: 4, title: 'Burning Blue', artist: 'Mariah', votes: 1140 },
+          { id: 5, title: 'Someone Loves Me', artist: 'PARTYNEXTDOOR', votes: 1000 },
+          { id: 6, title: 'Made For Me', artist: 'Muni Long', votes: 950 },
+          { id: 7, title: 'Sensitive', artist: 'Dreamville', votes: 900 },
+          { id: 8, title: 'Wild Thoughts', artist: 'DJ Khaled', votes: 850 },
+          { id: 9, title: 'Snooze', artist: 'SZA', votes: 800 },
+          { id: 10, title: 'Kill Bill', artist: 'SZA', votes: 750 },
+          { id: 11, title: 'Shirt', artist: 'SZA', votes: 700 },
+          { id: 12, title: 'On My Mama', artist: 'Victoria Monét', votes: 650 },
+          { id: 13, title: 'Water', artist: 'Tyla', votes: 600 },
+          { id: 14, title: 'Wait For U', artist: 'Future ft. Drake', votes: 550 },
+          { id: 15, title: 'Lift Me Up', artist: 'Rihanna', votes: 500 },
+          { id: 16, title: 'Die For You', artist: 'The Weeknd', votes: 450 },
+          { id: 17, title: 'Creepin', artist: 'Metro Boomin', votes: 400 },
+          { id: 18, title: 'Last Last', artist: 'Burna Boy', votes: 350 },
+          { id: 19, title: 'Common Person', artist: 'Burna Boy', votes: 300 },
+          { id: 20, title: 'For My Hand', artist: 'Burna Boy ft. Ed Sheeran', votes: 250 }
+        ]
+      },
+      hiphop: {
+        folder: 'top_25_local_hip_hop',
+        title: 'Top 25 Local Hip-Hop',
+        genre: 'Local Hip-Hop',
+        dateRange: '4-12 May 2026',
+        votesText: '3,421 votes',
+        songs: [
+          { id: 1, title: 'Aluta Continua', artist: 'Frost', votes: 1680 },
+          { id: 2, title: 'Doncic', artist: 'Frost', votes: 1540 },
+          { id: 3, title: 'Ntshegeng', artist: 'Melo', votes: 1400 },
+          { id: 4, title: 'Goo Mo', artist: 'A.T.I', votes: 1260 },
+          { id: 5, title: 'Before Lefatshe', artist: 'KX', votes: 1120 },
+          { id: 6, title: 'Motswako', artist: 'Khuli Chana', votes: 1050 },
+          { id: 7, title: 'Tshasa', artist: 'Fifi Cooper', votes: 980 },
+          { id: 8, title: 'Local Vibes', artist: 'Veezo View', votes: 910 },
+          { id: 9, title: 'BW Anthem', artist: 'Ban T', votes: 840 },
+          { id: 10, title: 'Levels', artist: 'Sasa Klaas', votes: 770 },
+          { id: 11, title: 'Legacy', artist: 'Zeus', votes: 700 },
+          { id: 12, title: 'Pula', artist: 'Scar', votes: 630 },
+          { id: 13, title: 'Thandaza', artist: 'Melo', votes: 560 },
+          { id: 14, title: 'No Lie', artist: 'Frost', votes: 490 },
+          { id: 15, title: 'Dada', artist: 'A.T.I', votes: 420 },
+          { id: 16, title: 'Roll Up', artist: 'Emtee', votes: 350 },
+          { id: 17, title: 'Pearl Thusi', artist: 'Emtee', votes: 280 },
+          { id: 18, title: 'Ngud', artist: 'Kwesta', votes: 210 },
+          { id: 19, title: 'Tito Mboweni', artist: 'Cassper Nyovest', votes: 140 },
+          { id: 20, title: 'Doc Shebeleza', artist: 'Cassper Nyovest', votes: 70 },
+          { id: 21, title: 'Phumakim', artist: 'Cassper Nyovest', votes: 60 },
+          { id: 22, title: 'Gusheshe', artist: 'Cassper Nyovest', votes: 50 },
+          { id: 23, title: 'Caracara', artist: 'K.O', votes: 40 },
+          { id: 24, title: 'Skhanda Love', artist: 'K.O', votes: 30 },
+          { id: 25, title: 'One Time', artist: 'AKA', votes: 20 }
+        ]
+      },
+      house: {
+        folder: 'top_20_house',
+        title: 'Top 20 House',
+        genre: 'House & Dance',
+        dateRange: '4-12 May 2026',
+        votesText: '5,112 votes',
+        songs: [
+          { id: 1, title: 'uValo', artist: 'JAZZWRLD', votes: 1890 },
+          { id: 2, title: 'Bengicela', artist: 'MaWhoo', votes: 1750 },
+          { id: 3, title: 'Uzizwa Kanjan', artist: 'JAZZWRLD', votes: 1620 },
+          { id: 4, title: 'Baba Yilwa', artist: 'DJ Zinhle', votes: 1500 },
+          { id: 5, title: 'Lwetse 2.0', artist: 'Xduppy', votes: 1380 },
+          { id: 6, title: 'Peacock Revisit', artist: 'Uncle Waffles', votes: 1300 },
+          { id: 7, title: 'Tanzania', artist: 'Uncle Waffles', votes: 1220 },
+          { id: 8, title: 'Red Dragon', artist: 'Uncle Waffles', votes: 1140 },
+          { id: 9, title: 'Sete', artist: 'K.O ft. Young Stunna', votes: 1060 },
+          { id: 10, title: 'Adiwele', artist: 'Young Stunna', votes: 980 },
+          { id: 11, title: 'Bopha', artist: 'Mellow & Sleazy', votes: 900 },
+          { id: 12, title: 'Nkao Tempela', artist: 'Ch\'cco', votes: 820 },
+          { id: 13, title: 'Osama', artist: 'Zakes Bantwini', votes: 740 },
+          { id: 14, title: 'Abalele', artist: 'Kabza De Small', votes: 660 },
+          { id: 15, title: 'Asibe Happy', artist: 'Kabza De Small', votes: 580 },
+          { id: 16, title: 'Woza', artist: 'Mr JazziQ', votes: 500 },
+          { id: 17, title: 'Gupta', artist: 'Focalistic', votes: 420 },
+          { id: 18, title: 'Ke Star', artist: 'Focalistic', votes: 340 },
+          { id: 19, title: 'Vula Mlomo', artist: 'Musa Keys', votes: 260 },
+          { id: 20, title: 'Selema', artist: 'Musa Keys', votes: 180 }
+        ]
+      }
+    };
+
+    let currentChartKey = 'top40';
+    let currentSongs = [];
+    let isVotingMode = false;
+    let hasVoted = false;
+
+    // Open & Close Modal Menu
+    function openChartMenu() {
+      document.getElementById('chartModal').style.display = 'flex';
+    }
+    
+    function closeChartMenu(e) {
+      if (e === 'force' || e.target.id === 'chartModal') {
+        document.getElementById('chartModal').style.display = 'none';
+      }
+    }
+
+    // Switch Chart Function
+    function switchChart(chartKey) {
+      currentChartKey = chartKey;
+      closeChartMenu('force');
+      loadChartData();
+    }
+
+    // Load chart data
+    function loadChartData() {
+      const chartMeta = defaultData[currentChartKey];
+      
+      // Update Header Card
+      document.getElementById('chartCover').src = `Assets/Charts/${chartMeta.folder}.jpg`;
+      document.getElementById('chartTitleText').textContent = chartMeta.title;
+      document.getElementById('chartGenreText').textContent = chartMeta.genre;
+      document.getElementById('chartDateText').textContent = chartMeta.dateRange;
+
+      // Update heart icon
+      const chartFavs = JSON.parse(localStorage.getItem('yarona_fav_charts') || '[]');
+      const heartEl = document.getElementById('chartFavHeart');
+      if (heartEl) {
+        heartEl.src = chartFavs.indexOf(currentChartKey) > -1 ? 'Assets/icons/heart_active_icon.png' : 'Assets/icons/heart_inactive_icon.png';
+      }
+
+      // Check if user has a customized saved chart in localStorage
+      const savedData = localStorage.getItem('yarona_chart_' + currentChartKey);
+      if (savedData) {
+        try {
+          currentSongs = JSON.parse(savedData);
+        } catch (e) {
+          console.warn('Failed to parse saved chart data, using defaults.', e);
+          currentSongs = JSON.parse(JSON.stringify(chartMeta.songs));
+        }
+      } else {
+        // Deep copy default data
+        currentSongs = JSON.parse(JSON.stringify(chartMeta.songs));
+      }
+      
+      hasVoted = localStorage.getItem('yarona_voted_' + currentChartKey) === 'true';
+      isVotingMode = false;
+      
+      updateButtonState();
+      renderChart();
+    }
+
+    // Toggle between View Mode and Vote Mode
+    function toggleMode() {
+      if (!isVotingMode) {
+        if (hasVoted) {
+          alert("You have already voted on this chart!");
+          return;
+        }
+        // Enter Vote Mode 
+        isVotingMode = true;
+        document.getElementById('mainActionBtn').textContent = "SAVE MY CHART";
+        renderChart();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        // Save Votes logic
+        saveVotes();
+      }
+    }
+
+    // Move song up in rank
+    function moveUp(index) {
+      if (index === 0) return; // Already at the top
+      const temp = currentSongs[index];
+      currentSongs[index] = currentSongs[index - 1];
+      currentSongs[index - 1] = temp;
+      renderChart();
+    }
+
+    // Move song down in rank
+    function moveDown(index) {
+      if (index === currentSongs.length - 1) return; // Already at the bottom
+      const temp = currentSongs[index];
+      currentSongs[index] = currentSongs[index + 1];
+      currentSongs[index + 1] = temp;
+      renderChart();
+    }
+
+    // Save and account for user's votes
+    function saveVotes() {
+      // Simulate adding points: The higher a user placed a song, the more points it gets.
+      currentSongs.forEach((song, index) => {
+        let pointsEarned = (currentSongs.length - index) * 15;
+        song.votes += pointsEarned;
+      });
+
+      // Re-sort the entire chart array by highest votes
+      currentSongs.sort((a, b) => b.votes - a.votes);
+
+      // Save to localStorage
+      localStorage.setItem('yarona_chart_' + currentChartKey, JSON.stringify(currentSongs));
+      localStorage.setItem('yarona_voted_' + currentChartKey, 'true');
+
+      hasVoted = true;
+      isVotingMode = false;
+      
+      updateButtonState();
+      renderChart();
+      
+      alert("Chart updated! Your votes have been accounted for.");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateButtonState() {
+      const btn = document.getElementById('mainActionBtn');
+      if (hasVoted) {
+        btn.textContent = "VOTED";
+        btn.style.opacity = "0.6";
+        btn.style.cursor = "not-allowed";
+      } else {
+        btn.textContent = "VOTE";
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+      }
+    }
+
+    // Render the chart DOM elements
+    function renderChart() {
+      const list = document.getElementById('chartList');
+      const folder = defaultData[currentChartKey].folder;
+      
+      list.innerHTML = currentSongs.map((song, index) => {
+        let currentRank = index + 1;
+        
+        let cardHTML = `
+          <div class="chart-card">
+            <div class="chart-rank">${currentRank}</div>
+            <img src="Assets/Charts/${folder}/${song.id}.jpg" class="chart-thumb" onerror="this.style.background='#ddd'">
+            <div class="chart-info">
+              <div class="chart-title">${song.title}</div>
+              <div class="chart-artist">${song.artist}</div>
+            </div>
+        `;
+
+        if (isVotingMode) {
+          // Voting Mode: Show stacked '+' and '-'
+          cardHTML += `
+            <div class="vote-controls">
+              <button onclick="moveUp(${index})">+</button>
+              <button onclick="moveDown(${index})">-</button>
+            </div>
+          `;
+        } else if (hasVoted) {
+          // Regular View (After Voted): Show Tallied Votes (No "VTS" text)
+          cardHTML += `
+            <div class="chart-votes">${song.votes.toLocaleString()}</div>
+          `;
+        }
+
+        cardHTML += `</div>`;
+        return cardHTML;
+        
+      }).join('');
+    }
+
+    // ===============================
+    // FAVOURITE SYSTEM
+    // ===============================
+    function toggleFav(category, id, imgEl) {
+      var key = 'yarona_fav_' + category;
+      var favs = JSON.parse(localStorage.getItem(key) || '[]');
+      var idx = favs.indexOf(id);
+      if (idx > -1) {
+        favs.splice(idx, 1);
+        imgEl.src = 'Assets/icons/heart_inactive_icon.png';
+      } else {
+        favs.push(id);
+        imgEl.src = 'Assets/icons/heart_active_icon.png';
+      }
+      localStorage.setItem(key, JSON.stringify(favs));
+    }
+
+    // Initialize application
+    function getChartFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('chart') || 'top40';
+    }
+
+    window.onload = function() {
+      currentChartKey = getChartFromURL();
+      loadChartData();
+    };
+  </script>
+</body>
+</html>

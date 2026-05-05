@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="stylesheet" href="../style.css"/><title>Soso — Presenter</title>
+<style>.wrap{padding:12px;max-width:760px;margin:0 auto}.head{display:flex;gap:12px;align-items:center}.head img{width:96px;height:96px;border-radius:8px}.tabs{display:flex;gap:8px;margin-top:12px}.tab{padding:8px;border-radius:6px;background:#fff;border:1px solid #eee;cursor:pointer}.active{background:#c00;color:#fff}</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <img src="Assets/Presenters/FB_IMG_1777554310983.jpg" alt="Soso"/>
+    <div>
+      <h2>Soso</h2>
+      <div>—</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="about">About</div>
+    <div class="tab" data-tab="content">Content</div>
+  </div>
+
+  <div id="about" style="margin-top:12px">
+    <p><strong>Bio:</strong> Soso is Yarona FM's Saturday morning superstar — a broadcaster with a personality so big it could fill any venue. The host of S.O.S, she creates a Saturday tradition for listeners with feel-good throwbacks and fresh discoveries.</p>
+    <p><strong>Show(s):</strong> S.O.S</p>
+    <p><strong>Schedule:</strong> Saturday • 10:00 – 14:00</p>
+    <p><strong>Socials:</strong> Instagram: <a href="#">@SosoYaronaFM</a> • X: <a href="#">@SosoYFM</a></p>
+  </div>
+
+  <div id="content" style="display:none;margin-top:12px">
+    <p>Episode clips and highlights (placeholder).</p>
+  </div>
+</div>
+<script>
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', e=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); e.target.classList.add('active'); const tab=e.target.dataset.tab; document.getElementById('about').style.display = tab==='about' ? 'block' : 'none'; document.getElementById('content').style.display = tab==='content' ? 'block' : 'none'; }));
+</script>
+</body>
+</html>
