@@ -1261,14 +1261,6 @@
       transform: scale(1.05);
     }
 
-    /* Show Thumbnail Heart */
-    .show-thumbnail { position: relative; }
-    .show-thumb-heart {
-      position: absolute; top: 6px; left: 6px;
-      width: 22px; height: 22px; cursor: pointer;
-      z-index: 2; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
-    }
-
     /* Heart Button */
     .heart-btn { width: 20px; height: 20px; cursor: pointer; }
 
@@ -1806,30 +1798,30 @@
       <button class="station-acc-btn" onclick="toggleModernAccordion(this)">On-air shows</button>
       <div class="station-panel">
         <div class="show-thumbnails">
-          <div class="show-thumbnail" onclick="openShow('The Rush')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','rush',this)"><img src="Assets/Shows/The_Rush.jpg" alt="The Rush"></div>
-          <div class="show-thumbnail" onclick="openShow('Yired')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','yired',this)"><img src="Assets/Shows/Yired_Baby_Talk.png" alt="Yired"></div>
-          <div class="show-thumbnail" onclick="openShow('The Climax')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','climax',this)"><img src="Assets/Shows/The_Climax.jpg" alt="The Climax"></div>
-          <div class="show-thumbnail" onclick="openShow('Galaxy Sports')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','galaxy',this)"><img src="Assets/Shows/Galaxy_Sports_Show.jpg" alt="Galaxy Sports"></div>
-          <div class="show-thumbnail" onclick="openShow('Unkaged')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','unkaged',this)"><img src="Assets/Shows/Unkaged.jpg" alt="Unkaged"></div>
-          <div class="show-thumbnail" onclick="openShow('S.O.S')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','sos',this)"><img src="Assets/Shows/S_O_S.jpg" alt="S.O.S"></div>
-          <div class="show-thumbnail" onclick="openShow('The Dropbox')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','dropbox',this)"><img src="Assets/Shows/The_Dropbox.jpg" alt="The Dropbox"></div>
-          <div class="show-thumbnail" onclick="openShow('Flow & Glow')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','flowglow',this)"><img src="Assets/Shows/Flow_and_Grow.jpg" alt="Flow & Glow"></div>
-          <div class="show-thumbnail" onclick="openShow('Y 20')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','y20',this)"><img src="Assets/Shows/Y_20.jpg" alt="Y 20"></div>
-          <div class="show-thumbnail" onclick="openShow('Phantsha Hoo')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','phantsha',this)"><img src="Assets/Shows/Phantsha_Hoo.jpg" alt="Phantsha Hoo"></div>
-          <div class="show-thumbnail" onclick="openShow('The Revolution')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','revolution',this)"><img src="Assets/Shows/the_revolution.jpg" alt="The Revolution"></div>
-          <div class="show-thumbnail" onclick="openShow('The Red Room')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','redroom',this)"><img src="Assets/Shows/the_red_room.png" alt="The Red Room"></div>
-          <div class="show-thumbnail" onclick="openShow('The Hangover Mix')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','hangover',this)"><img src="Assets/Shows/the_hangover_mix.jpg" alt="The Hangover Mix"></div>
-          <div class="show-thumbnail" onclick="openShow('The Good Life')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','goodlife',this)"><img src="Assets/Shows/the_good_life.jpg" alt="The Good Life"></div>
-          <div class="show-thumbnail" onclick="openShow('Sunday Soccer Show')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','soccer',this)"><img src="Assets/Shows/Sunday_Soccer_Show.jpg" alt="Sunday Soccer Show"></div>
-          <div class="show-thumbnail" onclick="openShow('Reloaded')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','reloaded',this)"><img src="Assets/Shows/reloaded.png" alt="Reloaded"></div>
-          <div class="show-thumbnail" onclick="openShow('No Cap')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','nocap',this)"><img src="Assets/Shows/no_cap.jpg" alt="No Cap"></div>
-          <div class="show-thumbnail" onclick="openShow('My Kinda Vibe')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','vibes',this)"><img src="Assets/Shows/my_kinda_vibe.jpg" alt="My Kinda Vibe"></div>
-          <div class="show-thumbnail" onclick="openShow('Late Night Mix')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','latenight',this)"><img src="Assets/Shows/late_night_mix.png" alt="Late Night Mix"></div>
-          <div class="show-thumbnail" onclick="openShow('Hot 30')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','hot30',this)"><img src="Assets/Shows/hot_30.png" alt="Hot 30"></div>
-          <div class="show-thumbnail" onclick="openShow('Hidden Gems')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','gems',this)"><img src="Assets/Shows/Hidden_Gems.jpg" alt="Hidden Gems"></div>
-          <div class="show-thumbnail" onclick="openShow('Beats From Heaven')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','gospel',this)"><img src="Assets/Shows/Beats_From_Heaven.jpg" alt="Beats From Heaven"></div>
-          <div class="show-thumbnail" onclick="openShow('Point of Order')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','pointoforder',this)"><img src="Assets/Shows/Point_of_Order.jpg" alt="Point of Order"></div>
-          <div class="show-thumbnail" onclick="openShow('Yired')"><img class="show-thumb-heart" src="Assets/icons/heart_inactive_icon.png" onclick="event.stopPropagation();toggleFav('shows','yired-alt',this)"><img src="Assets/Shows/Yired_Baby_Talk.png" alt="Yired (Alt)"></div>
+          <div class="show-thumbnail" onclick="openShow('The Rush')"><img src="Assets/Shows/The_Rush.jpg" alt="The Rush"></div>
+          <div class="show-thumbnail" onclick="openShow('Yired')"><img src="Assets/Shows/Yired_Baby_Talk.png" alt="Yired"></div>
+          <div class="show-thumbnail" onclick="openShow('The Climax')"><img src="Assets/Shows/The_Climax.jpg" alt="The Climax"></div>
+          <div class="show-thumbnail" onclick="openShow('Galaxy Sports')"><img src="Assets/Shows/Galaxy_Sports_Show.jpg" alt="Galaxy Sports"></div>
+          <div class="show-thumbnail" onclick="openShow('Unkaged')"><img src="Assets/Shows/Unkaged.jpg" alt="Unkaged"></div>
+          <div class="show-thumbnail" onclick="openShow('S.O.S')"><img src="Assets/Shows/S_O_S.jpg" alt="S.O.S"></div>
+          <div class="show-thumbnail" onclick="openShow('The Dropbox')"><img src="Assets/Shows/The_Dropbox.jpg" alt="The Dropbox"></div>
+          <div class="show-thumbnail" onclick="openShow('Flow & Glow')"><img src="Assets/Shows/Flow_and_Grow.jpg" alt="Flow & Glow"></div>
+          <div class="show-thumbnail" onclick="openShow('Y 20')"><img src="Assets/Shows/Y_20.jpg" alt="Y 20"></div>
+          <div class="show-thumbnail" onclick="openShow('Phantsha Hoo')"><img src="Assets/Shows/Phantsha_Hoo.jpg" alt="Phantsha Hoo"></div>
+          <div class="show-thumbnail" onclick="openShow('The Revolution')"><img src="Assets/Shows/the_revolution.jpg" alt="The Revolution"></div>
+          <div class="show-thumbnail" onclick="openShow('The Red Room')"><img src="Assets/Shows/the_red_room.png" alt="The Red Room"></div>
+          <div class="show-thumbnail" onclick="openShow('The Hangover Mix')"><img src="Assets/Shows/the_hangover_mix.jpg" alt="The Hangover Mix"></div>
+          <div class="show-thumbnail" onclick="openShow('The Good Life')"><img src="Assets/Shows/the_good_life.jpg" alt="The Good Life"></div>
+          <div class="show-thumbnail" onclick="openShow('Sunday Soccer Show')"><img src="Assets/Shows/Sunday_Soccer_Show.jpg" alt="Sunday Soccer Show"></div>
+          <div class="show-thumbnail" onclick="openShow('Reloaded')"><img src="Assets/Shows/reloaded.png" alt="Reloaded"></div>
+          <div class="show-thumbnail" onclick="openShow('No Cap')"><img src="Assets/Shows/no_cap.jpg" alt="No Cap"></div>
+          <div class="show-thumbnail" onclick="openShow('My Kinda Vibe')"><img src="Assets/Shows/my_kinda_vibe.jpg" alt="My Kinda Vibe"></div>
+          <div class="show-thumbnail" onclick="openShow('Late Night Mix')"><img src="Assets/Shows/late_night_mix.png" alt="Late Night Mix"></div>
+          <div class="show-thumbnail" onclick="openShow('Hot 30')"><img src="Assets/Shows/hot_30.png" alt="Hot 30"></div>
+          <div class="show-thumbnail" onclick="openShow('Hidden Gems')"><img src="Assets/Shows/Hidden_Gems.jpg" alt="Hidden Gems"></div>
+          <div class="show-thumbnail" onclick="openShow('Beats From Heaven')"><img src="Assets/Shows/Beats_From_Heaven.jpg" alt="Beats From Heaven"></div>
+          <div class="show-thumbnail" onclick="openShow('Point of Order')"><img src="Assets/Shows/Point_of_Order.jpg" alt="Point of Order"></div>
+          <div class="show-thumbnail" onclick="openShow('Yired')"><img src="Assets/Shows/Yired_Baby_Talk.png" alt="Yired (Alt)"></div>
         </div>
       </div>
 
@@ -1922,10 +1914,10 @@
       <button class="station-acc-btn" onclick="toggleCharts(this)">Music charts</button>
       <div class="station-panel">
         <div class="h-scroll">
-          <div class="h-card" onclick="window.location.href='charts.html?chart=top40'"><img src="Assets/Charts/top_40_chart.jpg" alt="Top 40 Chart"></div>
-          <div class="h-card" onclick="window.location.href='charts.html?chart=hiphop'"><img src="Assets/Charts/top_25_local_hip_hop.jpg" alt="Top 25 Local Hip-Hop"></div>
-          <div class="h-card" onclick="window.location.href='charts.html?chart=rnb'"><img src="Assets/Charts/top_20_rnb_chart.jpg" alt="Top 20 RnB Chart"></div>
-          <div class="h-card" onclick="window.location.href='charts.html?chart=house'"><img src="Assets/Charts/top_20_house.jpg" alt="Top 20 House"></div>
+          <div class="h-card" onclick="window.location.href='charts.html?chart=top40'"><img src="Assets/Charts/top_40_chart/cover.jpg" alt="Top 40 Chart"></div>
+          <div class="h-card" onclick="window.location.href='charts.html?chart=hiphop'"><img src="Assets/Charts/top_25_local_hip_hop/cover.jpg" alt="Top 25 Local Hip-Hop"></div>
+          <div class="h-card" onclick="window.location.href='charts.html?chart=rnb'"><img src="Assets/Charts/top_20_rnb_chart/cover.jpg" alt="Top 20 RnB Chart"></div>
+          <div class="h-card" onclick="window.location.href='charts.html?chart=house'"><img src="Assets/Charts/top_20_house/cover.jpg" alt="Top 20 House"></div>
         </div>
       </div>
 
@@ -2039,7 +2031,7 @@
             <span class="menu-fav-sub-text">Presenters</span>
           </div>
           <div class="menu-fav-sub-item" onclick="switchView('view-favourites-charts', -1)">
-            <img class="menu-fav-sub-thumb" src="Assets/Charts/top_40_chart.jpg" alt="">
+            <img class="menu-fav-sub-thumb" src="Assets/Charts/top_40_chart/cover.jpg" alt="">
             <span class="menu-fav-sub-text">Charts</span>
           </div>
           <div class="menu-fav-sub-item" onclick="showComingSoon('creatives')">
@@ -2892,6 +2884,31 @@
 
     
     // --- Profile Switch & Initialization ---
+    function initializeDefaultProfile() {
+      if (localStorage.getItem('yarona_user')) return;
+      var profile = {
+        id: 'listener-sisi-' + Date.now(),
+        type: 'listener',
+        firstname: 'Sapphie',
+        secondname: '',
+        surname: '',
+        dob: '',
+        gender: '',
+        race: '',
+        mobile: '',
+        mobileBanking: '',
+        whatsapp: '',
+        city: '',
+        area: '',
+        profilePic: 'Assets/Presenters/Sapphie.png',
+        email: '',
+        password: ''
+      };
+      var user = { id: profile.id, type: profile.type, name: 'Sapphie', role: 'Listener' };
+      localStorage.setItem('yarona_profile', JSON.stringify(profile));
+      localStorage.setItem('yarona_user', JSON.stringify(user));
+    }
+
     function updateMenuProfileBox() {
       try {
         const userStr = localStorage.getItem('yarona_user');
@@ -3320,6 +3337,8 @@
       checkAuth();
       updateLiveCard();
       setInterval(updateLiveCard, 60000);
+      initializeDefaultProfile();
+      updateMenuProfileBox();
 
       // Handle URL parameters for navigation
       const urlParams = new URLSearchParams(window.location.search);
@@ -3360,7 +3379,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       handleParams();
       updateMenuDetailsCard();
-      updateAllShowThumbHearts();
       renderMenuWishlist();
     });
 
@@ -3384,16 +3402,6 @@
     function getFavState(category, id) {
       var favs = JSON.parse(localStorage.getItem('yarona_fav_' + category) || '[]');
       return favs.indexOf(id) > -1;
-    }
-
-    function updateAllShowThumbHearts() {
-      document.querySelectorAll('.show-thumb-heart').forEach(function(img) {
-        var onclick = img.getAttribute('onclick');
-        var match = onclick.match(/toggleFav\('shows','([^']+)'/);
-        if (match && getFavState('shows', match[1])) {
-          img.src = 'Assets/icons/heart_active_icon.png';
-        }
-      });
     }
 
     // ===============================
@@ -3492,8 +3500,8 @@
     // PROFILE SWITCH VIEW
     // ===============================
     var profileSwitchData = [
-      { id: 'yaesoos', type: 'listener', name: 'Yaesoos Amen', sub: 'Age 17', pic: 'yaesoos_amen.webp' },
-      { id: 'sisi', type: 'listener', name: 'Sapphie', sub: 'Age 16', pic: 'Sapphie.png' },
+      { id: 'yaesoos', type: 'listener', name: 'Yaesoos Amen', sub: 'Listener', pic: 'yaesoos_amen.webp' },
+      { id: 'sisi', type: 'listener', name: 'Sapphie', sub: 'Listener', pic: 'Sapphie.png' },
       { id: 'kellz', type: 'presenter', name: 'DJ Kellz', sub: 'The Revolution', pic: 'DJ_Kellz.jpg' },
       { id: 'sway', type: 'presenter', name: 'DJ Sway', sub: 'The Climax', pic: 'dj_sway.png' },
       { id: 'drew', type: 'presenter', name: 'Drew Chadhall', sub: 'Hot 30', pic: 'drew_chadhall.png' },
@@ -3609,35 +3617,35 @@
     };
 
     var presentersInfo = {
-      'fox': { name: 'Fox', sub: 'The Rush', pic: 'fox.jpg' },
-      'mog': { name: 'MOG', sub: 'The Rush', pic: 'mog.jpg' },
-      'thato': { name: 'Thato', sub: 'The Rush', pic: 'thato.jpg' },
-      'lerato': { name: 'Lerato Modiega', sub: 'Yired', pic: 'lerato.jpg' },
-      'luhle': { name: 'Luhle (Ngwanamai)', sub: 'The Good Life', pic: 'luhle.jpg' },
-      'sway': { name: 'DJ Sway', sub: 'The Climax', pic: 'sway.jpg' },
-      'lb': { name: 'LB', sub: 'The Climax', pic: 'lb.jpg' },
-      'kat': { name: 'Katalina "Kat" Podi', sub: 'No Cap', pic: 'kat.jpg' },
-      'paps': { name: 'Paphani Masalila (Paps)', sub: 'The Red Room', pic: 'paps.jpg' },
-      'kage': { name: 'Kage', sub: 'Unkaged', pic: 'kage.jpg' },
-      'tshepie': { name: 'Tshepiedee', sub: 'The Hangover Mix', pic: 'tshepie.jpg' },
-      'soso': { name: 'Soso', sub: 'S.O.S', pic: 'soso.jpg' },
+      'fox': { name: 'Fox', sub: 'The Rush', pic: 'Fox.jpg' },
+      'mog': { name: 'MOG', sub: 'The Rush', pic: 'MOG.jpg' },
+      'thato': { name: 'Thato', sub: 'The Rush', pic: 'Thato_Selemogwe.png' },
+      'lerato': { name: 'Lerato Modiega', sub: 'Yired', pic: 'Lerato_Modiega.jpg' },
+      'luhle': { name: 'Luhle (Ngwanamai)', sub: 'The Good Life', pic: 'Luhle_Ngwanamai.jpg' },
+      'sway': { name: 'DJ Sway', sub: 'The Climax', pic: 'dj_sway.png' },
+      'lb': { name: 'LB', sub: 'The Climax', pic: 'Lebowa_LB_Moroen.png' },
+      'kat': { name: 'Katalina "Kat" Podi', sub: 'No Cap', pic: 'Katalina_Kat_Podi.jpg' },
+      'paps': { name: 'Paphani Masalila (Paps)', sub: 'The Red Room', pic: 'Paphani_Masalila.png' },
+      'kage': { name: 'Kage', sub: 'Unkaged', pic: 'Kage.png' },
+      'tshepie': { name: 'Tshepiedee', sub: 'The Hangover Mix', pic: 'Tshepiedee.jpg' },
+      'soso': { name: 'Soso', sub: 'S.O.S', pic: 'soso_khumo.jpg' },
       'drew': { name: 'Drew Chadhall', sub: 'Hot 30', pic: 'drew_chadhall.png' },
-      'vva': { name: 'VVA', sub: 'The Dropbox', pic: 'vva.jpg' },
-      'reitumetse': { name: 'Reitumetse', sub: 'Flow & Glow', pic: 'reitumetse.jpg' },
+      'vva': { name: 'VVA', sub: 'The Dropbox', pic: 'VVA.jpg' },
+      'reitumetse': { name: 'Reitumetse', sub: 'Flow & Glow', pic: 'Reitumetse.jpg' },
       'mrtee': { name: 'Mr Tee', sub: 'Beats From Heaven', pic: 'mr_tee.png' },
       'mro': { name: 'Mr. O', sub: 'My Kinda Vibe', pic: 'owen_rampha.png' },
-      'thabang': { name: 'Thabang Matlale', sub: 'Galaxy Sports', pic: 'thabang.jpg' },
+      'thabang': { name: 'Thabang Matlale', sub: 'Galaxy Sports', pic: 'Thabang_Matlale.png' },
       'lezozo': { name: 'Kedi "Lezozo" Molosiwa', sub: 'Hidden Gems', pic: 'Kedi_Lezozo_Molosiwa.jpg' },
       'roman': { name: 'Vincent Roman Matthys', sub: 'Reloaded', pic: 'Vincent_Roman_Matthys.png' },
-      'kellz': { name: 'DJ Kellz', sub: 'The Revolution', pic: 'dj.jpg' },
-      'rotation': { name: 'On Rotation', sub: 'Late Night Mix', pic: 'dj.jpg' }
+      'kellz': { name: 'DJ Kellz', sub: 'The Revolution', pic: 'DJ_Kellz.jpg' },
+      'rotation': { name: 'On Rotation', sub: 'Late Night Mix', pic: 'dj.png' }
     };
 
     var chartsInfo = {
-      'top40': { title: 'Top 40 Chart', sub: 'All Genres', img: 'top_40_chart.jpg' },
-      'rnb': { title: 'Top 20 RnB Chart', sub: 'RnB & Soul', img: 'top_20_rnb_chart.jpg' },
-      'hiphop': { title: 'Top 25 Local Hip-Hop', sub: 'Local Hip-Hop', img: 'top_25_local_hip_hop.jpg' },
-      'house': { title: 'Top 20 House', sub: 'House & Dance', img: 'top_20_house.jpg' }
+      'top40': { title: 'Top 40 Chart', sub: 'All Genres', img: 'top_40_chart/cover.jpg' },
+      'rnb': { title: 'Top 20 RnB Chart', sub: 'RnB & Soul', img: 'top_20_rnb_chart/cover.jpg' },
+      'hiphop': { title: 'Top 25 Local Hip-Hop', sub: 'Local Hip-Hop', img: 'top_25_local_hip_hop/cover.jpg' },
+      'house': { title: 'Top 20 House', sub: 'House & Dance', img: 'top_20_house/cover.jpg' }
     };
 
     function renderFavView(category) {

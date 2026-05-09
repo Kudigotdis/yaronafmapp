@@ -166,7 +166,7 @@
   
   <!-- Header Card (Artwork + Info) -->
   <div class="chart-header-card" id="chartHeaderCard">
-    <img id="chartCover" src="Assets/Charts/top_40_chart.jpg" class="chart-header-img" onerror="this.style.background='#ddd'; this.src='';">
+    <img id="chartCover" src="Assets/Charts/top_40_chart/cover.jpg" class="chart-header-img" onerror="this.style.background='#ddd'; this.src='';">
     <div class="chart-header-info">
       <div id="chartTitleText" class="chart-header-title">Top 40 Chart</div>
       <div id="chartGenreText" class="chart-header-genre">All Genres</div>
@@ -372,7 +372,7 @@
       const chartMeta = defaultData[currentChartKey];
       
       // Update Header Card
-      document.getElementById('chartCover').src = `Assets/Charts/${chartMeta.folder}.jpg`;
+      document.getElementById('chartCover').src = `Assets/Charts/${chartMeta.folder}/cover.jpg`;
       document.getElementById('chartTitleText').textContent = chartMeta.title;
       document.getElementById('chartGenreText').textContent = chartMeta.genre;
       document.getElementById('chartDateText').textContent = chartMeta.dateRange;
@@ -479,6 +479,14 @@
       }
     }
 
+    function tryNextExt(imgEl) {
+      const src = imgEl.src;
+      if (src.endsWith('.jpg')) { imgEl.src = src.replace('.jpg', '.png'); return; }
+      if (src.endsWith('.png')) { imgEl.src = src.replace('.png', '.webp'); return; }
+      if (src.endsWith('.webp')) { imgEl.src = src.replace('.webp', '.jpeg'); return; }
+      imgEl.style.background = '#ddd';
+    }
+
     // Render the chart DOM elements
     function renderChart() {
       const list = document.getElementById('chartList');
@@ -490,7 +498,7 @@
         let cardHTML = `
           <div class="chart-card">
             <div class="chart-rank">${currentRank}</div>
-            <img src="Assets/Charts/${folder}/${song.id}.jpg" class="chart-thumb" onerror="this.style.background='#ddd'">
+            <img src="Assets/Charts/${folder}/${song.id}.jpg" class="chart-thumb" onerror="tryNextExt(this)">
             <div class="chart-info">
               <div class="chart-title">${song.title}</div>
               <div class="chart-artist">${song.artist}</div>
